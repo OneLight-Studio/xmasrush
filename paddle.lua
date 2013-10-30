@@ -4,11 +4,11 @@ local PADDLE_WIDTH = 128
 local PADDLE_HEIGHT = 64
 local PADDLE_IMG = "img/paddle.png"
 
-Paddle = class(function(paddleI, score, lives)
+Paddle = class(function(this, score, lives)
 	local pad
 
-	paddleI.paddle = display.newImageRect(PADDLE_IMG, PADDLE_WIDTH, PADDLE_HEIGHT)
-	pad = paddleI.paddle
+	this.paddle = display.newImageRect(PADDLE_IMG, PADDLE_WIDTH, PADDLE_HEIGHT)
+	pad = this.paddle
 	pad.x = display.contentCenterX
 	pad.y = display.contentHeight - pad.height / 2
 

@@ -7,7 +7,7 @@ local LIVES_WIDTH = 40
 
 Game = class(function(this, score, lives)
 	this.score = score
-	this.lives = lives;
+	this.lives = lives
 end)
 
 function Game:updateScore()
