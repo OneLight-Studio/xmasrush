@@ -1,7 +1,7 @@
 require 'class'
 
 local SCORE_TEXT = "Score "
-local SCORE_WIDTH = 80
+local SCORE_WIDTH = 90
 local LIVES_TEXT = "Vies "
 local LIVES_WIDTH = 40
 
@@ -12,12 +12,12 @@ end)
 
 function Game:updateScore()
 	display.remove(self.scoreLabel)
-	self.scoreLabel = display.newText(SCORE_TEXT .. self.score, display.contentWidth - SCORE_WIDTH, 0)
+	self.scoreLabel = display.newText(SCORE_TEXT .. self.score, display.contentWidth - SCORE_WIDTH, 0, native.systemFont, 16)
 end
 
 function Game:updateLives()
 	display.remove(self.livesLabel)
-	self.livesLabel = display.newText(LIVES_TEXT .. self.lives, display.contentCenterX - LIVES_WIDTH / 2, 0)
+	self.livesLabel = display.newText(LIVES_TEXT .. self.lives, display.contentCenterX - LIVES_WIDTH / 2, 0, native.systemFont, 16)
 end
 
 function Game:scoreLivesToFront()
