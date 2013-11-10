@@ -13,23 +13,18 @@ Paddle = class(function(this, score, lives)
 	pad.y = display.contentHeight - pad.height / 2
 
 	Runtime:addEventListener("touch",  function (event)
+		local newX = event.x
+		if newX - pad.width / 2 < 0 then
+			newX = pad.width / 2
+		end
+		if newX + pad.width / 2 > display.contentWidth then
+			newX = display.contentWidth - pad.width / 2
+		end
 		if event.phase == "began" then
-			local paddleBounds = pad.contentBounds
-			if event.x >= paddleBounds.xMin and event.x <= paddleBounds.xMax and event.y >= paddleBounds.yMin and event.y <= paddleBounds.yMax then
-				pad.focused = true
-				pad.touchOffset = event.x - pad.x
-			end
-		elseif event.phase == "moved" and pad.focused then
-			local newX = event.x - pad.touchOffset
-			if newX - pad.width / 2 < 0 then
-				newX = pad.width / 2
-			end
-			if newX + pad.width / 2 > display.contentWidth then
-				newX = display.contentWidth - pad.width / 2
-			end
+			pad.transition = transition.to(pad, { x=newX, time=250, transition=easing.inOutExpo })
+		elseif event.phase == "moved" then
+			transition.cancel(pad.transition)
 			pad.x = newX
-		else
-			pad.focused = false
 		end
 	end)
 end)

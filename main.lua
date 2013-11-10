@@ -8,36 +8,43 @@ local DELAY_BETWEEN_PRESENTS_MIN = 300
 local DELAY_BETWEEN_PRESENTS_MODIFIER = 10
 local DELAY_BETWEEN_BOMBS_MIN = 1000
 local DELAY_BETWEEN_BOMBS_MODIFIER = 10
-local DELAY_BETWEEN_LIVES_MIN = 10000
+local DELAY_BETWEEN_LIVES_MIN = 5000
 local DELAY_BETWEEN_LIVES_MODIFIER = 1000
+local DELAY_BETWEEN_AUDIO_LOOP_PITCH_INCREASE = 10000
+local MAX_PRESENTS_ON_SCREEN = 7
 local LIVES_START = 10
 
 -- variables
 
 local delayBetweenPresents = 1000
 local delayBetweenBombs = 5000
-local delayBetweenLives = 20000
+local delayBetweenLives = 10000
 local items = {}
 local game
 local paddle
+local audioLoop
+local audioLoopSource
+local audioLoopPitch
 
 -- functions
 
 local function newPresent()
-	return Item(PRESENT_IMG, PRESENT_SIZE, PRESENT_SIZE, PRESENT_MIN_SPEED, PRESENT_MAX_SPEED, function() game:increaseScore(1)	end, function()	game:decreaseLives(1) end)
+	return Item(PRESENT_IMG, PRESENT_SIZE, PRESENT_SIZE, PRESENT_MIN_SPEED, PRESENT_MAX_SPEED, function() game:increaseScore(1)	end, function()	game:decreaseLives(1) end, PRESENT_SOUND)
 end
 
 local function newBomb()
-	return Item(BOMB_IMG, BOMB_SIZE, BOMB_SIZE, BOMB_MIN_SPEED, BOMB_MAX_SPEED, function() game:decreaseLives(5) end, nil)
+	return Item(BOMB_IMG, BOMB_SIZE, BOMB_SIZE, BOMB_MIN_SPEED, BOMB_MAX_SPEED, function() game:decreaseLives(5) end, nil, BOMB_SOUND)
 end
 
 local function newLife()
-	return Item(LIFE_IMG, LIFE_SIZE, LIFE_SIZE, LIFE_MIN_SPEED, LIFE_MAX_SPEED, function() game:increaseLives(1) end, nil)
+	return Item(LIFE_IMG, LIFE_SIZE, LIFE_SIZE, LIFE_MIN_SPEED, LIFE_MAX_SPEED, function() game:increaseLives(1) end, nil, LIFE_SOUND)
 end
 
 local function dropPresent()
-	local present = newPresent()
-	table.insert(items, present)
+	if table.getn(items) < MAX_PRESENTS_ON_SCREEN then
+		local present = newPresent()
+		table.insert(items, present)
+	end
 
 	delayBetweenPresents = math.max(DELAY_BETWEEN_PRESENTS_MIN, delayBetweenPresents - DELAY_BETWEEN_PRESENTS_MODIFIER)
 
@@ -59,7 +66,13 @@ local function dropLife()
 
 	delayBetweenLives = math.max(DELAY_BETWEEN_LIVES_MIN, delayBetweenLives - DELAY_BETWEEN_LIVES_MODIFIER)
 
-	timer.performWithDelay(delayBetweenLives, dropLive)
+	timer.performWithDelay(delayBetweenLives, dropLife)
+end
+
+local function increaseAudioLoopPitch()
+	audioLoopPitch = audioLoopPitch + 0.01
+	al.Source(audioLoopSource, al.PITCH, audioLoopPitch)
+	timer.performWithDelay(DELAY_BETWEEN_AUDIO_LOOP_PITCH_INCREASE, increaseAudioLoopPitch)
 end
 
 -- events
@@ -98,12 +111,20 @@ display.setStatusBar(display.HiddenStatusBar)
 -- listeners
 Runtime:addEventListener("enterFrame", onEveryFrame)
 
+-- sounds
+audioLoop = audio.loadSound("sound/jingle_bells.mp3")
+
 -- start
 paddle = Paddle()
 
 game = Game(0,LIVES_START)
 game:updateScore()
 game:updateLives()
+
+audio.play(audioLoop, { channel=1, loops=-1 })
+audioLoopSource = audio.getSourceFromChannel(1)
+audioLoopPitch = 1
+timer.performWithDelay(DELAY_BETWEEN_AUDIO_LOOP_PITCH_INCREASE, increaseAudioLoopPitch)
 
 dropPresent()
 timer.performWithDelay(delayBetweenBombs, dropBomb)
