@@ -1,34 +1,98 @@
+-- Paddle
+
 require 'class'
+
+-- constants
 
 local PADDLE_WIDTH = 128
 local PADDLE_HEIGHT = 64
-local PADDLE_IMG = "img/paddle.png"
+local PADDLE_IMG = "img/game_paddle.png"
+local PADDLE_INDEX_MIN = 0
+local PADDLE_INDEX_MAX = 5
+local PADDLE_SPEED = 60
 
-Paddle = class(function(this, score, lives)
-	local pad
+-- variables
 
-	this.paddle = display.newImageRect(PADDLE_IMG, PADDLE_WIDTH, PADDLE_HEIGHT)
-	pad = this.paddle
-	pad.x = display.contentCenterX
-	pad.y = display.contentHeight - pad.height / 2
+local pad
+local lastTouchedX
 
-	Runtime:addEventListener("touch",  function (event)
-		local newX = event.x
+-- functions
+
+local function onTouchScreen(event)
+	lastTouchedX = event.x
+
+	--[[
+	-- Code for the arcade mode paddle mouvements
+	local newX
+	local newY
+
+	if pad ~= nil then
+		newX = event.x
+		newY = event.y
 		if newX - pad.width / 2 < 0 then
 			newX = pad.width / 2
 		end
 		if newX + pad.width / 2 > display.contentWidth then
 			newX = display.contentWidth - pad.width / 2
 		end
-		if event.phase == "began" then
-			pad.transition = transition.to(pad, { x=newX, time=250, transition=easing.inOutExpo })
-		elseif event.phase == "moved" then
-			transition.cancel(pad.transition)
-			pad.x = newX
+
+		if newY - pad.height / 2 < 0 then
+			newY = pad.height / 2
 		end
-	end)
+		if newY + pad.height / 2 > display.contentHeight then
+			newY = display.contentHeight - pad.height / 2
+		end
+
+		pad.x = newX
+		pad.y = newY
+	end
+	--]]
+end
+
+-- core
+
+Paddle = class(function(this)
 end)
 
+function Paddle:move()
+	local dist
+	local direction
+
+	if lastTouchedX ~= nil then
+		if pad.x > lastTouchedX then
+			dist = pad.x - lastTouchedX
+			direction = -1
+		else
+			dist = lastTouchedX - pad.x
+			direction = 1
+		end
+
+		if dist < PADDLE_SPEED then
+			pad.x = lastTouchedX
+		else
+			pad:translate(PADDLE_SPEED * direction, 0)
+		end
+	end
+end
+
+function Paddle:onEnterScene()
+	pad = display.newImageRect(PADDLE_IMG, PADDLE_WIDTH, PADDLE_HEIGHT)
+	pad.x = display.contentCenterX
+	pad.y = display.contentHeight - pad.height / 2	 
+
+	Runtime:addEventListener("touch", onTouchScreen)
+end
+
+function Paddle:onExitScene()
+	display.remove(pad)
+	pad = nil
+	Runtime:removeEventListener("touch", onTouchScreen)
+end
+
 function Paddle:contentBounds()
-	return self.paddle.contentBounds
+	if pad ~= nil then
+		return pad.contentBounds
+	end
+
+	return nil
 end
