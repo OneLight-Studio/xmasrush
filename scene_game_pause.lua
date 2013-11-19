@@ -79,25 +79,19 @@ end
 function soundListener ( event )
 	if gameSettings.soundEnable then
 		gameSettings.soundEnable = false
-		-- hide the object
-		soundButton.isVisible = false
-		-- remove it
 		display.remove(soundButton)
 		soundButton = nil
 		soundButton = display.newImage("img/home_sound_off.png")
 		soundButton.x = display.contentWidth / 2
 		soundButton.y = (display.contentHeight - soundButton.height) / 2
-		soundButton.isVisible = true
 		soundButton:addEventListener( "tap", soundListener )
 	else
 		gameSettings.soundEnable = true
-		soundButton.isVisible = false
 		display.remove(soundButton)
 		soundButton = nil
 		soundButton = display.newImage("img/home_sound_on.png")
 		soundButton.x = display.contentWidth / 2
 		soundButton.y = (display.contentHeight - soundButton.height) / 2
-		soundButton.isVisible = true
 		soundButton:addEventListener( "tap", soundListener )
 	end
 	loadsave.saveTable(gameSettings, "crazyxmas.json")
@@ -106,25 +100,19 @@ end
 function effectSoundListener ( event )
 	if gameSettings.soundEffectEnable then
 		gameSettings.soundEffectEnable = false
-		-- hide the object
-		effectsButton.isVisible = false
-		-- remove it
 		display.remove(effectsButton)
 		effectsButton = nil
 		effectsButton = display.newImage("img/home_effects_off.png")
     	effectsButton.x = (display.contentWidth / 2 + effectsButton.width * 2)
 		effectsButton.y = (display.contentHeight - effectsButton.height) / 2
-		effectsButton.isVisible = true
 		effectsButton:addEventListener( "tap", effectSoundListener )
 	else
 		gameSettings.soundEffectEnable = true
-		effectsButton.isVisible = false
 		display.remove(effectsButton)
 		effectsButton = nil
 		effectsButton = display.newImage("img/home_effects_on.png")
     	effectsButton.x = (display.contentWidth / 2 + effectsButton.width * 2)
 		effectsButton.y = (display.contentHeight - effectsButton.height) / 2
-		effectsButton.isVisible = true
 		effectsButton:addEventListener( "tap", effectSoundListener )
 	end
 	loadsave.saveTable(gameSettings, "crazyxmas.json")
