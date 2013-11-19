@@ -88,7 +88,9 @@ function Item:onHit(game)
 		self.hit()
 	end
 	if self.sound then
-		audio.play(self.sound)
+		if gameSettings.soundEffectEnable then
+			audio.play(self.sound)
+		end
 	end
 end
 
