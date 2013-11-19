@@ -4,10 +4,9 @@ require 'class'
 
 -- constants
 
-local SCORE_TEXT = ""
 local SCORE_WIDTH = 60
-local LIVES_TEXT = ""
 local LIVES_WIDTH = 120
+
 
 -- variables
 
@@ -26,14 +25,13 @@ function Game:onEnterScene()
 	self.score = self.initScore
 	self.lives = self.initLives
 
-	local livesImage = display.newImage( "img/game_menu_life.png" )
-	livesImage.x = display.contentWidth - livesImage.width / 2 - LIVES_WIDTH
-	livesImage.y = livesImage.height / 2
+	self.livesImage = display.newImage( "img/game_menu_life.png" )
+	self.livesImage.x = display.contentWidth - self.livesImage.width / 2 - LIVES_WIDTH
+	self.livesImage.y = self.livesImage.height / 2
 
-	local scoreImage = display.newImage( "img/game_menu_score.png" )
-	scoreImage.x = display.contentWidth - scoreImage.width / 2  - SCORE_WIDTH
-	scoreImage.y = scoreImage.height / 2
-
+	self.scoreImage = display.newImage( "img/game_menu_score.png" )
+	self.scoreImage.x = display.contentWidth - self.scoreImage.width / 2  - SCORE_WIDTH
+	self.scoreImage.y = self.scoreImage.height / 2
 
 	self:updateScore()
 	self:updateLives()
@@ -47,20 +45,24 @@ function Game:onExitScene()
 	self.scoreLabel = nil
 	display.remove(self.livesLabel)
 	self.livesLabel = nil
+	display.remove(self.livesImage)
+	self.livesImage = nil
+	display.remove(self.scoreImage)
+	self.scoreImage = nil
 end
 
 function Game:updateScore()
 	if self.scoreLabel ~= nil then
 		display.remove(self.scoreLabel)
 	end
-	self.scoreLabel = display.newText(SCORE_TEXT .. self.score, display.contentWidth - SCORE_WIDTH, 2, native.systemFont, 20)
+	self.scoreLabel = display.newText(self.score, display.contentWidth - SCORE_WIDTH, 2, native.systemFont, 20)
 end
 
 function Game:updateLives()
 	if self.livesLabel ~= nil then
 		display.remove(self.livesLabel)
 	end
-	self.livesLabel = display.newText(LIVES_TEXT .. self.lives, display.contentWidth - LIVES_WIDTH, 2, native.systemFont, 20)
+	self.livesLabel = display.newText(self.lives, display.contentWidth - LIVES_WIDTH, 2, native.systemFont, 20)
 end
 
 function Game:scoreLivesToFront()
