@@ -1,4 +1,5 @@
 -- Main
+display.setStatusBar(display.HiddenStatusBar)
 
 -- variables
 
@@ -13,6 +14,10 @@ gameSettings = loadsave.loadTable("crazyxmas.json")
 
 function moveToScene(name)
 	storyboard.gotoScene(name)
+end
+
+function moveToSceneFade(name)
+	storyboard.gotoScene(name,"fade", 1000)
 end
 
 -- core
@@ -30,4 +35,4 @@ if( gameSettings == nil ) then
 end
 
 
-moveToScene("scene_home")
+moveToSceneFade("scene_splash")
