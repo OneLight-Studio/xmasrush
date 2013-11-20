@@ -1,52 +1,52 @@
 -- Scene Home
 
+
 -- variables
 
+local widget = require "widget"
 local storyboard = require "storyboard"
 local scene = storyboard.newScene()
 local bg
-local menuNewGame
-local menuHighScores
-local menuHelp
-local menuCredits
+local nbBtn = 0
+
+-- constants
+
+local BTN_IMG = "img/btn.png"
+local BTN_IMG_PRESSED = "img/btn_pressed.png"
+local BTN_FONT_SIZE = 40
+local BTN_LABEL_COLOR = { 44, 57, 130 }
+local BTN_Y_MIN = 120
+local BTN_VGAP = 70
+
+-- local functions
+
+local function addButton(title, scene)
+	local btn = widget.newButton({
+		defaultFile = BTN_IMG,
+		overFile = BTN_IMG_PRESSED,
+		label = title,
+		labelColor = { default = BTN_LABEL_COLOR },
+		font = FONT,
+		fontSize = BTN_FONT_SIZE,
+		onRelease = function(event)
+			moveToScene(scene)
+		end
+	})
+	btn.x = display.contentWidth / 2
+	btn.y = BTN_Y_MIN + nbBtn * BTN_VGAP 
+	nbBtn = nbBtn + 1
+	return btn
+end
 
 -- scene functions
 
 function scene:createScene( event )
-    local group = self.view
-    bg = display.newImage( "img/bg.jpg" )
-	menuNewGame = display.newImage( "img/home_newgame.png" )
-	menuHighScores = display.newImage( "img/home_highscores.png" )
-	menuHelp = display.newImage( "img/home_help.png" )
-	menuCredits = display.newImage( "img/home_credits.png" )
-
-	menuNewGame.x = display.contentWidth / 2
-	menuNewGame.y = (display.contentHeight / 2 - menuNewGame.height * 1.8)
-	menuHighScores.x = display.contentWidth / 2
-	menuHighScores.y = (display.contentHeight / 2 - menuNewGame.height * 0.6)
-	menuHelp.x = display.contentWidth / 2
-	menuHelp.y = (display.contentHeight / 2 + menuNewGame.height * 0.6)
-	menuCredits.x = display.contentWidth / 2
-	menuCredits.y = (display.contentHeight / 2 + menuNewGame.height * 1.8)
-
-	menuNewGame:addEventListener('tap', function ( event )
-		moveToScene("scene_game")
-	end)
-	menuHighScores:addEventListener('tap', function ( event )
-		moveToScene("scene_highscores")
-	end)
-	menuHelp:addEventListener('tap', function ( event )
-		moveToScene("scene_help")
-	end)
-	menuCredits:addEventListener('tap', function ( event )
-		moveToScene("scene_credits")
-	end)
-
-	group:insert( bg )
-	group:insert( menuNewGame )
-	group:insert( menuHighScores )
-	group:insert( menuHelp )
-	group:insert( menuCredits )
+    display.newImage(self.view, "img/bg.jpg" )
+	display.newText({ parent=self.view, text="Xmas Rush", x=display.contentWidth / 2, y=30, font=FONT, fontSize=70 })
+	self.view:insert(addButton("New Game", "scene_game"))
+	self.view:insert(addButton("High Scores", "scene_highscores"))
+	--self.view:insert(addButton("Help", "scene_help"))
+	self.view:insert(addButton("Credits", "scene_credits"))
 end
 
 function scene:willEnterScene( event )

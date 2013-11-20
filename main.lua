@@ -3,6 +3,12 @@ display.setStatusBar(display.HiddenStatusBar)
 
 require "helper"
 
+display.setStatusBar(display.HiddenStatusBar)
+
+-- global constants
+
+FONT = "Cartoon"
+
 -- variables
 
 local storyboard = require "storyboard"
@@ -23,7 +29,6 @@ function moveToSceneFade(name)
 end
 
 -- core
-
 
 if( gameSettings == nil ) then
     -- There are no settings. This is first time the user launch your game

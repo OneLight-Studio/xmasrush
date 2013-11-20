@@ -290,6 +290,7 @@ function scene:enterScene( event )
 	end
 	audioLoopSource = audio.getSourceFromChannel(1)
 	audioLoopPitch = 1
+	al.Source(audioLoopSource, al.PITCH, audioLoopPitch)
 	audioTimerId = timer.performWithDelay(DELAY_BETWEEN_AUDIO_LOOP_PITCH_INCREASE, increaseAudioLoopPitch)
 
 	-- start
