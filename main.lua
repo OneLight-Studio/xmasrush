@@ -1,6 +1,8 @@
 -- Main
 display.setStatusBar(display.HiddenStatusBar)
 
+require "helper"
+
 -- variables
 
 local storyboard = require "storyboard"
