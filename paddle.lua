@@ -15,6 +15,7 @@ local PADDLE_SPEED = 60
 
 local pad
 local lastTouchedX
+local currentShowBounds
 
 -- functions
 
@@ -78,7 +79,7 @@ end
 function Paddle:onEnterScene()
 	pad = display.newImageRect(PADDLE_IMG, PADDLE_WIDTH, PADDLE_HEIGHT)
 	pad.x = display.contentCenterX
-	pad.y = display.contentHeight - pad.height / 2	 
+	pad.y = display.contentHeight - pad.height / 2
 
 	Runtime:addEventListener("touch", onTouchScreen)
 end
@@ -91,7 +92,15 @@ end
 
 function Paddle:contentBounds()
 	if pad ~= nil then
-		return pad.contentBounds
+		local bounds = pad.contentBounds
+		bounds.xMin = bounds.xMin + 5
+		bounds.xMax = bounds.xMax - 25
+		bounds.yMin = bounds.yMin + 10
+		bounds.yMax = bounds.yMax - 7
+
+		--currentShowBounds = showBounds(bounds, currentShowBounds)
+
+		return bounds
 	end
 
 	return nil

@@ -1,5 +1,7 @@
 -- Main
 
+require "helper"
+
 -- variables
 
 local storyboard = require "storyboard"

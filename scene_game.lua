@@ -12,8 +12,9 @@ local DELAY_BETWEEN_BOMBS_MIN = 1000
 local DELAY_BETWEEN_BOMBS_MODIFIER = 10
 local DELAY_BETWEEN_LIVES_MIN = 5000
 local DELAY_BETWEEN_LIVES_MODIFIER = 1000
-local DELAY_BETWEEN_BONUS = 30000
+local DELAY_BETWEEN_BONUS = 10000
 local DELAY_BETWEEN_AUDIO_LOOP_PITCH_INCREASE = 10000
+local IMP_DELAY = 10000
 local INIT_MAX_ITEMS_ON_SCREEN = 4
 local DELAY_BETWEEN_MAX_ITEMS_ON_SCREEN = 15000
 local LIVES_START = 10
@@ -37,31 +38,17 @@ local audioLoopPitch
 local maxItemsOnScreenTimerId
 local presentTimerId
 local bombTimerId
-local lifeTimerId
 local bonusTimerId
+local impBonusTimerId
 local starWaterfallTimerId
 local audioTimerId
 local starDroppingIndex = 0
 local starDroppingMax = 20
 local isOnPause = false
 local songChannel
+local imp
 
 -- local functions
-
-function startHit()
-	for i, item in pairs(items) do
-		item:remove()
-	end
-
-	timer.pause(bombTimerId)
-	timer.pause(lifeTimerId)
-	timer.pause(presentTimerId)
-	timer.pause(audioTimerId)
-
-	al.Source(audioLoopSource, al.PITCH, 2)
-
-	dropPresentLine()
-end
 
 function pauseGame()
 	isOnPause = true
@@ -70,14 +57,16 @@ function pauseGame()
 
 	if starWaterfallTimerId ~= nil then
 		timer.pause(starWaterfallTimerId)
-	else
-		timer.pause(bombTimerId)
-		timer.pause(lifeTimerId)
-		timer.pause(bonusTimerId)
-		timer.pause(presentTimerId)
-		timer.pause(audioTimerId)
-		timer.pause(maxItemsOnScreenTimerId)
 	end
+	if impBonusTimerId ~= nil then
+		timer.pause(impBonusTimerId)
+	end
+
+	timer.pause(bombTimerId)
+	timer.pause(bonusTimerId)
+	timer.pause(presentTimerId)
+	timer.pause(audioTimerId)
+	timer.pause(maxItemsOnScreenTimerId)
 end
 
 function resumeGame()
@@ -87,22 +76,53 @@ function resumeGame()
 	
 	if starWaterfallTimerId ~= nil then
 		timer.resume(starWaterfallTimerId)
-	else
-		timer.resume(bombTimerId)
-		timer.resume(lifeTimerId)
-		timer.resume(bonusTimerId)
-		timer.resume(presentTimerId)
-		timer.resume(audioTimerId)
-		timer.resume(maxItemsOnScreenTimerId)
+	end
+	if impBonusTimerId ~= nil then
+		timer.resume(impBonusTimerId)
+	end
+
+	timer.resume(bombTimerId)
+	timer.resume(bonusTimerId)
+	timer.resume(presentTimerId)
+	timer.resume(audioTimerId)
+	timer.resume(maxItemsOnScreenTimerId)
+end
+
+function startHit()
+	for i, item in pairs(items) do
+		item:remove()
+	end
+
+	timer.pause(bombTimerId)
+	timer.pause(presentTimerId)
+	timer.pause(audioTimerId)
+
+	al.Source(audioLoopSource, al.PITCH, 2)
+
+	dropPresentLine()
+end
+
+function impHit()
+	imp = Item(TYPE_IMP, nil, nil)
+	imp:onEnterScene(IMP_WIDTH / 2, display.contentHeight / 2)
+
+	impBonusTimerId = timer.performWithDelay(IMP_DELAY, endImp)
+end
+
+function endImp()
+	if imp ~= nil then
+		imp:onExitScene()
+		imp = nil
+		impBonusTimerId = nil
 	end
 end
 
 function dropPresentLine()
 	if starDroppingIndex < starDroppingMax then
-		local prensentNumberPerRow = math.floor(display.contentWidth / PRESENT_SIZE)
+		local prensentNumberPerRow = math.floor(display.contentWidth / PRESENT_WIDTH)
 		
 		for i=0, prensentNumberPerRow, 1 do
-			local present = Item(PRESENT_IMG, PRESENT_SIZE, PRESENT_SIZE, 7, 7, function() game:increaseScore(1) end, nil, nil)
+			local present = Item(TYPE_STAR_PRESENT, function() game:increaseScore(1) end, nil)
 			table.insert(items, present)
 			present:onEnterScene()
 		end
@@ -114,9 +134,9 @@ function dropPresentLine()
 			starWaterfallTimerId = timer.performWithDelay(2000, dropPresentLine)
 		end
 	else
+		starWaterfallTimerId = nil
 		starDroppingIndex = 0
 		timer.resume(bombTimerId)
-		timer.resume(lifeTimerId)
 		timer.resume(presentTimerId)
 
 		al.Source(audioLoopSource, al.PITCH, audioLoopPitch)
@@ -133,7 +153,7 @@ end
 
 local function dropPresent()
 	if table.getn(items) < itemsCountOnScreen then
-		local present = Item(PRESENT_IMG, PRESENT_SIZE, PRESENT_SIZE, PRESENT_MIN_SPEED, PRESENT_MAX_SPEED, function() game:increaseScore(1) end, function() game:decreaseLives(1) end, PRESENT_SOUND)
+		local present = Item(TYPE_PRESENT, function() game:increaseScore(1) end, function() game:decreaseLives(1) end)
 		table.insert(items, present)
 		present:onEnterScene()
 	end
@@ -144,7 +164,7 @@ local function dropPresent()
 end
 
 local function dropBomb()
-	local bomb = Item(BOMB_IMG, BOMB_SIZE, BOMB_SIZE, BOMB_MIN_SPEED, BOMB_MAX_SPEED, function() game:decreaseLives(5) end, nil, BOMB_SOUND)
+	local bomb = Item(TYPE_BOMB, function() game:decreaseLives(5) end, nil)
 	table.insert(items, bomb)
 	bomb:onEnterScene()
 
@@ -153,25 +173,17 @@ local function dropBomb()
 	bombTimerId = timer.performWithDelay(delayBetweenBombs, dropBomb)
 end
 
-local function dropLife()
-	local life = Item(LIFE_IMG, LIFE_SIZE, LIFE_SIZE, LIFE_MIN_SPEED, LIFE_MAX_SPEED, function() game:increaseLives(1) end, nil, LIFE_SOUND)
-	table.insert(items, life)
-	life:onEnterScene()
-
-	delayBetweenLives = math.max(DELAY_BETWEEN_LIVES_MIN, delayBetweenLives - DELAY_BETWEEN_LIVES_MODIFIER)
-
-	lifeTimerId = timer.performWithDelay(delayBetweenLives, dropLife)
-end
-
 local function dropBonus()
-	local bonusType = 1 -- math.random(1,3)
+	local bonusType =  math.random(1,3)
 	local bonus
 
 	if bonusType == 1 then
-		bonus = Item(STAR_IMG, STAR_SIZE, STAR_SIZE, STAR_MIN_SPEED, STAR_MAX_SPEED, function() startHit() end, nil, nil)
+		bonus = Item(TYPE_STAR_BONUS, function() startHit() end, nil, nil)
 	elseif bonusType == 2 then
-		bonus = Item(IMP_IMG, IMP_SIZE, IMP_SIZE, IMP_MIN_SPEED, IMP_MAX_SPEED, function() impHit() end, nil, nil)
+		bonus = Item(TYPE_IMP_BONUS, function() impHit() end, nil, nil)
 	elseif bonusType == 3 then
+		bonus = Item(TYPE_LIFE_BONUS, function() game:increaseLives(1) end, nil, nil)
+	elseif bonusType == 4 then
 		bonus = Item(ASPIRATOR_IMG, ASPIRATOR_SIZE, ASPIRATOR_SIZE, ASPIRATOR_MIN_SPEED, ASPIRATOR_MAX_SPEED, function() aspiratorHit() end, nil, nil)
 	end
 
@@ -194,19 +206,33 @@ local function onEveryFrame(event)
 		-- move paddle
 		paddle:move()
 
+		local impBounds
+		local itemBounds
+		local paddleBounds = paddle:contentBounds()
+
 		-- move each item
 		for i, item in pairs(items) do
 			item:startTranslate()
 
-			local itemBounds = item:contentBounds()
-			local paddleBounds = paddle:contentBounds()
+			itemBounds = item:contentBounds()
+			paddleBounds = paddle:contentBounds()
+			if imp ~= nil then
+				impBounds = imp:contentBounds()
+			end
 
 			if itemBounds ~= nil and paddleBounds ~= nil then
 				-- remove the item if it is in the box
-				if itemBounds.xMin >= paddleBounds.xMin and itemBounds.xMax <= paddleBounds.xMax and itemBounds.yMax >= paddleBounds.yMin then
+				if isBoundsInBounds(itemBounds, paddleBounds) then
 					table.remove(items, i)
 					item:remove()
 					item:onHit(game)
+				-- remove only present items if it is in the imp
+				elseif imp ~= nil and impBounds ~= nil then
+					if isBoundsInBounds(itemBounds, impBounds) and item.type == TYPE_PRESENT then
+						table.remove(items, i)
+						item:remove()
+						item:onHit(game)
+					end
 				-- remove the item if it is out of the screen
 				elseif itemBounds.yMin > display.contentHeight then
 					table.remove(items, i)
@@ -279,7 +305,6 @@ function scene:enterScene( event )
 
 	dropPresent()
 	bombTimerId = timer.performWithDelay(delayBetweenBombs, dropBomb)
-	lifeTimerId = timer.performWithDelay(delayBetweenLives, dropLife)
 	bonusTimerId = timer.performWithDelay(DELAY_BETWEEN_BONUS, dropBonus)
 	maxItemsOnScreenTimerId = timer.performWithDelay(DELAY_BETWEEN_MAX_ITEMS_ON_SCREEN, inscreaseMaxItems)
 end
@@ -299,9 +324,14 @@ function scene:exitScene( event )
 	timer.cancel(audioTimerId)
 	timer.cancel(presentTimerId)
 	timer.cancel(bombTimerId)
-	timer.cancel(lifeTimerId)
 	timer.cancel(bonusTimerId)
 	timer.cancel(maxItemsOnScreenTimerId)
+	if impBonusTimerId ~= nil then
+		timer.cancel(impBonusTimerId)
+	end
+	if starWaterfallTimerId ~= nil then
+		timer.cancel(starWaterfallTimerId)
+	end
 
 	audio.stop(songChannel)
 end
