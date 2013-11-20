@@ -72,8 +72,10 @@ end
 function resumeGame()
 	isOnPause = false
 
-	audio.resume(songChannel)
-	
+	if gameSettings.soundEnable then
+		audio.resume(songChannel)
+	end
+
 	if starWaterfallTimerId ~= nil then
 		timer.resume(starWaterfallTimerId)
 	end
@@ -281,7 +283,11 @@ function scene:enterScene( event )
 
 	-- sounds
 	audioLoop = audio.loadSound("sound/jingle_bells.mp3")
+
 	songChannel = audio.play(audioLoop, { channel=1, loops=-1 })
+	if gameSettings.soundEnable == false then
+		audio.pause(songChannel)
+	end
 	audioLoopSource = audio.getSourceFromChannel(1)
 	audioLoopPitch = 1
 	audioTimerId = timer.performWithDelay(DELAY_BETWEEN_AUDIO_LOOP_PITCH_INCREASE, increaseAudioLoopPitch)
