@@ -56,11 +56,15 @@ local function createMenuBtn()
 		defaultFile = "img/game_pause.png",
 		overFile = "img/game_pause_pressed.png",
 		onRelease = function(event)
-			storyboard.showOverlay( "scene_game_pause", {isModal = true} )
+			showPause()
 		end
 	})
 	menuButton.x = menuButton.width / 2 + 5
 	menuButton.y = menuButton.height / 2 + 5
+end
+
+function showPause()
+	storyboard.showOverlay( "scene_game_pause", {isModal = true} )
 end
 
 function pauseGame()
