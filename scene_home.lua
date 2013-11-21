@@ -62,7 +62,6 @@ local function addButtonSmall(position, img, img_pressed, onTap)
 		overFile = img_pressed,
 		onRelease = onTap
 	})
-	print("" .. btn.height)
 	btn.y = BTN_Y_MIN + nbBtn * (BTN_SIZE + BTN_GAP) 
 	btnSmall[position] = btn
 	updateBtnPosition()

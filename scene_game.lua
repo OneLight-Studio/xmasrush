@@ -13,7 +13,7 @@ local DELAY_BETWEEN_BOMBS_MODIFIER = 10
 local DELAY_BETWEEN_LIVES_MIN = 5000
 local DELAY_BETWEEN_LIVES_MODIFIER = 1000
 local DELAY_BETWEEN_BONUS = 10000
-local DELAY_BETWEEN_AUDIO_LOOP_PITCH_INCREASE = 10000
+local DELAY_BETWEEN_AUDIO_LOOP_PITCH_INCREASE = 5000
 local IMP_DELAY = 10000
 local INIT_MAX_ITEMS_ON_SCREEN = 4
 local DELAY_BETWEEN_MAX_ITEMS_ON_SCREEN = 15000
@@ -261,6 +261,7 @@ local function onEveryFrame(event)
 		-- check lives
 		if game.lives <= 0 then
 			Runtime:removeEventListener("enterFrame", onEveryFrame)
+			audio.play(audio.loadSound("sound/game_over.wav"))
 			storyboard.showOverlay( "scene_game_over", {isModal = true} )
 		else
 			-- keep the text visible

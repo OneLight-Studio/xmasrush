@@ -4,7 +4,7 @@ require 'class'
 
 -- constants
 
-local SCORE_WIDTH = 60
+local SCORE_WIDTH = 80
 local LIVES_WIDTH = 150
 local FONT_SIZE = 30
 local TXT_HEIGHT = 40
@@ -138,6 +138,6 @@ function Game:increaseLives(number)
 end
 
 function Game:decreaseLives(number)
-	self.lives = self.lives - number
+	self.lives = math.max(0, self.lives - number)
 	self:updateLives(number <= 0)
 end
