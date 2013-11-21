@@ -1,4 +1,10 @@
 {
+	"game.name":"Xmas Rush",
+	"game.over":"Game Over",
+	"menu.play":"New Game",
+	"menu.scores":"High Scores",
+	"menu.resume":"Resume",
+	"menu.quit":"Quit",
 	"help.objectif":"Rattrape le plus de cadeaux possibles et améliore ton meilleur score.",
 	"help.gitf":"gagne un point si tu le rattrapes sinon tu perds une vie",
 	"help.life":"gagne une vie",
@@ -7,3 +13,4 @@
 	"help.imp":"le lutin t'aide à rattraper les cadeaux",
 	"help.vacuum":"aspire les cadeaux près de toi"
 }
+

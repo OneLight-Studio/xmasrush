@@ -13,7 +13,7 @@ local DELAY_BETWEEN_BOMBS_MODIFIER = 10
 local DELAY_BETWEEN_LIVES_MIN = 5000
 local DELAY_BETWEEN_LIVES_MODIFIER = 1000
 local DELAY_BETWEEN_BONUS = 10000
-local DELAY_BETWEEN_AUDIO_LOOP_PITCH_INCREASE = 10000
+local DELAY_BETWEEN_AUDIO_LOOP_PITCH_INCREASE = 5000
 local IMP_DELAY = 10000
 local INIT_MAX_ITEMS_ON_SCREEN = 4
 local DELAY_BETWEEN_MAX_ITEMS_ON_SCREEN = 15000
@@ -22,6 +22,7 @@ local LIVES_START = 10
 -- variables
 
 local storyboard = require "storyboard"
+local widget = require "widget"
 local scene = storyboard.newScene()
 local bg
 local menuButton
@@ -50,8 +51,22 @@ local imp
 
 -- local functions
 
+local function createMenuBtn()
+	menuButton = widget.newButton({
+		defaultFile = "img/game_pause.png",
+		overFile = "img/game_pause_pressed.png",
+		onRelease = function(event)
+			storyboard.showOverlay( "scene_game_pause", {isModal = true} )
+		end
+	})
+	menuButton.x = menuButton.width / 2 + 5
+	menuButton.y = menuButton.height / 2 + 5
+end
+
 function pauseGame()
 	isOnPause = true
+	menuButton:removeSelf()
+	menuButton = nil
 
 	audio.pause(songChannel)
 
@@ -70,8 +85,6 @@ function pauseGame()
 end
 
 function resumeGame()
-	isOnPause = false
-
 	if gameSettings.soundEnable then
 		audio.resume(songChannel)
 	end
@@ -88,6 +101,11 @@ function resumeGame()
 	timer.resume(presentTimerId)
 	timer.resume(audioTimerId)
 	timer.resume(maxItemsOnScreenTimerId)
+
+	createMenuBtn()
+	isOnPause = false
+
+	print("resume")
 end
 
 function startHit()
@@ -265,6 +283,7 @@ local function onEveryFrame(event)
 		-- check lives
 		if game.lives <= 0 then
 			Runtime:removeEventListener("enterFrame", onEveryFrame)
+			audio.play(audio.loadSound("sound/game_over.wav"))
 			storyboard.showOverlay( "scene_game_over", {isModal = true} )
 		else
 			-- keep the text visible
@@ -308,16 +327,12 @@ function scene:enterScene( event )
 	end
 	audioLoopSource = audio.getSourceFromChannel(1)
 	audioLoopPitch = 1
+	al.Source(audioLoopSource, al.PITCH, audioLoopPitch)
 	audioTimerId = timer.performWithDelay(DELAY_BETWEEN_AUDIO_LOOP_PITCH_INCREASE, increaseAudioLoopPitch)
 
 	-- start
 	bg = display.newImage( "img/bg.jpg" )
-	menuButton = display.newImage("img/game_pause.png")
-	menuButton.x = menuButton.width / 2 + 5
-	menuButton.y = menuButton.height / 2 + 5
-	menuButton:addEventListener("tap", function ( event )
-	    storyboard.showOverlay( "scene_game_pause", {isModal = true} )
-	end)
+	createMenuBtn()
 
 	delayBetweenPresents = 600
 	delayBetweenBombs = 4000

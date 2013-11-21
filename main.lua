@@ -3,6 +3,20 @@ display.setStatusBar(display.HiddenStatusBar)
 
 require "helper"
 
+display.setStatusBar(display.HiddenStatusBar)
+
+-- global constants
+
+FONT = "Cartoon"
+BTN_IMG = "img/btn.png"
+BTN_IMG_PRESSED = "img/btn_pressed.png"
+BTN_SMALL_IMG = "img/btn_small.png"
+BTN_SMALL_IMG_PRESSED = "img/btn_small_pressed.png"
+BTN_FONT_SIZE = 40
+BTN_LABEL_COLOR = { 44, 57, 130 }
+BTN_SIZE = 60
+BTN_GAP = 10
+
 -- variables
 
 local storyboard = require "storyboard"

@@ -55,24 +55,24 @@ function scene:enterScene( event )
 
 	local startXImage = startX + 25
 	local startXText = startX + 50
-	textObjectif = display.newText(language:getString("help.objectif"),  startXImage, INIT_Y_FIRST_ELEMENT, display.contentWidth - (startXImage*2), 40, native.systemFont, 16)
-	textGitf = display.newText(language:getString("help.gitf"), startXText, textObjectif.y + 10 + HEIGHT_SPACE_BETWEEN_ELEMENT, display.contentWidth - ((startXImage*2)+5), 40, native.systemFont, 16)
-	textLife = display.newText(language:getString("help.life"), startXText, textGitf.y + 10 + HEIGHT_SPACE_BETWEEN_ELEMENT, display.contentWidth - ((startXImage*2)+5), 40, native.systemFont, 16)
-	textBomb = display.newText(language:getString("help.bomb"), startXText, textLife.y + HEIGHT_SPACE_BETWEEN_ELEMENT, display.contentWidth - ((startXImage*2)+5), 40, native.systemFont, 16)
-	textStar = display.newText(language:getString("help.star"), startXText, textBomb.y + HEIGHT_SPACE_BETWEEN_ELEMENT, display.contentWidth - ((startXImage*2)+5), 40, native.systemFont, 16)
-	textImp = display.newText(language:getString("help.imp"), startXText, textStar.y + HEIGHT_SPACE_BETWEEN_ELEMENT, display.contentWidth - ((startXImage*2)+5), 40, native.systemFont, 16)
-	textVacuum = display.newText(language:getString("help.vacuum"), startXText, textImp.y + HEIGHT_SPACE_BETWEEN_ELEMENT, display.contentWidth - ((startXImage*2)+5), 40, native.systemFont, 16)
+	textObjectif = display.newText(language:getString("help.objectif"),  startXImage, INIT_Y_FIRST_ELEMENT, display.contentWidth - (startXImage*2), 50, FONT, 16)
+	textGitf = display.newText(language:getString("help.gitf"), startXText, textObjectif.y + 10 + HEIGHT_SPACE_BETWEEN_ELEMENT, display.contentWidth - ((startXImage*2)+5), 40, FONT, 16)
+	textLife = display.newText(language:getString("help.life"), startXText, textGitf.y + HEIGHT_SPACE_BETWEEN_ELEMENT, display.contentWidth - ((startXImage*2)+5), 40, FONT, 16)
+	textBomb = display.newText(language:getString("help.bomb"), startXText, textLife.y + HEIGHT_SPACE_BETWEEN_ELEMENT, display.contentWidth - ((startXImage*2)+5), 40, FONT, 16)
+	textStar = display.newText(language:getString("help.star"), startXText, textBomb.y + HEIGHT_SPACE_BETWEEN_ELEMENT, display.contentWidth - ((startXImage*2)+5), 40, FONT, 16)
+	textImp = display.newText(language:getString("help.imp"), startXText, textStar.y + HEIGHT_SPACE_BETWEEN_ELEMENT, display.contentWidth - ((startXImage*2)+5), 40, FONT, 16)
+	textVacuum = display.newText(language:getString("help.vacuum"), startXText, textImp.y + HEIGHT_SPACE_BETWEEN_ELEMENT, display.contentWidth - ((startXImage*2)+5), 40, FONT, 16)
 
 
 	imageGitf = display.newImageRect("img/game_present_1.png", 32, 32)
 	imageGitf.x = startXImage
 	imageGitf.y = (imageGitf.height / 2)+ textObjectif.y + 10 + HEIGHT_SPACE_BETWEEN_ELEMENT
 
-	imageLife = display.newImageRect("img/game_life_2.png", 32, 32)
+	imageLife = display.newImageRect("img/game_life.png", 32, 32)
 	imageLife.x = startXImage
 	imageLife.y = (imageLife.height / 3) + textGitf.y + 10 + HEIGHT_SPACE_BETWEEN_ELEMENT
 
-	imageBomb = display.newImageRect("img/game_bomb_2.png", 32, 32)
+	imageBomb = display.newImageRect("img/game_bomb.png", 32, 32)
 	imageBomb.x = startXImage
 	imageBomb.y = (imageBomb.height / 3)+textLife.y + HEIGHT_SPACE_BETWEEN_ELEMENT
 

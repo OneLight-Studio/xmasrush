@@ -3,11 +3,72 @@
 -- variables
 
 local storyboard = require "storyboard"
+local widget = require "widget"
 local scene = storyboard.newScene()
-local menuButton
-local soundButton
-local effectsButton
 local bg
+local resumeBtn
+local quitBtn
+local soundBtn
+local effectsBtn
+local nbBtn = 0
+local btnSmall = {}
+
+-- constants
+
+local BTN_Y_MIN = 100
+
+-- local functions
+
+local function updateBtnPosition()
+	local nbBtnSmall = table.getn(btnSmall)
+	local even = nbBtnSmall % 2 ~= 0
+	for i, b in ipairs(btnSmall) do
+		i = i - 0.5
+		if i < nbBtnSmall / 2 then
+			-- left
+			b.x = display.contentWidth / 2 - (nbBtnSmall / 2 - i) * (BTN_SIZE + BTN_GAP)
+		elseif i > nbBtnSmall / 2 then
+			-- right
+			b.x = display.contentWidth / 2 + (i - nbBtnSmall / 2) * (BTN_SIZE + BTN_GAP)
+		else
+			-- middle
+			if even then
+				b.x = display.contentWidth / 2
+			else
+				b.x = display.contentWidth / 2 - BTN_SIZE - BTN_GAP
+			end
+		end
+	end
+end
+
+local function addButton(title, onTap)
+	local btn = widget.newButton({
+		defaultFile = BTN_IMG,
+		overFile = BTN_IMG_PRESSED,
+		label = title,
+		labelColor = { default = BTN_LABEL_COLOR },
+		labelYOffset = -5,
+		font = FONT,
+		fontSize = BTN_FONT_SIZE,
+		onRelease = onTap
+	})
+	btn.x = display.contentWidth / 2
+	btn.y = BTN_Y_MIN + nbBtn * (BTN_SIZE + BTN_GAP)
+	nbBtn = nbBtn + 1
+	return btn
+end
+
+local function addButtonSmall(position, img, img_pressed, onTap)
+	local btn = widget.newButton({
+		defaultFile = img,
+		overFile = img_pressed,
+		onRelease = onTap
+	})
+	btn.y = BTN_Y_MIN + nbBtn * (BTN_SIZE + BTN_GAP) 
+	btnSmall[position] = btn
+	updateBtnPosition()
+	return btn
+end
 
 -- scene functions
 
@@ -22,53 +83,31 @@ end
 function scene:enterScene( event )
 	bg = display.newRect(0, 0, display.contentWidth, display.contentHeight)
 	bg:setFillColor(0, 0, 0, 100)
-	menuButton = display.newImage("img/game_menu.png")
-	menuButton.x = (display.contentWidth / 2 - menuButton.width * 2)
-	menuButton.y = (display.contentHeight - menuButton.height) / 2
 
-	if gameSettings.soundEnable then
-    	soundButton = display.newImage("img/home_sound_on.png")
-	else
-    	soundButton = display.newImage("img/home_sound_off.png")
-	end
-    soundButton.x = display.contentWidth / 2
-	soundButton.y = (display.contentHeight - soundButton.height) / 2
+	resumeBtn = addButton(language:getString("menu.resume"), function(event) storyboard.hideOverlay() end)
+	quitBtn = addButton(language:getString("menu.quit"), function(event) moveToScene("scene_home") end)
 
-	if gameSettings.soundEffectEnable then
-    	effectsButton = display.newImage("img/home_effects_on.png")
-	else
-    	effectsButton = display.newImage("img/home_effects_off.png")
-	end
-    effectsButton.x = (display.contentWidth / 2 + effectsButton.width * 2)
-	effectsButton.y = (display.contentHeight - effectsButton.height) / 2
-
-	resumeButton = display.newImage("img/game_pause_resume.png")
-    resumeButton.x = display.contentWidth / 2 
-	resumeButton.y = (display.contentHeight + (resumeButton.height * 2)) / 2
-
-	menuButton:addEventListener("tap", function ( event )
-		moveToScene('scene_home')
-	end)
-
-	soundButton:addEventListener("tap",  soundListener)
-	effectsButton:addEventListener("tap",  effectSoundListener)
-
-	resumeButton:addEventListener("tap", function ( event )
-		storyboard.hideOverlay()
-	end)
+	soundBtn = addButtonSmall(1,
+		gameSettings.soundEnable and "img/home_sound_on.png" or "img/home_sound_off.png", 
+		gameSettings.soundEnable and "img/home_sound_on_pressed.png" or "img/home_sound_off_pressed.png", 
+		soundListener)
+	effectsBtn = addButtonSmall(2,
+		gameSettings.soundEffectEnable and "img/home_effects_on.png" or "img/home_effects_off.png", 
+		gameSettings.soundEffectEnable and "img/home_effects_on_pressed.png" or "img/home_effects_off_pressed.png", 
+		effectSoundListener)
 end
 
 function scene:exitScene( event )
 	display.remove(bg)
+	display.remove(resumeBtn)
+	display.remove(quitBtn)
+	display.remove(soundBtn)
+	display.remove(effectsBtn)
 	bg = nil
-	display.remove(menuButton)
-	menuButton = nil
-	display.remove(soundButton)
-	soundButton = nil
-	display.remove(effectsButton)
-	effectsButton = nil
-	display.remove(resumeButton)
-	resumeButton = nil
+	resumeBtn = nil
+	quitBtn = nil
+	soundBtn = nil
+	quitBtn = nil
 end
 
 function scene:destroyScene( event )
@@ -77,44 +116,22 @@ end
 
 
 function soundListener ( event )
-	if gameSettings.soundEnable then
-		gameSettings.soundEnable = false
-		display.remove(soundButton)
-		soundButton = nil
-		soundButton = display.newImage("img/home_sound_off.png")
-		soundButton.x = display.contentWidth / 2
-		soundButton.y = (display.contentHeight - soundButton.height) / 2
-		soundButton:addEventListener( "tap", soundListener )
-	else
-		gameSettings.soundEnable = true
-		display.remove(soundButton)
-		soundButton = nil
-		soundButton = display.newImage("img/home_sound_on.png")
-		soundButton.x = display.contentWidth / 2
-		soundButton.y = (display.contentHeight - soundButton.height) / 2
-		soundButton:addEventListener( "tap", soundListener )
-	end
+	gameSettings.soundEnable = not gameSettings.soundEnable
+	display.remove(soundBtn)
+	soundBtn = addButtonSmall(1,
+		gameSettings.soundEnable and "img/home_sound_on.png" or "img/home_sound_off.png", 
+		gameSettings.soundEnable and "img/home_sound_on_pressed.png" or "img/home_sound_off_pressed.png", 
+		soundListener)
 	loadsave.saveTable(gameSettings, "crazyxmas.json")
 end
 
 function effectSoundListener ( event )
-	if gameSettings.soundEffectEnable then
-		gameSettings.soundEffectEnable = false
-		display.remove(effectsButton)
-		effectsButton = nil
-		effectsButton = display.newImage("img/home_effects_off.png")
-    	effectsButton.x = (display.contentWidth / 2 + effectsButton.width * 2)
-		effectsButton.y = (display.contentHeight - effectsButton.height) / 2
-		effectsButton:addEventListener( "tap", effectSoundListener )
-	else
-		gameSettings.soundEffectEnable = true
-		display.remove(effectsButton)
-		effectsButton = nil
-		effectsButton = display.newImage("img/home_effects_on.png")
-    	effectsButton.x = (display.contentWidth / 2 + effectsButton.width * 2)
-		effectsButton.y = (display.contentHeight - effectsButton.height) / 2
-		effectsButton:addEventListener( "tap", effectSoundListener )
-	end
+	gameSettings.soundEffectEnable = not gameSettings.soundEffectEnable
+	display.remove(effectsBtn)
+	effectsBtn = addButtonSmall(2,
+		gameSettings.soundEffectEnable and "img/home_effects_on.png" or "img/home_effects_off.png", 
+		gameSettings.soundEffectEnable and "img/home_effects_on_pressed.png" or "img/home_effects_off_pressed.png", 
+		effectSoundListener)
 	loadsave.saveTable(gameSettings, "crazyxmas.json")
 end
 

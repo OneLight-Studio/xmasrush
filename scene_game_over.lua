@@ -20,7 +20,7 @@ end
 function scene:enterScene( event )
 	bg = display.newRect(0, 0, display.contentWidth, display.contentHeight)
 	bg:setFillColor(0, 0, 0, 100)
-	gameOverText = display.newText("GAME OVER", 0, 0, native.systemFont, 35)
+	gameOverText = display.newText(language:getString("game.over"), 0, 0, FONT, 60)
 	gameOverText.x = display.contentWidth / 2
 	gameOverText.y = display.contentHeight / 2
 
