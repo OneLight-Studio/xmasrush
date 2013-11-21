@@ -12,7 +12,7 @@ local DELAY_BETWEEN_BOMBS_MIN = 1000
 local DELAY_BETWEEN_BOMBS_MODIFIER = 10
 local DELAY_BETWEEN_LIVES_MIN = 5000
 local DELAY_BETWEEN_LIVES_MODIFIER = 1000
-local DELAY_BETWEEN_BONUS = 10000
+local DELAY_BETWEEN_BONUS = 20000
 local DELAY_BETWEEN_AUDIO_LOOP_PITCH_INCREASE = 5000
 local IMP_DELAY = 10000
 local INIT_MAX_ITEMS_ON_SCREEN = 4
@@ -108,8 +108,6 @@ function resumeGame()
 
 	createMenuBtn()
 	isOnPause = false
-
-	print("resume")
 end
 
 function startHit()
@@ -143,7 +141,7 @@ end
 
 function dropPresentLine()
 	if starDroppingIndex < starDroppingMax then
-		local prensentNumberPerRow = math.floor(display.contentWidth / PRESENT_WIDTH)
+		local prensentNumberPerRow = math.floor(display.contentWidth / PRESENT_WIDTH) / 5
 		
 		for i=0, prensentNumberPerRow, 1 do
 			local present = Item(TYPE_STAR_PRESENT, function() game:increaseScore(1) end, nil)
@@ -188,7 +186,10 @@ local function dropPresent()
 end
 
 local function dropBomb()
-	local bomb = Item(TYPE_BOMB, function() game:decreaseLives(5) end, nil)
+	local bomb = Item(TYPE_BOMB, function()
+		game:decreaseLives(5)
+		paddle:blink(5)
+	end, nil)
 	table.insert(items, bomb)
 	bomb:onEnterScene()
 
@@ -362,6 +363,7 @@ function scene:exitScene( event )
 
 	paddle:onExitScene()
 	game:onExitScene()
+	endImp()
 	clearItems()
 
 	timer.cancel(audioTimerId)

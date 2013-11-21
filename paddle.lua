@@ -82,6 +82,12 @@ function Paddle:move()
 	end
 end
 
+function Paddle:blink(n)
+	timer.performWithDelay(50, function()
+		pad.alpha = pad.alpha < 1 and 1 or 0
+	end, n * 2)
+end
+
 function Paddle:onEnterScene()
 	pad = display.newImageRect(PADDLE_IMG, PADDLE_WIDTH, PADDLE_HEIGHT)
 	pad.x = display.contentCenterX
@@ -91,6 +97,7 @@ function Paddle:onEnterScene()
 end
 
 function Paddle:onExitScene()
+	lastTouchedX = display.contentCenterX
 	display.remove(pad)
 	pad = nil
 	Runtime:removeEventListener("touch", onTouchScreen)

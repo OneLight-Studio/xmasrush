@@ -48,7 +48,6 @@ local function addButton(title, onTap)
 		overFile = BTN_IMG_PRESSED,
 		label = title,
 		labelColor = { default = BTN_LABEL_COLOR },
-		labelYOffset = -5,
 		font = FONT,
 		fontSize = BTN_FONT_SIZE,
 		onRelease = onTap
