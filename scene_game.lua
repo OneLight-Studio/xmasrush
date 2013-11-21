@@ -104,8 +104,6 @@ function resumeGame()
 
 	createMenuBtn()
 	isOnPause = false
-
-	print("resume")
 end
 
 function startHit()
@@ -139,7 +137,7 @@ end
 
 function dropPresentLine()
 	if starDroppingIndex < starDroppingMax then
-		local prensentNumberPerRow = math.floor(display.contentWidth / PRESENT_WIDTH)
+		local prensentNumberPerRow = math.floor(display.contentWidth / PRESENT_WIDTH) / 5
 		
 		for i=0, prensentNumberPerRow, 1 do
 			local present = Item(TYPE_STAR_PRESENT, function() game:increaseScore(1) end, nil)
@@ -361,6 +359,7 @@ function scene:exitScene( event )
 
 	paddle:onExitScene()
 	game:onExitScene()
+	endImp()
 	clearItems()
 
 	timer.cancel(audioTimerId)

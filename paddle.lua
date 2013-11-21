@@ -83,7 +83,6 @@ function Paddle:move()
 end
 
 function Paddle:blink(n)
-	local i = 0
 	timer.performWithDelay(50, function()
 		pad.alpha = pad.alpha < 1 and 1 or 0
 	end, n * 2)
@@ -98,6 +97,7 @@ function Paddle:onEnterScene()
 end
 
 function Paddle:onExitScene()
+	lastTouchedX = display.contentCenterX
 	display.remove(pad)
 	pad = nil
 	Runtime:removeEventListener("touch", onTouchScreen)
