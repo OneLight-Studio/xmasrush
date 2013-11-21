@@ -50,8 +50,19 @@ local imp
 
 -- local functions
 
+local function createMenuBtn()
+	menuButton = display.newImage("img/game_pause.png")
+	menuButton.x = menuButton.width / 2 + 5
+	menuButton.y = menuButton.height / 2 + 5
+	menuButton:addEventListener("tap", function ( event )
+	    storyboard.showOverlay( "scene_game_pause", {isModal = true} )
+	end)
+end
+
 function pauseGame()
 	isOnPause = true
+	menuButton:removeSelf()
+	menuButton = nil
 
 	audio.pause(songChannel)
 
@@ -70,8 +81,6 @@ function pauseGame()
 end
 
 function resumeGame()
-	isOnPause = false
-
 	if gameSettings.soundEnable then
 		audio.resume(songChannel)
 	end
@@ -88,6 +97,11 @@ function resumeGame()
 	timer.resume(presentTimerId)
 	timer.resume(audioTimerId)
 	timer.resume(maxItemsOnScreenTimerId)
+
+	createMenuBtn()
+	isOnPause = false
+
+	print("resume")
 end
 
 function startHit()
@@ -295,12 +309,7 @@ function scene:enterScene( event )
 
 	-- start
 	bg = display.newImage( "img/bg.jpg" )
-	menuButton = display.newImage("img/game_pause.png")
-	menuButton.x = menuButton.width / 2 + 5
-	menuButton.y = menuButton.height / 2 + 5
-	menuButton:addEventListener("tap", function ( event )
-	    storyboard.showOverlay( "scene_game_pause", {isModal = true} )
-	end)
+	createMenuBtn()
 
 	delayBetweenPresents = 600
 	delayBetweenBombs = 4000

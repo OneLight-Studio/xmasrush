@@ -10,7 +10,7 @@ settings = {
 			UIStatusBarHidden=true,
 			UIAppFonts=
 			{
-				"font/Cartoon.ttf"
+				"Cartoon.ttf"
 			}
 		},
 	},

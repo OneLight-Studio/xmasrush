@@ -7,9 +7,9 @@ require 'class'
 local SCORE_WIDTH = 60
 local LIVES_WIDTH = 150
 local FONT_SIZE = 30
-local MARGIN_TOP = 5
+local TXT_HEIGHT = 40
 local TXT_SCALE_RATIO_POSITIVE = 2
-local TXT_SCALE_RATIO_NEGATIVE = 5
+local TXT_SCALE_RATIO_NEGATIVE = 3
 local TXT_SCALE_TIME_POSITIVE = 100
 local TXT_SCALE_TIME_NEGATIVE = 200
 
@@ -32,11 +32,11 @@ function Game:onEnterScene()
 
 	self.livesImage = display.newImage( "img/game_menu_life.png" )
 	self.livesImage.x = display.contentWidth - self.livesImage.width / 2 - LIVES_WIDTH
-	self.livesImage.y = MARGIN_TOP + self.livesImage.height / 2
+	self.livesImage.y = TXT_HEIGHT / 2
 
 	self.scoreImage = display.newImage( "img/game_menu_score.png" )
 	self.scoreImage.x = display.contentWidth - self.scoreImage.width / 2  - SCORE_WIDTH
-	self.scoreImage.y = MARGIN_TOP + self.scoreImage.height / 2
+	self.scoreImage.y = TXT_HEIGHT / 2
 
 	self:updateScore(true)
 	self:updateLives(true)
@@ -60,7 +60,8 @@ function Game:updateScore(positive)
 	if self.scoreLabel ~= nil then
 		display.remove(self.scoreLabel)
 	end
-	self.scoreLabel = display.newText(self.score, display.contentWidth - SCORE_WIDTH, MARGIN_TOP - FONT_SIZE / 2, FONT, FONT_SIZE)
+	self.scoreLabel = display.newText(self.score, display.contentWidth - SCORE_WIDTH, 0, FONT, FONT_SIZE)
+	self.scoreLabel.y = TXT_HEIGHT / 2
 	-- animate the label
 	local scale = TXT_SCALE_RATIO_POSITIVE
 	local time = TXT_SCALE_TIME_POSITIVE
@@ -84,7 +85,8 @@ function Game:updateLives(positive)
 	if self.livesLabel ~= nil then
 		display.remove(self.livesLabel)
 	end
-	self.livesLabel = display.newText(self.lives, display.contentWidth - LIVES_WIDTH, MARGIN_TOP - FONT_SIZE / 2, FONT, FONT_SIZE)
+	self.livesLabel = display.newText(self.lives, display.contentWidth - LIVES_WIDTH, 0, FONT, FONT_SIZE)
+	self.livesLabel.y = TXT_HEIGHT / 2
 	-- animate the label
 	local scale = TXT_SCALE_RATIO_POSITIVE
 	local time = TXT_SCALE_TIME_POSITIVE
