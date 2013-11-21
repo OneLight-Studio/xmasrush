@@ -22,14 +22,14 @@ PRESENT_MIN_SPEED = 2
 PRESENT_MAX_SPEED = 4
 PRESENT_SOUND = audio.loadSound("sound/blop.mp3")
 
-BOMB_IMG = "img/game_bomb_2.png"
+BOMB_IMG = "img/game_bomb.png"
 BOMB_WIDTH = 32
 BOMB_HEIGHT = 32
 BOMB_MIN_SPEED = 3
 BOMB_MAX_SPEED = 3
 BOMB_SOUND = audio.loadSound("sound/bomb.wav")
 
-LIFE_BONUS_IMG = "img/game_life_2.png"
+LIFE_BONUS_IMG = "img/game_life.png"
 LIFE_BONUS_WIDTH = 32
 LIFE_BONUS_HEIGHT = 32
 LIFE_BONUS_MIN_SPEED = 6
@@ -55,6 +55,13 @@ IMP_BONUS_HEIGHT = 64
 IMP_BONUS_IMG = "img/game_imp_bonus.png"
 IMP_BONUS_MIN_SPEED = 7
 IMP_BONUS_MAX_SPEED = 7
+
+ASPIRATOR_BONUS_WIDTH = 64
+ASPIRATOR_BONUS_HEIGHT = 66
+ASPIRATOR_BONUS_IMG = "img/game_aspirator_bonus.png"
+ASPIRATOR_BONUS_MIN_SPEED = 7
+ASPIRATOR_BONUS_MAX_SPEED = 7
+ASPIRATOR_ASPIRATION_DELAY = 150
 
 -- variables
 
@@ -108,12 +115,16 @@ Item = class(function(this, type, hit, fall)
 		this.width = IMP_BONUS_WIDTH
 		this.height = IMP_BONUS_HEIGHT
 		this.speed = math.random(IMP_BONUS_MIN_SPEED, IMP_BONUS_MAX_SPEED)
-	elseif type == TYPE_ASPIRATOR then
-
+	elseif type == TYPE_ASPIRATOR_BONUS then
+		this.img = ASPIRATOR_BONUS_IMG
+		this.width = ASPIRATOR_BONUS_WIDTH
+		this.height = ASPIRATOR_BONUS_HEIGHT
+		this.speed = math.random(ASPIRATOR_BONUS_MIN_SPEED, ASPIRATOR_BONUS_MAX_SPEED)
 	end
 
 	this.hit = hit
 	this.fall = fall
+	this.aspirated = nil
 end)
 
 function Item:onEnterScene(x, y)
@@ -159,6 +170,22 @@ function Item:startTranslate()
 	if self.element ~= nil then
 		self.element:translate(0, self.speed)
 	end
+end
+
+function Item:aspiratedTo(toX, toY)
+	if self.element ~= nil then
+		self.aspirated = system.getTimer()
+		transition.to( self.element, {time=ASPIRATOR_ASPIRATION_DELAY, x=toX, y=toY})
+	end
+end
+
+function Item:aspiratedDone()
+	if self.aspirated ~= nil then
+		local currTime = system.getTimer()
+		return (currTime - self.aspirated) >= ASPIRATOR_ASPIRATION_DELAY
+	end
+
+	return false
 end
 
 function Item:remove()

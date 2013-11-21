@@ -4,12 +4,17 @@ require 'class'
 
 -- constants
 
-local PADDLE_WIDTH = 128
-local PADDLE_HEIGHT = 64
-local PADDLE_IMG = "img/game_paddle.png"
-local PADDLE_INDEX_MIN = 0
-local PADDLE_INDEX_MAX = 5
-local PADDLE_SPEED = 60
+PADDLE_WIDTH = 128
+PADDLE_HEIGHT = 64
+PADDLE_IMG = "img/game_paddle.png"
+PADDLE_INDEX_MIN = 0
+PADDLE_INDEX_MAX = 5
+PADDLE_SPEED = 60
+PADDLE_MODE_NORMAL = 'mode_normal'
+PADDLE_MODE_ASPIRATOR = 'mode_aspirator'
+DELAY_PADDLE_ASPIRATOR_MODE = 10000
+PADDLE_ASPIRATOR_MODE_IMG = "img/game_paddle_with_aspirator.png"
+PADDLE_ASPIRATOR_PADDING = 50
 
 -- variables
 
@@ -53,13 +58,14 @@ end
 -- core
 
 Paddle = class(function(this)
+	this.mode = PADDLE_MODE_NORMAL
 end)
 
 function Paddle:move()
 	local dist
 	local direction
 
-	if lastTouchedX ~= nil then
+	if lastTouchedX ~= nil and pad ~= nil then
 		if pad.x > lastTouchedX then
 			dist = pad.x - lastTouchedX
 			direction = -1
@@ -104,4 +110,48 @@ function Paddle:contentBounds()
 	end
 
 	return nil
+end
+
+function Paddle:aspiratorContentBounds()
+	if pad ~= nil then
+		local bounds = self:contentBounds()
+		bounds.xMin = bounds.xMin - PADDLE_ASPIRATOR_PADDING
+		bounds.xMax = bounds.xMax + PADDLE_ASPIRATOR_PADDING
+		bounds.yMin = bounds.yMin - PADDLE_ASPIRATOR_PADDING
+		bounds.yMax = bounds.yMax + PADDLE_ASPIRATOR_PADDING
+
+		--currentShowBounds = showBounds(bounds, currentShowBounds)
+
+		return bounds
+	end
+
+	return nil
+end
+
+function Paddle:toAspiratorMode(activate)
+	if pad ~= nil then
+		if activate == true then
+			local oldPad = pad
+			pad = display.newImageRect(PADDLE_ASPIRATOR_MODE_IMG, PADDLE_WIDTH, PADDLE_HEIGHT)
+			pad.x = oldPad.x
+			pad.y = oldPad.y
+			
+			display.remove(oldPad)
+			oldPad = nil
+
+			self.mode = PADDLE_MODE_ASPIRATOR
+
+			timer.performWithDelay(DELAY_PADDLE_ASPIRATOR_MODE, function () self:toAspiratorMode(false) end)
+		else
+			local oldPad = pad
+			pad = display.newImageRect(PADDLE_IMG, PADDLE_WIDTH, PADDLE_HEIGHT)
+			pad.x = oldPad.x
+			pad.y = oldPad.y
+			
+			self.mode = PADDLE_MODE_NORMAL
+
+			display.remove(oldPad)
+			oldPad = nil
+		end
+	end
 end

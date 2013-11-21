@@ -190,7 +190,7 @@ local function dropBomb()
 end
 
 local function dropBonus()
-	local bonusType =  math.random(1,3)
+	local bonusType = math.random(1,4)
 	local bonus
 
 	if bonusType == 1 then
@@ -200,7 +200,7 @@ local function dropBonus()
 	elseif bonusType == 3 then
 		bonus = Item(TYPE_LIFE_BONUS, function() game:increaseLives(1) end, nil, nil)
 	elseif bonusType == 4 then
-		bonus = Item(ASPIRATOR_IMG, ASPIRATOR_SIZE, ASPIRATOR_SIZE, ASPIRATOR_MIN_SPEED, ASPIRATOR_MAX_SPEED, function() aspiratorHit() end, nil, nil)
+		bonus = Item(TYPE_ASPIRATOR_BONUS, function() paddle:toAspiratorMode(true) end, nil, nil)
 	end
 
 	table.insert(items, bonus)
@@ -224,33 +224,51 @@ local function onEveryFrame(event)
 
 		local impBounds
 		local itemBounds
+		local paddleAspiratorBounds
 		local paddleBounds = paddle:contentBounds()
+
+		if paddle.mode == PADDLE_MODE_ASPIRATOR then
+			paddleAspiratorBounds = paddle:aspiratorContentBounds()
+		end
+
+		if imp ~= nil then
+			impBounds = imp:contentBounds()
+		end
 
 		-- move each item
 		for i, item in pairs(items) do
 			item:startTranslate()
 
 			itemBounds = item:contentBounds()
-			paddleBounds = paddle:contentBounds()
-			if imp ~= nil then
-				impBounds = imp:contentBounds()
-			end
 
 			if itemBounds ~= nil and paddleBounds ~= nil then
-				-- remove the item if it is in the box
-				if isBoundsInBounds(itemBounds, paddleBounds) then
-					table.remove(items, i)
-					item:remove()
-					item:onHit(game)
+				-- remove the item if it is in the paddle
+				if paddleAspiratorBounds ~= nil and item.type == TYPE_PRESENT and item.aspirated == nil then
+					if isBoundsInBounds(itemBounds, paddleAspiratorBounds) then
+						local toX = paddleBounds.xMin + ((paddleBounds.xMax - paddleBounds.xMin) / 2)
+						local toY = paddleBounds.yMin + 10
+
+						item:aspiratedTo(toX, toY)
+					end
+				else
+					if isBoundsInBounds(itemBounds, paddleBounds) or item:aspiratedDone() then
+						table.remove(items, i)
+						item:remove()
+						item:onHit(game)
+					end
+				end
+
 				-- remove only present items if it is in the imp
-				elseif imp ~= nil and impBounds ~= nil then
+				if imp ~= nil and impBounds ~= nil then
 					if isBoundsInBounds(itemBounds, impBounds) and item.type == TYPE_PRESENT then
 						table.remove(items, i)
 						item:remove()
 						item:onHit(game)
 					end
+				end
+				
 				-- remove the item if it is out of the screen
-				elseif itemBounds.yMin > display.contentHeight then
+				if itemBounds.yMin > display.contentHeight then
 					table.remove(items, i)
 					item:remove()
 					item:onFall(game)
