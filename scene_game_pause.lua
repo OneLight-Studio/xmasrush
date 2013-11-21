@@ -47,6 +47,7 @@ local function addButton(title, onTap)
 		overFile = BTN_IMG_PRESSED,
 		label = title,
 		labelColor = { default = BTN_LABEL_COLOR },
+		labelYOffset = -5,
 		font = FONT,
 		fontSize = BTN_FONT_SIZE,
 		onRelease = onTap
@@ -63,7 +64,6 @@ local function addButtonSmall(position, img, img_pressed, onTap)
 		overFile = img_pressed,
 		onRelease = onTap
 	})
-	print("" .. btn.height)
 	btn.y = BTN_Y_MIN + nbBtn * (BTN_SIZE + BTN_GAP) 
 	btnSmall[position] = btn
 	updateBtnPosition()

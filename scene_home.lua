@@ -12,6 +12,8 @@ local btnSmall = {}
 local soundBtn
 local effectsBtn
 local this
+local audioLoop
+local audioChannel
 
 -- constants
 
@@ -46,6 +48,7 @@ local function addButton(title, onTap)
 		overFile = BTN_IMG_PRESSED,
 		label = title,
 		labelColor = { default = BTN_LABEL_COLOR },
+		labelYOffset = -5,
 		font = FONT,
 		fontSize = BTN_FONT_SIZE,
 		onRelease = onTap
@@ -68,6 +71,22 @@ local function addButtonSmall(position, img, img_pressed, onTap)
 	return btn
 end
 
+local function setupSoundBtn()
+	soundBtn = addButtonSmall(3,
+		gameSettings.soundEnable and "img/home_sound_on.png" or "img/home_sound_off.png", 
+		gameSettings.soundEnable and "img/home_sound_on_pressed.png" or "img/home_sound_off_pressed.png", 
+		this.soundListener)
+	this.view:insert(soundBtn)
+end
+
+local function setupEffectsBtn()
+	effectsBtn = addButtonSmall(4,
+		gameSettings.soundEffectEnable and "img/home_effects_on.png" or "img/home_effects_off.png", 
+		gameSettings.soundEffectEnable and "img/home_effects_on_pressed.png" or "img/home_effects_off_pressed.png", 
+		this.effectSoundListener)
+	this.view:insert(effectsBtn)
+end
+
 -- scene functions
 
 function scene:createScene( event )
@@ -78,37 +97,26 @@ function scene:createScene( event )
 	self.view:insert(addButton("High Scores", function(event) moveToScene("scene_highscores") end))
 	self.view:insert(addButtonSmall(1, "img/home_help.png", "img/home_help_pressed.png", function(event) moveToScene("scene_help") end))
 	self.view:insert(addButtonSmall(2, "img/home_credits.png", "img/home_credits_pressed.png", function(event) moveToScene("scene_credits") end))
-	soundBtn = addButtonSmall(3,
-		gameSettings.soundEnable and "img/home_sound_on.png" or "img/home_sound_off.png", 
-		gameSettings.soundEnable and "img/home_sound_on_pressed.png" or "img/home_sound_off_pressed.png", 
-		self.soundListener)
-	effectsBtn = addButtonSmall(4,
-		gameSettings.soundEffectEnable and "img/home_effects_on.png" or "img/home_effects_off.png", 
-		gameSettings.soundEffectEnable and "img/home_effects_on_pressed.png" or "img/home_effects_off_pressed.png", 
-		self.effectSoundListener)
-	self.view:insert(soundBtn)
-	self.view:insert(effectsBtn)
+	setupSoundBtn()
+	setupEffectsBtn()
 end
 
 function scene:soundListener ( event )
 	gameSettings.soundEnable = not gameSettings.soundEnable
 	display.remove(soundBtn)
-	soundBtn = addButtonSmall(3,
-		gameSettings.soundEnable and "img/home_sound_on.png" or "img/home_sound_off.png", 
-		gameSettings.soundEnable and "img/home_sound_on_pressed.png" or "img/home_sound_off_pressed.png", 
-		this.soundListener)
-	this.view:insert(soundBtn)
+	setupSoundBtn()
 	loadsave.saveTable(gameSettings, "crazyxmas.json")
+	if gameSettings.soundEnable then
+		audio.resume(audioChannel)
+	else
+		audio.pause(audioChannel)
+	end
 end
 
 function scene:effectSoundListener ( event )
 	gameSettings.soundEffectEnable = not gameSettings.soundEffectEnable
 	display.remove(effectsBtn)
-	effectsBtn = addButtonSmall(4,
-		gameSettings.soundEffectEnable and "img/home_effects_on.png" or "img/home_effects_off.png", 
-		gameSettings.soundEffectEnable and "img/home_effects_on_pressed.png" or "img/home_effects_off_pressed.png", 
-		this.effectSoundListener)
-	this.view:insert(effectsBtn)
+	setupEffectsBtn()
 	loadsave.saveTable(gameSettings, "crazyxmas.json")
 end
 
@@ -117,11 +125,22 @@ function scene:willEnterScene( event )
 end
 
 function scene:enterScene( event )
-	-- Nothing
+	display.remove(soundBtn)
+	display.remove(effectsBtn)
+	setupSoundBtn()
+	setupEffectsBtn()
+
+	audio.setVolume(0.3)
+	audioLoop = audio.loadSound("sound/menu.wav")
+	audioChannel = audio.play(audioLoop, { loops = -1 })
+	if not gameSettings.soundEnable then
+		audio.pause(audioChannel)
+	end
 end
 
 function scene:exitScene( event )
-	-- Nothing
+	audio.stop()
+	audio.setVolume(1.0)
 end
 
 function scene:destroyScene( event )

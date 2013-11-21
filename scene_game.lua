@@ -22,6 +22,7 @@ local LIVES_START = 10
 -- variables
 
 local storyboard = require "storyboard"
+local widget = require "widget"
 local scene = storyboard.newScene()
 local bg
 local menuButton
@@ -51,12 +52,15 @@ local imp
 -- local functions
 
 local function createMenuBtn()
-	menuButton = display.newImage("img/game_pause.png")
+	menuButton = widget.newButton({
+		defaultFile = "img/game_pause.png",
+		overFile = "img/game_pause_pressed.png",
+		onRelease = function(event)
+			storyboard.showOverlay( "scene_game_pause", {isModal = true} )
+		end
+	})
 	menuButton.x = menuButton.width / 2 + 5
 	menuButton.y = menuButton.height / 2 + 5
-	menuButton:addEventListener("tap", function ( event )
-	    storyboard.showOverlay( "scene_game_pause", {isModal = true} )
-	end)
 end
 
 function pauseGame()
