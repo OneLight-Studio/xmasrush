@@ -11,6 +11,8 @@ local storyboard = require "storyboard"
 
 loadsave = require("loadsave")
 gameSettings = loadsave.loadTable("crazyxmas.json")
+language = require("rosetta").new()
+
 
 -- functions
 
@@ -24,6 +26,8 @@ end
 
 -- core
 
+language:initiate()
+language:setCurrentLanguage(system.getPreference( "locale", "language" ))
 
 if( gameSettings == nil ) then
     -- There are no settings. This is first time the user launch your game
@@ -35,6 +39,5 @@ if( gameSettings == nil ) then
 
     loadsave.saveTable(gameSettings, "crazyxmas.json")
 end
-
 
 moveToSceneFade("scene_splash")
