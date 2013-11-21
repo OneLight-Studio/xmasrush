@@ -184,7 +184,10 @@ local function dropPresent()
 end
 
 local function dropBomb()
-	local bomb = Item(TYPE_BOMB, function() game:decreaseLives(5) end, nil)
+	local bomb = Item(TYPE_BOMB, function()
+		game:decreaseLives(5)
+		paddle:blink(5)
+	end, nil)
 	table.insert(items, bomb)
 	bomb:onEnterScene()
 
