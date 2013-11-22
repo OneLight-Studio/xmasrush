@@ -31,7 +31,7 @@ function scene:createScene( event )
 end
 
 function scene:willEnterScene( event )
-	
+   -- Nothing
 end
 
 function scene:enterScene( event )
@@ -55,39 +55,50 @@ function scene:enterScene( event )
 
 	local startXImage = startX + 25
 	local startXText = startX + 50
+	
 	textObjectif = display.newText(language:getString("help.objectif"),  startXImage, INIT_Y_FIRST_ELEMENT, display.contentWidth - (startXImage*2), 50, FONT, 16)
+	
 	textGitf = display.newText(language:getString("help.gitf"), startXText, textObjectif.y + 10 + HEIGHT_SPACE_BETWEEN_ELEMENT, display.contentWidth - ((startXImage*2)+5), 40, FONT, 16)
-	textLife = display.newText(language:getString("help.life"), startXText, textGitf.y + HEIGHT_SPACE_BETWEEN_ELEMENT, display.contentWidth - ((startXImage*2)+5), 40, FONT, 16)
-	textBomb = display.newText(language:getString("help.bomb"), startXText, textLife.y + HEIGHT_SPACE_BETWEEN_ELEMENT, display.contentWidth - ((startXImage*2)+5), 40, FONT, 16)
-	textStar = display.newText(language:getString("help.star"), startXText, textBomb.y + HEIGHT_SPACE_BETWEEN_ELEMENT, display.contentWidth - ((startXImage*2)+5), 40, FONT, 16)
-	textImp = display.newText(language:getString("help.imp"), startXText, textStar.y + HEIGHT_SPACE_BETWEEN_ELEMENT, display.contentWidth - ((startXImage*2)+5), 40, FONT, 16)
-	textVacuum = display.newText(language:getString("help.vacuum"), startXText, textImp.y + HEIGHT_SPACE_BETWEEN_ELEMENT, display.contentWidth - ((startXImage*2)+5), 40, FONT, 16)
+	textGitf.y = textObjectif.y + textObjectif.contentHeight / 2 + HEIGHT_SPACE_BETWEEN_ELEMENT + 10
 
+	textLife = display.newText(language:getString("help.life"), startXText, textGitf.y + HEIGHT_SPACE_BETWEEN_ELEMENT, display.contentWidth - ((startXImage*2)+5), 40, FONT, 16)
+	textLife.y = textGitf.y + textGitf.contentHeight / 2 + HEIGHT_SPACE_BETWEEN_ELEMENT
+
+	textBomb = display.newText(language:getString("help.bomb"), startXText, textLife.y + HEIGHT_SPACE_BETWEEN_ELEMENT, display.contentWidth - ((startXImage*2)+5), 40, FONT, 16)
+	textBomb.y = textLife.y + textLife.contentHeight / 2 + HEIGHT_SPACE_BETWEEN_ELEMENT
+
+	textStar = display.newText(language:getString("help.star"), startXText, textBomb.y + HEIGHT_SPACE_BETWEEN_ELEMENT, display.contentWidth - ((startXImage*2)+5), 40, FONT, 16)
+	textStar.y = textBomb.y + textBomb.contentHeight / 2 + HEIGHT_SPACE_BETWEEN_ELEMENT
+
+	textImp = display.newText(language:getString("help.imp"), startXText, textStar.y + HEIGHT_SPACE_BETWEEN_ELEMENT, display.contentWidth - ((startXImage*2)+5), 40, FONT, 16)
+	textImp.y = textStar.y + textStar.contentHeight / 2 + HEIGHT_SPACE_BETWEEN_ELEMENT
+
+	textVacuum = display.newText(language:getString("help.vacuum"), startXText, textImp.y + HEIGHT_SPACE_BETWEEN_ELEMENT, display.contentWidth - ((startXImage*2)+5), 40, FONT, 16)
+	textVacuum.y = textImp.y + textImp.contentHeight / 2 + HEIGHT_SPACE_BETWEEN_ELEMENT
 
 	imageGitf = display.newImageRect("img/game_present_1.png", 32, 32)
 	imageGitf.x = startXImage
-	imageGitf.y = (imageGitf.height / 2)+ textObjectif.y + 10 + HEIGHT_SPACE_BETWEEN_ELEMENT
+	imageGitf.y = textObjectif.y + textObjectif.contentHeight / 2 + HEIGHT_SPACE_BETWEEN_ELEMENT + 10 - (imageGitf.height / 3)
 
 	imageLife = display.newImageRect("img/game_life.png", 32, 32)
 	imageLife.x = startXImage
-	imageLife.y = (imageLife.height / 3) + textGitf.y + 10 + HEIGHT_SPACE_BETWEEN_ELEMENT
+	imageLife.y = textGitf.y + textGitf.contentHeight / 2 + HEIGHT_SPACE_BETWEEN_ELEMENT - (imageLife.height / 4)
 
 	imageBomb = display.newImageRect("img/game_bomb.png", 32, 32)
 	imageBomb.x = startXImage
-	imageBomb.y = (imageBomb.height / 3)+textLife.y + HEIGHT_SPACE_BETWEEN_ELEMENT
+	imageBomb.y = textLife.y + textLife.contentHeight / 2 + HEIGHT_SPACE_BETWEEN_ELEMENT - (imageBomb.height / 3)
 
 	imageStar = display.newImageRect("img/game_star.png", 32, 32)
 	imageStar.x = startXImage
-	imageStar.y = (imageStar.height / 3)+textBomb.y + HEIGHT_SPACE_BETWEEN_ELEMENT
+	imageStar.y = textBomb.y + textBomb.contentHeight / 2 + HEIGHT_SPACE_BETWEEN_ELEMENT - (imageStar.height / 3)
 
 	imageImp = display.newImageRect("img/game_imp_bonus.png", 32, 32)
 	imageImp.x = startXImage
-	imageImp.y = (imageImp.height / 3)+textStar.y + HEIGHT_SPACE_BETWEEN_ELEMENT
+	imageImp.y = textStar.y + textStar.contentHeight / 2 + HEIGHT_SPACE_BETWEEN_ELEMENT - (imageImp.height / 3)
 
-	imageVacuum = display.newImageRect("img/game_imp_bonus.png", 32, 32)
+	imageVacuum = display.newImageRect("img/game_aspirator_bonus.png", 32, 32)
 	imageVacuum.x = startXImage
-	imageVacuum.y = (imageVacuum.height / 3)+textImp.y + HEIGHT_SPACE_BETWEEN_ELEMENT
-
+	imageVacuum.y = textImp.y + textImp.contentHeight / 2 + HEIGHT_SPACE_BETWEEN_ELEMENT - (imageVacuum.height / 3)
 
 	group:insert(bg)
 	group:insert(rect)
