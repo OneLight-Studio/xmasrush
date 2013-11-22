@@ -38,6 +38,21 @@ function moveToSceneFade(name)
 	storyboard.gotoScene(name,"fade", 1000)
 end
 
+	-- Android specific
+function onKeyEvent(event)
+	local keyName = event.keyName
+
+   	if "back" == keyName then
+		local storyboard = require 'storyboard'
+		if storyboard.getCurrentSceneName() == "scene_game" then
+			showPause()
+			return true
+		end
+	end
+
+	return false
+end
+
 -- core
 
 language:initiate()
@@ -53,5 +68,7 @@ if( gameSettings == nil ) then
 
     loadsave.saveTable(gameSettings, "crazyxmas.json")
 end
+
+Runtime:addEventListener( "key", onKeyEvent )
 
 moveToSceneFade("scene_splash")
