@@ -86,6 +86,14 @@ local function setupEffectsBtn()
 	this.view:insert(effectsBtn)
 end
 
+local function playAudioLoop()
+	audio.setVolume(0.3)
+	audioChannel = audio.play(audioLoop, { loops = -1 })
+	if not gameSettings.soundEnable then
+		audio.pause(audioChannel)
+	end
+end
+
 -- scene functions
 
 function scene:createScene( event )
@@ -98,13 +106,16 @@ function scene:createScene( event )
 	self.view:insert(addButtonSmall(2, "img/home_credits.png", "img/home_credits_pressed.png", function(event) moveToScene("scene_credits") end))
 	setupSoundBtn()
 	setupEffectsBtn()
+
+	audioLoop = audio.loadSound("sound/menu.wav")
+	playAudioLoop()
 end
 
 function scene:soundListener ( event )
 	gameSettings.soundEnable = not gameSettings.soundEnable
 	display.remove(soundBtn)
 	setupSoundBtn()
-	loadsave.saveTable(gameSettings, "crazyxmas.json")
+	loadsave.saveTable(gameSettings, GAME_SETTINGS)
 	if gameSettings.soundEnable then
 		audio.resume(audioChannel)
 	else
@@ -116,7 +127,7 @@ function scene:effectSoundListener ( event )
 	gameSettings.soundEffectEnable = not gameSettings.soundEffectEnable
 	display.remove(effectsBtn)
 	setupEffectsBtn()
-	loadsave.saveTable(gameSettings, "crazyxmas.json")
+	loadsave.saveTable(gameSettings, GAME_SETTINGS)
 end
 
 function scene:willEnterScene( event )
@@ -129,17 +140,13 @@ function scene:enterScene( event )
 	setupSoundBtn()
 	setupEffectsBtn()
 
-	audio.setVolume(0.3)
-	audioLoop = audio.loadSound("sound/menu.wav")
-	audioChannel = audio.play(audioLoop, { loops = -1 })
-	if not gameSettings.soundEnable then
-		audio.pause(audioChannel)
+	if not audio.isChannelPlaying(audioChannel) then
+		playAudioLoop()
 	end
 end
 
 function scene:exitScene( event )
-	audio.stop()
-	audio.setVolume(1.0)
+	-- Nothing
 end
 
 function scene:destroyScene( event )

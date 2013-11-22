@@ -1,6 +1,7 @@
 {
 	"game.name":"Xmas Rush",
 	"game.over":"Game Over",
+	"game.over.continue":"Tap to continue",
 	"menu.play":"New Game",
 	"menu.scores":"High Scores",
 	"menu.resume":"Resume",
@@ -11,6 +12,9 @@
 	"help.bomb":"-5 lives",
 	"help.star":"Triggers a rain of presents",
 	"help.imp":"An elf helps you to catch the presents",
-	"help.vacuum":"Your sleigh attracts the nearest presents"
+	"help.vacuum":"Your sleigh attracts the nearest presents",
+	"credits.copyright":"OneLight Studio is a trademark of Prometil.",
+	"credits.website":"www.onelight-studio.com",
+	"pts":" pts",
+	"highscore":"New Highscore!"
 }
-

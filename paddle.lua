@@ -82,10 +82,8 @@ function Paddle:move()
 	end
 end
 
-function Paddle:blink(n)
-	timer.performWithDelay(50, function()
-		pad.alpha = pad.alpha < 1 and 1 or 0
-	end, n * 2)
+function Paddle:elem()
+	return pad
 end
 
 function Paddle:onEnterScene()
@@ -109,9 +107,7 @@ function Paddle:contentBounds()
 		bounds.xMin = bounds.xMin + 5
 		bounds.xMax = bounds.xMax - 25
 		bounds.yMin = bounds.yMin + 10
-		bounds.yMax = bounds.yMax - 7
-
-		--currentShowBounds = showBounds(bounds, currentShowBounds)
+		bounds.yMax = bounds.yMax - 20
 
 		return bounds
 	end
@@ -148,6 +144,7 @@ function Paddle:toAspiratorMode(activate)
 
 			self.mode = PADDLE_MODE_ASPIRATOR
 
+			timer.performWithDelay(DELAY_PADDLE_ASPIRATOR_MODE - 2000, function () blink(pad, BLINK_SPEED_NORMAL) end)
 			timer.performWithDelay(DELAY_PADDLE_ASPIRATOR_MODE, function () self:toAspiratorMode(false) end)
 		else
 			local oldPad = pad

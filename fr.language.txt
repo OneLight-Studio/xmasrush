@@ -1,6 +1,7 @@
 {
 	"game.name":"Xmas Rush",
 	"game.over":"Game Over",
+	"game.over.continue":"Touchez l'écran pour continuer",
 	"menu.play":"Nouveau Jeu",
 	"menu.scores":"Scores",
 	"menu.resume":"Reprendre",
@@ -11,5 +12,9 @@
 	"help.bomb":"-5 vies",
 	"help.star":"Déclenche une pluie de cadeaux",
 	"help.imp":"Un lutin t'aide à attraper les cadeaux",
-	"help.vacuum":"Ton traineau aspire les cadeaux les plus proches"
+	"help.vacuum":"Ton traineau aspire les cadeaux les plus proches",
+	"credits.copyright":"OneLight Studio est une marque déposée de la société Prometil.",
+	"credits.website":"www.onelight-studio.com",
+	"pts":" pts",
+	"highscore":"Nouveau Record !"
 }

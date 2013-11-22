@@ -16,6 +16,8 @@ BTN_FONT_SIZE = 40
 BTN_LABEL_COLOR = { 44, 57, 130 }
 BTN_SIZE = 60
 BTN_GAP = 10
+GAME_SETTINGS = "xmasrush.json"
+MAX_HIGHSCORES = 10
 
 -- variables
 
@@ -24,7 +26,7 @@ local storyboard = require "storyboard"
 -- global variables
 
 loadsave = require("loadsave")
-gameSettings = loadsave.loadTable("crazyxmas.json")
+gameSettings = loadsave.loadTable(GAME_SETTINGS)
 language = require("rosetta").new()
 
 
@@ -36,6 +38,21 @@ end
 
 function moveToSceneFade(name)
 	storyboard.gotoScene(name,"fade", 1000)
+end
+
+	-- Android specific
+function onKeyEvent(event)
+	local keyName = event.keyName
+
+   	if "back" == keyName then
+		local storyboard = require 'storyboard'
+		if storyboard.getCurrentSceneName() == "scene_game" then
+			showPause()
+			return true
+		end
+	end
+
+	return false
 end
 
 -- core
@@ -53,5 +70,7 @@ if( gameSettings == nil ) then
 
     loadsave.saveTable(gameSettings, "crazyxmas.json")
 end
+
+Runtime:addEventListener( "key", onKeyEvent )
 
 moveToSceneFade("scene_splash")
