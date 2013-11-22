@@ -329,8 +329,6 @@ end
 function scene:createScene( event )
     paddle = Paddle()
 	game = Game(0,LIVES_START)
-	audio.stop()
-	audio.setVolume(1.0)
 end
 
 function scene:willEnterScene( event )
@@ -340,6 +338,9 @@ end
 function scene:enterScene( event )
 	-- init
 	math.randomseed(os.time())
+
+	audio.stop()
+	audio.setVolume(1.0)
 
 	-- listeners
 	Runtime:addEventListener("enterFrame", onEveryFrame)
