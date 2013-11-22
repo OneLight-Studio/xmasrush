@@ -284,7 +284,6 @@ local function onEveryFrame(event)
 		-- check lives
 		if game.lives <= 0 then
 			Runtime:removeEventListener("enterFrame", onEveryFrame)
-			audio.play(audio.loadSound("sound/game_over.wav"))
 			storyboard.showOverlay( "scene_game_over", {isModal = true} )
 		else
 			-- keep the text visible
@@ -306,6 +305,8 @@ end
 function scene:createScene( event )
     paddle = Paddle()
 	game = Game(0,LIVES_START)
+	audio.stop()
+	audio.setVolume(1.0)
 end
 
 function scene:willEnterScene( event )
