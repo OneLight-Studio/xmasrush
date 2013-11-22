@@ -17,6 +17,7 @@ BTN_LABEL_COLOR = { 44, 57, 130 }
 BTN_SIZE = 60
 BTN_GAP = 10
 GAME_SETTINGS = "xmasrush.json"
+MAX_HIGHSCORES = 10
 
 -- variables
 
