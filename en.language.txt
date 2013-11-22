@@ -5,12 +5,12 @@
 	"menu.scores":"High Scores",
 	"menu.resume":"Resume",
 	"menu.quit":"Quit",
-	"help.objectif":"Rattrape le plus de cadeaux possibles et améliore ton meilleur score.",
-	"help.gitf":"gagne un point si tu le rattrapes sinon tu perds une vie",
-	"help.life":"gagne une vie",
-	"help.bomb":"perds 5 vies",
-	"help.star":"rattrapes le plus de cadeaux possibles",
-	"help.imp":"le lutin t'aide à rattraper les cadeaux",
-	"help.vacuum":"aspire les cadeaux près de toi"
+	"help.objectif":"Catch as many presents as you can to improve your best score!",
+	"help.gitf":"+1 point if you catch it, otherwise -1 life",
+	"help.life":"+1 life",
+	"help.bomb":"-5 lives",
+	"help.star":"Triggers a rain of presents",
+	"help.imp":"An elf helps you to catch the presents",
+	"help.vacuum":"Your sleigh attracts the nearest presents"
 }
 
