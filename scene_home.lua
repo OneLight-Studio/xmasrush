@@ -100,7 +100,6 @@ end
 
 local function animateSnow (event)
 	if snow then
-		print(snow.numChildren)
         for i=1, snow.numChildren do
                 local flake = snow[i]
                 flake:translate((flake.xVelocity+xWind)*0.1,(flake.yVelocity+yWind)*0.1)

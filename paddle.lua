@@ -113,10 +113,12 @@ end
 function Paddle:contentBounds()
 	if pad ~= nil then
 		local bounds = pad.contentBounds
-		bounds.xMin = bounds.xMin + 5
-		bounds.xMax = bounds.xMax - 25
-		bounds.yMin = bounds.yMin
+		bounds.xMin = bounds.xMin
+		bounds.xMax = bounds.xMin + 100
+		bounds.yMin = bounds.yMin + 30
 		bounds.yMax = bounds.yMin + 15
+
+		--currentShowBounds = showBounds(bounds, currentShowBounds)
 
 		return bounds
 	end
