@@ -4,8 +4,8 @@ require 'class'
 
 -- constants
 
-PADDLE_WIDTH = 128
-PADDLE_HEIGHT = 64
+PADDLE_WIDTH = 191
+PADDLE_HEIGHT = 90
 PADDLE_IMG = "img/game_paddle.png"
 PADDLE_INDEX_MIN = 0
 PADDLE_INDEX_MAX = 5
