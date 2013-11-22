@@ -21,6 +21,8 @@ PADDLE_ASPIRATOR_PADDING = 50
 local pad
 local lastTouchedX
 local currentShowBounds
+local timerBlink
+local timerEnd
 
 -- functions
 
@@ -91,11 +93,18 @@ function Paddle:onEnterScene()
 	pad.x = display.contentCenterX
 	pad.y = display.contentHeight - pad.height / 2
 
+	self.mode = PADDLE_MODE_NORMAL
+
+	self:cancelTimerPaddle()
+
 	Runtime:addEventListener("touch", onTouchScreen)
 end
 
 function Paddle:onExitScene()
 	lastTouchedX = display.contentCenterX
+
+	self:cancelTimerPaddle()
+	
 	display.remove(pad)
 	pad = nil
 	Runtime:removeEventListener("touch", onTouchScreen)
@@ -144,8 +153,8 @@ function Paddle:toAspiratorMode(activate)
 
 			self.mode = PADDLE_MODE_ASPIRATOR
 
-			timer.performWithDelay(DELAY_PADDLE_ASPIRATOR_MODE - 2000, function () blink(pad, BLINK_SPEED_NORMAL) end)
-			timer.performWithDelay(DELAY_PADDLE_ASPIRATOR_MODE, function () self:toAspiratorMode(false) end)
+			timerBlink = timer.performWithDelay(DELAY_PADDLE_ASPIRATOR_MODE - 2000, function () blink(pad, BLINK_SPEED_NORMAL) end)
+			timerEnd = timer.performWithDelay(DELAY_PADDLE_ASPIRATOR_MODE, function () self:toAspiratorMode(false) end)
 		else
 			local oldPad = pad
 			pad = display.newImageRect(PADDLE_IMG, PADDLE_WIDTH, PADDLE_HEIGHT)
@@ -154,8 +163,37 @@ function Paddle:toAspiratorMode(activate)
 			
 			self.mode = PADDLE_MODE_NORMAL
 
+			self:cancelTimerPaddle()
+
 			display.remove(oldPad)
 			oldPad = nil
 		end
+	end
+end
+
+function Paddle:pausePaddle()
+	if timerBlink ~= nil then
+		timer.pause(timerBlink)
+	end
+	if timerEnd ~= nil then
+		timer.pause(timerEnd)
+	end
+end
+
+function Paddle:resumePaddle()
+	if timerBlink ~= nil then
+		timer.resume(timerBlink)
+	end
+	if timerEnd ~= nil then
+		timer.resume(timerEnd)
+	end
+end
+
+function Paddle:cancelTimerPaddle()
+	if timerBlink ~= nil then
+		timer.cancel(timerBlink)
+	end
+	if timerEnd ~= nil then
+		timer.cancel(timerEnd)
 	end
 end

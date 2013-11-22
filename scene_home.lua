@@ -88,7 +88,7 @@ end
 
 local function playAudioLoop()
 	audio.setVolume(0.3)
-	audioChannel = audio.play(audioLoop, { loops = -1 })
+	audioChannel = audio.play(audioLoop, { channel = 1, loops = -1 })
 	if not gameSettings.soundEnable then
 		audio.pause(audioChannel)
 	end
