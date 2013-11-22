@@ -89,6 +89,8 @@ function pauseGame()
 	timer.pause(presentTimerId)
 	timer.pause(audioTimerId)
 	timer.pause(maxItemsOnScreenTimerId)
+
+	paddle:pausePaddle()
 end
 
 function resumeGame()
@@ -109,6 +111,8 @@ function resumeGame()
 	timer.resume(presentTimerId)
 	timer.resume(audioTimerId)
 	timer.resume(maxItemsOnScreenTimerId)
+
+	paddle:resumePaddle()
 
 	createMenuBtn()
 	isOnPause = false
