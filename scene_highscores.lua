@@ -38,7 +38,7 @@ function scene:enterScene( event )
 	rect:setStrokeColor(180, 180, 180)
 
 	local highscores = gameSettings.highscores
-	for i = 1,10 do
+	for i = 1,MAX_HIGHSCORES do
 		local score = "-"
 		if highscores and highscores[i] then
 			score = highscores[i] .. language:getString("pts")

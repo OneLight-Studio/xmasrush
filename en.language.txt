@@ -1,6 +1,7 @@
 {
 	"game.name":"Xmas Rush",
 	"game.over":"Game Over",
+	"game.over.continue":"Tap to continue",
 	"menu.play":"New Game",
 	"menu.scores":"High Scores",
 	"menu.resume":"Resume",

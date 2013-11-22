@@ -50,6 +50,9 @@ function blink(element, speed)
 	elseif speed == BLINK_SPEED_SLOW then
 		iteration = 10
 		delay = 200
+	else
+		iteration = 0
+		delay = 500
 	end
 
 	timer.performWithDelay(delay, function()

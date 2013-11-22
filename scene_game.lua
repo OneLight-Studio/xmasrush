@@ -309,7 +309,7 @@ local function onEveryFrame(event)
 		if game.lives <= 0 then
 			Runtime:removeEventListener("enterFrame", onEveryFrame)
 			game:gameOver()
-			storyboard.showOverlay( "scene_game_over", {isModal = true} )
+			storyboard.showOverlay( "scene_game_over", {isModal = true, params = { game = game }} )
 		else
 			-- keep the text visible
 			game:scoreLivesToFront()
