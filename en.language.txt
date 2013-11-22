@@ -11,6 +11,8 @@
 	"help.bomb":"perds 5 vies",
 	"help.star":"rattrapes le plus de cadeaux possibles",
 	"help.imp":"le lutin t'aide à rattraper les cadeaux",
-	"help.vacuum":"aspire les cadeaux près de toi"
+	"help.vacuum":"aspire les cadeaux près de toi",
+	"credits.copyright":"OneLight Studio est une marque déposée de la société Prometil.",
+	"credits.website":"www.onelight-studio.com"
 }
 
