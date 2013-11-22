@@ -18,6 +18,7 @@ function scene:willEnterScene( event )
 end
 
 function scene:enterScene( event )
+	audio.play(audio.loadSound("sound/game_over.wav"))
 	bg = display.newRect(0, 0, display.contentWidth, display.contentHeight)
 	bg:setFillColor(0, 0, 0, 100)
 	gameOverText = display.newText(language:getString("game.over"), 0, 0, FONT, 60)
