@@ -41,6 +41,8 @@ local presentTimerId
 local bombTimerId
 local bonusTimerId
 local impBonusTimerId
+local impBlinkTimerId
+local impToLeft
 local starWaterfallTimerId
 local audioTimerId
 local starDroppingIndex = 0
@@ -79,6 +81,7 @@ function pauseGame()
 	end
 	if impBonusTimerId ~= nil then
 		timer.pause(impBonusTimerId)
+		timer.pause(impBlinkTimerId)
 	end
 
 	timer.pause(bombTimerId)
@@ -98,6 +101,7 @@ function resumeGame()
 	end
 	if impBonusTimerId ~= nil then
 		timer.resume(impBonusTimerId)
+		timer.resume(impBlinkTimerId)
 	end
 
 	timer.resume(bombTimerId)
@@ -126,7 +130,22 @@ end
 
 function impHit()
 	imp = Item(TYPE_IMP, nil, nil)
-	imp:onEnterScene(IMP_WIDTH / 2, display.contentHeight / 2)
+
+	if impToLeft == nil or impToLeft == false then
+		impToLeft = true
+		imp:impToLeft(true)
+		imp:onEnterScene(IMP_WIDTH / 2, display.contentHeight / 2)
+	else
+		imp:impToLeft(false)
+		imp:onEnterScene(display.contentWidth - (IMP_WIDTH / 2), display.contentHeight / 2)
+		impToLeft = false
+	end
+
+	impBlinkTimerId = timer.performWithDelay(IMP_DELAY - 2000, function ()
+		if imp ~= nil and imp:elem() ~= nil then 
+			blink(imp:elem(), BLINK_SPEED_NORMAL)
+		end
+	end)
 
 	impBonusTimerId = timer.performWithDelay(IMP_DELAY, endImp)
 end
@@ -136,6 +155,7 @@ function endImp()
 		imp:onExitScene()
 		imp = nil
 		impBonusTimerId = nil
+		impBlinkTimerId = nil
 	end
 end
 
@@ -188,7 +208,7 @@ end
 local function dropBomb()
 	local bomb = Item(TYPE_BOMB, function()
 		game:decreaseLives(5)
-		paddle:blink(5)
+		blink(paddle:elem(), BLINK_SPEED_FAST)
 	end, nil)
 	table.insert(items, bomb)
 	bomb:onEnterScene()
@@ -199,7 +219,7 @@ local function dropBomb()
 end
 
 local function dropBonus()
-	local bonusType = math.random(1,4)
+	local bonusType = 4 -- math.random(1,4)
 	local bonus
 
 	if bonusType == 1 then
@@ -373,6 +393,7 @@ function scene:exitScene( event )
 	timer.cancel(maxItemsOnScreenTimerId)
 	if impBonusTimerId ~= nil then
 		timer.cancel(impBonusTimerId)
+		timer.cancel(impBlinkTimerId)
 	end
 	if starWaterfallTimerId ~= nil then
 		timer.cancel(starWaterfallTimerId)

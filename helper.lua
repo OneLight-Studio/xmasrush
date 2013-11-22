@@ -32,3 +32,29 @@ function showBounds(bounds, lastRectBounds)
 
 	return rectBounds
 end
+
+BLINK_SPEED_FAST = 'blink_fast'
+BLINK_SPEED_NORMAL = 'blink_normal'
+BLINK_SPEED_SLOW = 'blink_slow'
+
+function blink(element, speed)
+	local iteration
+	local delay
+
+	if speed == BLINK_SPEED_FAST then
+		iteration = 10
+		delay = 50
+	elseif speed == BLINK_SPEED_NORMAL then
+		iteration = 20
+		delay = 100
+	elseif speed == BLINK_SPEED_SLOW then
+		iteration = 10
+		delay = 200
+	end
+
+	timer.performWithDelay(delay, function()
+		if element ~= nil and element.alpha ~= nil then
+			element.alpha = element.alpha < 1 and 1 or 0
+		end
+	end, iteration)
+end
