@@ -31,7 +31,7 @@ function scene:enterScene( event )
 	gameOverText.x = display.contentCenterX
 	gameOverText.y = display.contentCenterY - 100
 
-	continueText = display.newText(language:getString("game.over.continue"), 0, 0, FONT, 40)
+	continueText = display.newText(language:getString("game.over.continue"), 0, 0, FONT, 30)
 	continueText.x = display.contentCenterX
 	continueText.y = display.contentCenterY + 100
 	blink(continueText, 0)
