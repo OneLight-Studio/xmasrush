@@ -27,7 +27,7 @@ BOMB_WIDTH = 40
 BOMB_HEIGHT = 43
 BOMB_MIN_SPEED = 3
 BOMB_MAX_SPEED = 3
-BOMB_SOUND = audio.loadSound("sound/bomb.wav")
+BOMB_SOUND = audio.loadSound("sound/bomb.mp3")
 
 LIFE_BONUS_IMG = "img/game_life.png"
 LIFE_BONUS_WIDTH = 40
