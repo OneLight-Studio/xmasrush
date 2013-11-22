@@ -15,6 +15,10 @@ local this
 local audioLoop
 local audioChannel
 
+local mRand = math.random; math.randomseed( os.time())
+local xGravity, yGravity, xWind, yWind = 0, 18, 10, 2
+local snow
+
 -- constants
 
 local BTN_Y_MIN = 120
@@ -94,6 +98,30 @@ local function playAudioLoop()
 	end
 end
 
+local function animateSnow (event)
+	if snow then
+		print(snow.numChildren)
+        for i=1, snow.numChildren do
+                local flake = snow[i]
+                flake:translate((flake.xVelocity+xWind)*0.1,(flake.yVelocity+yWind)*0.1)
+                if flake.y > display.contentHeight then
+                        flake.x, flake.y = mRand(display.contentWidth),mRand(60)
+                end
+        end
+        if mRand(100) == 1 then xWind = 0-xWind; end
+    end
+end
+
+local function initSnow(snowCount)
+    for i=1,snowCount do
+            local flake = display.newImageRect(snow,"img/snowflake.png",16,16)
+            --if mRand(1,2) == 1 then flake.alpha = mRand(25,50) * .01; end
+            flake.alpha = mRand(25,75) * .01
+            flake.x, flake.y = mRand(display.contentWidth), mRand(display.contentHeight)
+            flake.yVelocity, flake.xVelocity = mRand(50), mRand(50)
+    end
+end
+
 -- scene functions
 
 function scene:createScene( event )
@@ -143,10 +171,16 @@ function scene:enterScene( event )
 	if not audio.isChannelPlaying(audioChannel) then
 		playAudioLoop()
 	end
+
+	snow = display.newGroup()
+	initSnow(50)
+	Runtime:addEventListener("enterFrame",animateSnow)
 end
 
 function scene:exitScene( event )
-	-- Nothing
+	display.remove(snow)
+	snow = nil
+	Runtime:removeEventListener("enterFrame",animateSnow)
 end
 
 function scene:destroyScene( event )
@@ -160,5 +194,6 @@ scene:addEventListener( "willEnterScene", scene )
 scene:addEventListener( "enterScene", scene )
 scene:addEventListener( "exitScene", scene )
 scene:addEventListener( "destroyScene", scene )
+
 
 return scene
