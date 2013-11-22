@@ -24,6 +24,7 @@ Game = class(function(this, score, lives)
 	this.initLives = lives
 	this.score = score
 	this.lives = lives
+	this.highscore = 0
 end)
 
 function Game:onEnterScene()
@@ -40,6 +41,12 @@ function Game:onEnterScene()
 
 	self:updateScore(true)
 	self:updateLives(true)
+
+	if gameSettings.highscores then
+		--self.highscore = gameSettings.highscores[1]
+		self.highscore = 4
+	end
+	self.newHighscore = false
 end
 
 function Game:onExitScene()
@@ -79,6 +86,19 @@ function Game:updateScore(positive)
 			})
 		end
 	})
+
+	if self.highscore ~= nil and self.score > self.highscore and not self.newHighscore then
+		local highscoreText = display.newText(language:getString("highscore"), 0, 0, FONT, 50)
+		highscoreText.x = display.contentCenterX
+		highscoreText.y = display.contentCenterY
+		timer.performWithDelay(100, function()
+			highscoreText.alpha = highscoreText.alpha < 1 and 1 or 0
+		end, 6)
+		timer.performWithDelay(1000, function()
+			display.remove(highscoreText)
+		end)
+		self.newHighscore = true
+	end
 end
 
 function Game:updateLives(positive)
@@ -140,4 +160,28 @@ end
 function Game:decreaseLives(number)
 	self.lives = math.max(0, self.lives - number)
 	self:updateLives(number <= 0)
+end
+
+function Game:gameOver()
+	if not gameSettings.highscores then
+		gameSettings.highscores = {	self.score }
+		loadsave.saveTable(gameSettings, GAME_SETTINGS)
+	else
+		local done = false
+		for i,s in ipairs(gameSettings.highscores) do
+			if s and self.score > s then
+				table.insert(gameSettings.highscores, i, self.score)
+				loadsave.saveTable(gameSettings, GAME_SETTINGS)
+				done = true
+				break
+			end
+		end
+		if not done and table.getn(gameSettings.highscores) < 10 then
+			table.insert(gameSettings.highscores, self.score)
+			loadsave.saveTable(gameSettings, GAME_SETTINGS)
+		end
+	end
+	while table.getn(gameSettings.highscores) > 10 do
+		table.remove(gameSettings.highscores, 11)
+	end
 end

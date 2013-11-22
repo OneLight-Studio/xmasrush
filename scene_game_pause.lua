@@ -121,7 +121,7 @@ function soundListener ( event )
 		gameSettings.soundEnable and "img/home_sound_on.png" or "img/home_sound_off.png", 
 		gameSettings.soundEnable and "img/home_sound_on_pressed.png" or "img/home_sound_off_pressed.png", 
 		soundListener)
-	loadsave.saveTable(gameSettings, "crazyxmas.json")
+	loadsave.saveTable(gameSettings, GAME_SETTINGS)
 end
 
 function effectSoundListener ( event )
@@ -131,7 +131,7 @@ function effectSoundListener ( event )
 		gameSettings.soundEffectEnable and "img/home_effects_on.png" or "img/home_effects_off.png", 
 		gameSettings.soundEffectEnable and "img/home_effects_on_pressed.png" or "img/home_effects_off_pressed.png", 
 		effectSoundListener)
-	loadsave.saveTable(gameSettings, "crazyxmas.json")
+	loadsave.saveTable(gameSettings, GAME_SETTINGS)
 end
 
 scene:addEventListener( "createScene", scene )

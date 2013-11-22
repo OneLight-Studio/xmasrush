@@ -115,7 +115,7 @@ function scene:soundListener ( event )
 	gameSettings.soundEnable = not gameSettings.soundEnable
 	display.remove(soundBtn)
 	setupSoundBtn()
-	loadsave.saveTable(gameSettings, "crazyxmas.json")
+	loadsave.saveTable(gameSettings, GAME_SETTINGS)
 	if gameSettings.soundEnable then
 		audio.resume(audioChannel)
 	else
@@ -127,7 +127,7 @@ function scene:effectSoundListener ( event )
 	gameSettings.soundEffectEnable = not gameSettings.soundEffectEnable
 	display.remove(effectsBtn)
 	setupEffectsBtn()
-	loadsave.saveTable(gameSettings, "crazyxmas.json")
+	loadsave.saveTable(gameSettings, GAME_SETTINGS)
 end
 
 function scene:willEnterScene( event )
