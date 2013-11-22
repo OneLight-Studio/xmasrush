@@ -308,6 +308,7 @@ local function onEveryFrame(event)
 		-- check lives
 		if game.lives <= 0 then
 			Runtime:removeEventListener("enterFrame", onEveryFrame)
+			game:gameOver()
 			storyboard.showOverlay( "scene_game_over", {isModal = true} )
 		else
 			-- keep the text visible

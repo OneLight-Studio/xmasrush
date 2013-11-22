@@ -16,6 +16,7 @@ BTN_FONT_SIZE = 40
 BTN_LABEL_COLOR = { 44, 57, 130 }
 BTN_SIZE = 60
 BTN_GAP = 10
+GAME_SETTINGS = "xmasrush.json"
 
 -- variables
 
@@ -24,7 +25,7 @@ local storyboard = require "storyboard"
 -- global variables
 
 loadsave = require("loadsave")
-gameSettings = loadsave.loadTable("crazyxmas.json")
+gameSettings = loadsave.loadTable(GAME_SETTINGS)
 language = require("rosetta").new()
 
 
