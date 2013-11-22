@@ -25,10 +25,6 @@ Game = class(function(this, score, lives)
 	this.score = score
 	this.lives = lives
 	this.highscore = 0
-	if gameSettings.highscores then
-		this.highscore = gameSettings.highscores[1]
-	end
-	this.newHighscore = false
 end)
 
 function Game:onEnterScene()
@@ -45,6 +41,11 @@ function Game:onEnterScene()
 
 	self:updateScore(true)
 	self:updateLives(true)
+
+	if gameSettings.highscores then
+		self.highscore = gameSettings.highscores[1]
+	end
+	self.newHighscore = false
 end
 
 function Game:onExitScene()
