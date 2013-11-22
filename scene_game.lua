@@ -12,7 +12,7 @@ local DELAY_BETWEEN_BOMBS_MIN = 1000
 local DELAY_BETWEEN_BOMBS_MODIFIER = 10
 local DELAY_BETWEEN_LIVES_MIN = 5000
 local DELAY_BETWEEN_LIVES_MODIFIER = 1000
-local DELAY_BETWEEN_BONUS = 20000
+local DELAY_BETWEEN_BONUS = 15000
 local DELAY_BETWEEN_AUDIO_LOOP_PITCH_INCREASE = 5000
 local IMP_DELAY = 10000
 local INIT_MAX_ITEMS_ON_SCREEN = 4
@@ -197,9 +197,20 @@ local function inscreaseMaxItems()
 	maxItemsOnScreenTimerId = timer.performWithDelay(DELAY_BETWEEN_MAX_ITEMS_ON_SCREEN, inscreaseMaxItems)
 end
 
+local function dropLife()
+	local life = Item(TYPE_LIFE_BONUS, function() game:increaseLives(1) end, nil, nil)
+	table.insert(items, life)
+	life:onEnterScene()
+end
+
 local function dropPresent()
 	if table.getn(items) < itemsCountOnScreen then
-		local present = Item(TYPE_PRESENT, function() game:increaseScore(1) end, function() game:decreaseLives(1) end)
+		local present = Item(TYPE_PRESENT, function()
+			game:increaseScore(1)
+			if game.score % 50 == 0 then
+				dropLife()
+			end
+		end, function() game:decreaseLives(1) end)
 		table.insert(items, present)
 		present:onEnterScene()
 	end
@@ -223,7 +234,7 @@ local function dropBomb()
 end
 
 local function dropBonus()
-	local bonusType = 4 -- math.random(1,4)
+	local bonusType = math.random(1,4)
 	local bonus
 
 	if bonusType == 1 then

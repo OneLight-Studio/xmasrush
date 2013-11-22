@@ -115,8 +115,8 @@ function Paddle:contentBounds()
 		local bounds = pad.contentBounds
 		bounds.xMin = bounds.xMin + 5
 		bounds.xMax = bounds.xMax - 25
-		bounds.yMin = bounds.yMin + 10
-		bounds.yMax = bounds.yMax - 20
+		bounds.yMin = bounds.yMin
+		bounds.yMax = bounds.yMin + 15
 
 		return bounds
 	end
