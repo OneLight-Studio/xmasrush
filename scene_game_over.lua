@@ -45,7 +45,7 @@ function scene:enterScene( event )
 	scoreText.x = display.contentCenterX + 30
 	scoreText.y = display.contentCenterY
 
-	if true or game.newHighscore then
+	if game.newHighscore then
 		timer.performWithDelay(350, function()
 			highscoreText = display.newText(language:getString("highscore"), 0, 0, 200, 150, FONT, 30)
 			highscoreText.x = display.contentCenterX + 170
