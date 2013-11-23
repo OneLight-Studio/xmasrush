@@ -22,7 +22,9 @@ function scene:willEnterScene( event )
 end
 
 function scene:enterScene( event )
-	audio.play(audio.loadSound("sound/game_over.wav"))
+	if gameSettings.soundEffectEnable then
+		audio.play(audio.loadSound("sound/game_over.mp3"))
+	end
 
 	bg = display.newRect(0, 0, display.contentWidth, display.contentHeight)
 	bg:setFillColor(0, 0, 0, 180)
@@ -37,12 +39,12 @@ function scene:enterScene( event )
 	blink(continueText, 0)
 
 	scoreImg = display.newImage("img/game_present_4.png")
-	scoreImg.x = display.contentCenterX - 30
+	scoreImg.x = display.contentCenterX - 40
 	scoreImg.y = display.contentCenterY
 
 	local game = event.params.game
 	scoreText = display.newText(game.score, 0, 0, FONT, 40)
-	scoreText.x = display.contentCenterX + 30
+	scoreText.x = display.contentCenterX + 40
 	scoreText.y = display.contentCenterY
 
 	if game.newHighscore then
@@ -53,7 +55,9 @@ function scene:enterScene( event )
 			highscoreText.align = "center"
 			highscoreText:rotate(35)
 			transition.from(highscoreText, { xScale = 5, yScale = 5, time = 100, onComplete = function()
-				audio.play(audio.loadSound("sound/highscore.wav"))
+				if gameSettings.soundEffectEnable then
+					audio.play(audio.loadSound("sound/highscore.mp3"))
+				end
 			end})
 		end)
 	end

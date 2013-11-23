@@ -134,7 +134,7 @@ function scene:createScene( event )
 	setupSoundBtn()
 	setupEffectsBtn()
 
-	audioLoop = audio.loadSound("sound/menu.wav")
+	audioLoop = audio.loadSound("sound/menu.mp3")
 	playAudioLoop()
 end
 
