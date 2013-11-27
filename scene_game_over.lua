@@ -55,11 +55,11 @@ function scene:enterScene( event )
 	gameOverText.y = display.contentCenterY - 120
 
 	scoreImg = display.newImage("img/game_present_4.png")
-	scoreImg.x = display.contentCenterX - 40
+	scoreImg.x = display.contentCenterX - 80
 	scoreImg.y = display.contentCenterY - 50
 
 	local game = event.params.game
-	scoreText = display.newText(game.score, 0, 0, FONT, 40)
+	scoreText = display.newText(game.score .. "/" .. game.nextLevelScore, 0, 0, FONT, 40)
 	scoreText.x = display.contentCenterX + 40
 	scoreText.y = display.contentCenterY - 50
 
