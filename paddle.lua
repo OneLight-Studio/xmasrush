@@ -4,7 +4,7 @@ require 'class'
 
 -- constants
 
-PADDLE_WIDTH = 191
+PADDLE_WIDTH = 100
 PADDLE_HEIGHT = 90
 PADDLE_IMG = "img/game_paddle.png"
 PADDLE_INDEX_MIN = 0
@@ -114,11 +114,11 @@ function Paddle:contentBounds()
 	if pad ~= nil then
 		local bounds = pad.contentBounds
 		bounds.xMin = bounds.xMin
-		bounds.xMax = bounds.xMin + 100
-		bounds.yMin = bounds.yMin + 30
-		bounds.yMax = bounds.yMin + 15
+		bounds.xMax = bounds.xMax
+		bounds.yMin = bounds.yMin + 10
+		bounds.yMax = bounds.yMax - 20
 
-		--currentShowBounds = showBounds(bounds, currentShowBounds)
+		currentShowBounds = showBounds(bounds, currentShowBounds)
 
 		return bounds
 	end
