@@ -48,6 +48,7 @@ local isOnX2Bonus = false
 local songChannel
 local imp
 local level
+local lastBonusType = -1
 
 -- local functions
 
@@ -248,10 +249,14 @@ local function dropBonus()
 	end
 
 	if bonus then
-		table.insert(items, bonus)
-		bonus:onEnterScene()
-
-		bonusTimerId = timer.performWithDelay(DELAY_BETWEEN_BONUS, dropBonus)
+		if game.level > 1 and bonusType == lastBonusType then
+			-- force a different bonus
+			dropBonus()
+		else
+			table.insert(items, bonus)
+			bonus:onEnterScene()
+			bonusTimerId = timer.performWithDelay(DELAY_BETWEEN_BONUS, dropBonus)
+		end
 	else
 		-- retry
 		dropBonus()
@@ -391,6 +396,7 @@ function scene:enterScene( event )
 	paddle:onEnterScene()
 	game:onEnterScene()
 
+	lastBonusType = -1
 	dropPresent()
 	bombTimerId = timer.performWithDelay(delayBetweenBombs, dropBomb)
 	bonusTimerId = timer.performWithDelay(DELAY_BETWEEN_BONUS, dropBonus)
