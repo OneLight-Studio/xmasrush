@@ -295,7 +295,7 @@ local function onEveryFrame(event)
 			end
 
 			-- put bombs to front
-			if item.type == TYPE_PRESENT then
+			if item.type == TYPE_BOMB then
 				item:toFront()
 			end
 		end
