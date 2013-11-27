@@ -76,7 +76,7 @@ function scene:enterScene( event )
 	textVacuum = display.newText(language:getString("help.vacuum"), startXText, textImp.y + HEIGHT_SPACE_BETWEEN_ELEMENT, display.contentWidth - ((startXImage*2)+5), 40, FONT, 16)
 	textVacuum.y = textImp.y + textImp.contentHeight / 2 + HEIGHT_SPACE_BETWEEN_ELEMENT
 
-	imageGitf = display.newImageRect("img/game_present_1.png", 32, 32)
+	imageGitf = display.newImageRect("img/help_presents.png", 32, 32)
 	imageGitf.x = startXImage
 	imageGitf.y = textObjectif.y + textObjectif.contentHeight / 2 + HEIGHT_SPACE_BETWEEN_ELEMENT + 10 - (imageGitf.height / 3)
 
