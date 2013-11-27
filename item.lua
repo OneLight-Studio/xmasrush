@@ -72,14 +72,14 @@ local currentShowBounds
 
 -- core
 
-Item = class(function(this, type, hit, fall)
+Item = class(function(this, type, hit, fall, speedMin, speedMax)
 	this.type = type
 
 	if type == TYPE_PRESENT then
 		this.img = string.gsub(PRESENT_IMG, '#index#', math.random(PRESENT_IMG_INDEX_MIN, PRESENT_IMG_INDEX_MAX))
 		this.width = PRESENT_WIDTH
 		this.height = PRESENT_HEIGHT
-		this.speed = math.random(PRESENT_MIN_SPEED, PRESENT_MAX_SPEED)
+		this.speed = math.random(speedMin, speedMax)
 		this.sound = PRESENT_SOUND
 	elseif type == TYPE_STAR_PRESENT then
 		this.img = string.gsub(PRESENT_IMG, '#index#', math.random(PRESENT_IMG_INDEX_MIN, PRESENT_IMG_INDEX_MAX))

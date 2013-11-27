@@ -6,16 +6,13 @@ require "item"
 
 -- constants
 
-local DELAY_BETWEEN_PRESENTS_MIN = 300
-local DELAY_BETWEEN_PRESENTS_MODIFIER = 10
-local DELAY_BETWEEN_BOMBS_MIN = 1000
-local DELAY_BETWEEN_BOMBS_MODIFIER = 10
-local DELAY_BETWEEN_LIVES_MIN = 5000
-local DELAY_BETWEEN_LIVES_MODIFIER = 1000
+local PRESENT_SPEED = { { 2, 3 }, { 2, 4 }, { 2, 5 }, { 3, 5 }, { 4, 5 }, { 4, 6 }, { 4, 7 }, { 5, 7 }, { 6, 7 }, { 7, 7 } }
+local DELAY_BETWEEN_PRESENTS = { 1000, 900, 800, 700, 600, 500, 400, 300, 200, 100 }
+local DELAY_BETWEEN_BOMBS = { 10000, 9000, 8000, 7000, 6000, 5000, 4000, 3000, 2000, 1000 }
 local DELAY_BETWEEN_BONUS = 15000
-local DELAY_BETWEEN_AUDIO_LOOP_PITCH_INCREASE = 5000
+local AUDIO_PITCH = { 1.0, 1.05, 1.1, 1.15, 1.2, 1.25, 1.3, 1.35, 1.4, 1.45 }
 local IMP_DELAY = 10000
-local INIT_MAX_ITEMS_ON_SCREEN = 4
+local MAX_ITEMS_ON_SCREEN = { 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 }
 local DELAY_BETWEEN_MAX_ITEMS_ON_SCREEN = 15000
 local LIVES_START = 10
 
@@ -28,7 +25,6 @@ local bg
 local menuButton
 local delayBetweenPresents
 local delayBetweenBombs
-local delayBetweenLives
 local itemsCountOnScreen
 local items = {}
 local game
@@ -36,7 +32,6 @@ local paddle
 local audioLoop
 local audioLoopSource
 local audioLoopPitch
-local maxItemsOnScreenTimerId
 local presentTimerId
 local bombTimerId
 local bonusTimerId
@@ -44,12 +39,12 @@ local impBonusTimerId
 local impBlinkTimerId
 local impToLeft
 local starWaterfallTimerId
-local audioTimerId
 local starDroppingIndex = 0
 local starDroppingMax = 20
 local isOnPause = false
 local songChannel
 local imp
+local level
 
 -- local functions
 
@@ -87,8 +82,6 @@ function pauseGame()
 	timer.pause(bombTimerId)
 	timer.pause(bonusTimerId)
 	timer.pause(presentTimerId)
-	timer.pause(audioTimerId)
-	timer.pause(maxItemsOnScreenTimerId)
 
 	paddle:pausePaddle()
 end
@@ -109,8 +102,6 @@ function resumeGame()
 	timer.resume(bombTimerId)
 	timer.resume(bonusTimerId)
 	timer.resume(presentTimerId)
-	timer.resume(audioTimerId)
-	timer.resume(maxItemsOnScreenTimerId)
 
 	paddle:resumePaddle()
 
@@ -125,7 +116,6 @@ function startHit()
 
 	timer.pause(bombTimerId)
 	timer.pause(presentTimerId)
-	timer.pause(audioTimerId)
 
 	al.Source(audioLoopSource, al.PITCH, 2)
 
@@ -186,37 +176,22 @@ function dropPresentLine()
 		timer.resume(presentTimerId)
 
 		al.Source(audioLoopSource, al.PITCH, audioLoopPitch)
-		timer.resume(audioTimerId)
 
 		clearItems()
 	end
 end
 
-local function inscreaseMaxItems()
-	itemsCountOnScreen = itemsCountOnScreen + 1
-	maxItemsOnScreenTimerId = timer.performWithDelay(DELAY_BETWEEN_MAX_ITEMS_ON_SCREEN, inscreaseMaxItems)
-end
-
-local function dropLife()
-	local life = Item(TYPE_LIFE_BONUS, function() game:increaseLives(1) end, nil, nil)
-	table.insert(items, life)
-	life:onEnterScene()
-end
-
 local function dropPresent()
 	if table.getn(items) < itemsCountOnScreen then
-		local present = Item(TYPE_PRESENT, function()
-			game:increaseScore(1)
-			if game.score % 50 == 0 then
-				dropLife()
-			end
-		end, function() game:decreaseLives(1) end)
+		local present = Item(TYPE_PRESENT, function() game:increaseScore(1) end, function() game:decreaseLives(1) end, PRESENT_SPEED[game.level][1], PRESENT_SPEED[game.level][2])
 		table.insert(items, present)
 		present:onEnterScene()
 	end
 
-	delayBetweenPresents = math.max(DELAY_BETWEEN_PRESENTS_MIN, delayBetweenPresents - DELAY_BETWEEN_PRESENTS_MODIFIER)
-
+	audioLoopPitch = AUDIO_PITCH[game.level]
+	al.Source(audioLoopSource, al.PITCH, audioLoopPitch)
+	itemsCountOnScreen = MAX_ITEMS_ON_SCREEN[game.level]
+	delayBetweenPresents = DELAY_BETWEEN_PRESENTS[game.level]
 	presentTimerId = timer.performWithDelay(delayBetweenPresents, dropPresent)
 end
 
@@ -228,8 +203,7 @@ local function dropBomb()
 	table.insert(items, bomb)
 	bomb:onEnterScene()
 
-	delayBetweenBombs = math.max(DELAY_BETWEEN_BOMBS_MIN, delayBetweenBombs - DELAY_BETWEEN_BOMBS_MODIFIER)
-
+	delayBetweenBombs = DELAY_BETWEEN_BOMBS[game.level]
 	bombTimerId = timer.performWithDelay(delayBetweenBombs, dropBomb)
 end
 
@@ -237,26 +211,25 @@ local function dropBonus()
 	local bonusType = math.random(1,4)
 	local bonus
 
-	if bonusType == 1 then
+	if bonusType == 1 and game.level >= 5 then
 		bonus = Item(TYPE_STAR_BONUS, function() startHit() end, nil, nil)
-	elseif bonusType == 2 then
+	elseif bonusType == 2 and game.level >= 3 then
 		bonus = Item(TYPE_IMP_BONUS, function() impHit() end, nil, nil)
-	elseif bonusType == 3 then
-		bonus = Item(TYPE_LIFE_BONUS, function() game:increaseLives(1) end, nil, nil)
-	elseif bonusType == 4 then
+	elseif bonusType == 3 and game.level >= 2 then
+		bonus = Item(TYPE_LIFE_BONUS, function() game:increaseLives(3) end, nil, nil)
+	elseif bonusType == 4 and game.level >= 4 then
 		bonus = Item(TYPE_ASPIRATOR_BONUS, function() paddle:toAspiratorMode(true) end, nil, nil)
 	end
 
-	table.insert(items, bonus)
-	bonus:onEnterScene()
+	if bonus then
+		table.insert(items, bonus)
+		bonus:onEnterScene()
 
-	bonusTimerId = timer.performWithDelay(DELAY_BETWEEN_BONUS, dropBonus)
-end
-
-local function increaseAudioLoopPitch()
-	audioLoopPitch = audioLoopPitch + 0.01
-	al.Source(audioLoopSource, al.PITCH, audioLoopPitch)
-	audioTimerId = timer.performWithDelay(DELAY_BETWEEN_AUDIO_LOOP_PITCH_INCREASE, increaseAudioLoopPitch)
+		bonusTimerId = timer.performWithDelay(DELAY_BETWEEN_BONUS, dropBonus)
+	elseif game.level > 1 then
+		-- retry
+		dropBonus()
+	end
 end
 
 -- events
@@ -343,8 +316,7 @@ end
 -- scene functions
 
 function scene:createScene( event )
-    paddle = Paddle()
-	game = Game(0,LIVES_START)
+	-- Nothing
 end
 
 function scene:willEnterScene( event )
@@ -352,6 +324,9 @@ function scene:willEnterScene( event )
 end
 
 function scene:enterScene( event )
+    paddle = Paddle()
+	game = Game(event.params and event.params.level or 1, LIVES_START)
+
 	-- init
 	math.randomseed(os.time())
 
@@ -369,18 +344,16 @@ function scene:enterScene( event )
 		audio.pause(songChannel)
 	end
 	audioLoopSource = audio.getSourceFromChannel(1)
-	audioLoopPitch = 1
+	audioLoopPitch = AUDIO_PITCH[game.level]
 	al.Source(audioLoopSource, al.PITCH, audioLoopPitch)
-	audioTimerId = timer.performWithDelay(DELAY_BETWEEN_AUDIO_LOOP_PITCH_INCREASE, increaseAudioLoopPitch)
 
 	-- start
 	bg = display.newImage( "img/bg.jpg" )
 	createMenuBtn()
 
-	delayBetweenPresents = 600
-	delayBetweenBombs = 4000
-	delayBetweenLives = 10000
-	itemsCountOnScreen = INIT_MAX_ITEMS_ON_SCREEN
+	delayBetweenPresents = DELAY_BETWEEN_PRESENTS[game.level]
+	delayBetweenBombs = DELAY_BETWEEN_BOMBS[game.level]
+	itemsCountOnScreen = MAX_ITEMS_ON_SCREEN[game.level]
 
 	paddle:onEnterScene()
 	game:onEnterScene()
@@ -388,7 +361,6 @@ function scene:enterScene( event )
 	dropPresent()
 	bombTimerId = timer.performWithDelay(delayBetweenBombs, dropBomb)
 	bonusTimerId = timer.performWithDelay(DELAY_BETWEEN_BONUS, dropBonus)
-	maxItemsOnScreenTimerId = timer.performWithDelay(DELAY_BETWEEN_MAX_ITEMS_ON_SCREEN, inscreaseMaxItems)
 end
 
 function scene:exitScene( event )
@@ -404,11 +376,9 @@ function scene:exitScene( event )
 	endImp()
 	clearItems()
 
-	timer.cancel(audioTimerId)
 	timer.cancel(presentTimerId)
 	timer.cancel(bombTimerId)
 	timer.cancel(bonusTimerId)
-	timer.cancel(maxItemsOnScreenTimerId)
 	if impBonusTimerId ~= nil then
 		timer.cancel(impBonusTimerId)
 		timer.cancel(impBlinkTimerId)
@@ -429,7 +399,13 @@ function scene:overlayBegan( event )
 end
 
 function scene:overlayEnded( event )
-    resumeGame()
+	if game.restart then
+		self:exitScene()
+		isOnPause = false
+		self:enterScene({ params = { level = game.level } })
+	else
+		resumeGame()
+	end
 end
 
 -- core

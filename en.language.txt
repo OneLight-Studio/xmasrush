@@ -1,11 +1,11 @@
 {
 	"game.name":"Xmas Rush",
 	"game.over":"Game Over",
-	"game.over.continue":"Tap to continue",
-	"menu.play":"New Game",
+	"menu.play":"Play",
 	"menu.scores":"High Scores",
 	"menu.resume":"Resume",
 	"menu.quit":"Quit",
+	"menu.retry":"Retry",
 	"help.objectif":"Catch as many presents as you can to improve your best score!",
 	"help.gitf":"+1 point if you catch it, otherwise -1 life",
 	"help.life":"+1 life",
@@ -16,5 +16,7 @@
 	"credits.copyright":"OneLight Studio is a trademark of Prometil.",
 	"credits.website":"www.onelight-studio.com",
 	"pts":" pts",
-	"highscore":"New Highscore!"
+	"highscore":"New Highscore!",
+	"levels":"Select a level",
+	"level":"Level"
 }
