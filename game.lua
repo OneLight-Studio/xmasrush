@@ -172,6 +172,7 @@ function Game:increaseScore(number)
 			loadsave.saveTable(gameSettings, GAME_SETTINGS)
 		end
 		self:updateLevel()
+		audio.play(audio.loadSound("sound/levelup.mp3"))
 	end
 	self:updateScore(number >= 0)
 end

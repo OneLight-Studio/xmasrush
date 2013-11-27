@@ -253,6 +253,7 @@ local function dropBonus()
 			-- force a different bonus
 			dropBonus()
 		else
+			lastBonusType = bonusType
 			table.insert(items, bonus)
 			bonus:onEnterScene()
 			bonusTimerId = timer.performWithDelay(DELAY_BETWEEN_BONUS, dropBonus)

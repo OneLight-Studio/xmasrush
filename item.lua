@@ -53,12 +53,12 @@ IMP_LEFT_IMG = "img/game_imp_left.png"
 IMP_RIGHT_IMG = "img/game_imp_right.png"
 IMP_MIN_SPEED = 0
 IMP_MAX_SPEED = 0
-
 IMP_BONUS_WIDTH = 57
 IMP_BONUS_HEIGHT = 48
 IMP_BONUS_IMG = "img/game_imp_bonus.png"
 IMP_BONUS_MIN_SPEED = 7
 IMP_BONUS_MAX_SPEED = 7
+IMP_SOUND = audio.loadSound("sound/bonus.mp3")
 
 ASPIRATOR_BONUS_WIDTH = 40
 ASPIRATOR_BONUS_HEIGHT = 42
@@ -66,12 +66,14 @@ ASPIRATOR_BONUS_IMG = "img/game_aspirator_bonus.png"
 ASPIRATOR_BONUS_MIN_SPEED = 7
 ASPIRATOR_BONUS_MAX_SPEED = 7
 ASPIRATOR_ASPIRATION_DELAY = 150
+ASPIRATOR_SOUND = audio.loadSound("sound/bonus.mp3")
 
 X2_BONUS_IMG = "img/game_x2_bonus.png"
 X2_BONUS_WIDTH = 32
 X2_BONUS_HEIGHT = 32
 X2_BONUS_MIN_SPEED = 7
 X2_BONUS_MAX_SPEED = 7
+X2_SOUND = audio.loadSound("sound/bonus.mp3")
 
 -- variables
 
@@ -131,16 +133,19 @@ Item = class(function(this, type, hit, fall, speedMin, speedMax)
 		this.width = IMP_BONUS_WIDTH
 		this.height = IMP_BONUS_HEIGHT
 		this.speed = math.random(IMP_BONUS_MIN_SPEED, IMP_BONUS_MAX_SPEED)
+		this.sound = IMP_SOUND
 	elseif type == TYPE_ASPIRATOR_BONUS then
 		this.img = ASPIRATOR_BONUS_IMG
 		this.width = ASPIRATOR_BONUS_WIDTH
 		this.height = ASPIRATOR_BONUS_HEIGHT
 		this.speed = math.random(ASPIRATOR_BONUS_MIN_SPEED, ASPIRATOR_BONUS_MAX_SPEED)
+		this.sound = ASPIRATOR_SOUND
 	elseif type == TYPE_X2_BONUS then
 		this.img = X2_BONUS_IMG
 		this.width = X2_BONUS_WIDTH
 		this.height = X2_BONUS_HEIGHT
 		this.speed = math.random(X2_BONUS_MIN_SPEED, X2_BONUS_MAX_SPEED)
+		this.sound = X2_SOUND
 	end
 
 	this.hit = hit
