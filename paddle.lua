@@ -118,7 +118,7 @@ function Paddle:contentBounds()
 		bounds.yMin = bounds.yMin + 10
 		bounds.yMax = bounds.yMax - 20
 
-		currentShowBounds = showBounds(bounds, currentShowBounds)
+		--currentShowBounds = showBounds(bounds, currentShowBounds)
 
 		return bounds
 	end

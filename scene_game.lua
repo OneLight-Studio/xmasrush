@@ -6,13 +6,13 @@ require "item"
 
 -- constants
 
-local PRESENT_SPEED = { { 2, 3 }, { 2, 4 }, { 2, 5 }, { 3, 5 }, { 4, 5 }, { 4, 6 }, { 4, 7 }, { 5, 7 }, { 6, 7 }, { 7, 7 } }
-local DELAY_BETWEEN_PRESENTS = { 1000, 900, 800, 700, 600, 500, 400, 300, 200, 100 }
-local DELAY_BETWEEN_BOMBS = { 10000, 9000, 8000, 7000, 6000, 5000, 4000, 3000, 2000, 1000 }
-local DELAY_BETWEEN_BONUS = 15000
+local PRESENT_SPEED = { { 3, 4 }, { 3, 5 }, { 4, 5 }, { 4, 6 }, { 5, 6 }, { 5, 7 }, { 5, 8 }, { 6, 8 }, { 7, 8 }, { 8, 8 } }
+local DELAY_BETWEEN_PRESENTS = { 1000, 800, 600, 450, 300, 250, 200, 150, 100, 100 }
+local DELAY_BETWEEN_BOMBS = { 5000, 4500, 4000, 3500, 3500, 3000, 3000, 2500, 2000, 1000 }
+local DELAY_BETWEEN_BONUS = 11000
 local AUDIO_PITCH = { 1.0, 1.05, 1.1, 1.15, 1.2, 1.25, 1.3, 1.35, 1.4, 1.45 }
 local IMP_DELAY = 10000
-local MAX_ITEMS_ON_SCREEN = { 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 }
+local MAX_ITEMS_ON_SCREEN = { 3, 4, 5, 5, 6, 6, 7, 7, 8, 9 }
 local DELAY_BETWEEN_MAX_ITEMS_ON_SCREEN = 15000
 local LIVES_START = 10
 
@@ -213,11 +213,11 @@ local function dropBonus()
 
 	if bonusType == 1 and game.level >= 5 then
 		bonus = Item(TYPE_STAR_BONUS, function() startHit() end, nil, nil)
-	elseif bonusType == 2 and game.level >= 3 then
+	elseif bonusType == 2 and game.level >= 2 then
 		bonus = Item(TYPE_IMP_BONUS, function() impHit() end, nil, nil)
-	elseif bonusType == 3 and game.level >= 2 then
+	elseif bonusType == 3 and game.level >= 4 then
 		bonus = Item(TYPE_LIFE_BONUS, function() game:increaseLives(3) end, nil, nil)
-	elseif bonusType == 4 and game.level >= 4 then
+	elseif bonusType == 4 and game.level >= 3 then
 		bonus = Item(TYPE_ASPIRATOR_BONUS, function() paddle:toAspiratorMode(true) end, nil, nil)
 	end
 
@@ -229,6 +229,8 @@ local function dropBonus()
 	elseif game.level > 1 then
 		-- retry
 		dropBonus()
+	else
+		bonusTimerId = timer.performWithDelay(DELAY_BETWEEN_BONUS, dropBonus)
 	end
 end
 
@@ -290,6 +292,11 @@ local function onEveryFrame(event)
 					item:remove()
 					item:onFall(game)
 				end
+			end
+
+			-- put bombs to front
+			if item.type == TYPE_BOMB then
+				item:toFront()
 			end
 		end
 

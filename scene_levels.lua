@@ -29,7 +29,11 @@ local function addLevelButton(lvl, enabled)
 		labelColor = { default = enabled and BTN_LABEL_COLOR or BTN_LABEL_COLOR_DISABLED },
 		font = FONT,
 		fontSize = BTN_FONT_SIZE,
-		onRelease = function() storyboard.gotoScene("scene_game", { params = { level = lvl } }) end
+		onRelease = function()
+			if enabled then
+				storyboard.gotoScene("scene_game", { params = { level = lvl } })
+			end
+		end
 	})
 	local row = math.floor((lvl - 1) / LVL_PER_ROW)
 	local col = (lvl - 1) % LVL_PER_ROW

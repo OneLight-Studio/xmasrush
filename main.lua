@@ -7,7 +7,7 @@ display.setStatusBar(display.HiddenStatusBar)
 
 -- global constants
 
-LEVELS = { 5, 100, 150, 200, 250, 300, 350, 400, 450, 500 }
+LEVELS = { 25, 100, 200, 300, 450, 550, 675, 800, 900, 1000 }
 FONT = "Cartoon"
 BTN_IMG = "img/btn.png"
 BTN_IMG_PRESSED = "img/btn_pressed.png"
