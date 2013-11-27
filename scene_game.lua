@@ -15,9 +15,11 @@ local DELAY_BETWEEN_LIVES_MODIFIER = 1000
 local DELAY_BETWEEN_BONUS = 15000
 local DELAY_BETWEEN_AUDIO_LOOP_PITCH_INCREASE = 5000
 local IMP_DELAY = 10000
+local X2_DELAY = 10000
 local INIT_MAX_ITEMS_ON_SCREEN = 4
 local DELAY_BETWEEN_MAX_ITEMS_ON_SCREEN = 15000
 local LIVES_START = 10
+local LIVES_BONUS_INCREASE = 3
 
 -- variables
 
@@ -41,6 +43,7 @@ local presentTimerId
 local bombTimerId
 local bonusTimerId
 local impBonusTimerId
+local x2BonusTimerId
 local impBlinkTimerId
 local impToLeft
 local starWaterfallTimerId
@@ -48,6 +51,7 @@ local audioTimerId
 local starDroppingIndex = 0
 local starDroppingMax = 20
 local isOnPause = false
+local isOnX2Bonus = false
 local songChannel
 local imp
 
@@ -83,6 +87,9 @@ function pauseGame()
 		timer.pause(impBonusTimerId)
 		timer.pause(impBlinkTimerId)
 	end
+	if x2BonusTimerId ~= nil then
+		timer.pause(x2BonusTimerId)
+	end
 
 	timer.pause(bombTimerId)
 	timer.pause(bonusTimerId)
@@ -105,7 +112,9 @@ function resumeGame()
 		timer.resume(impBonusTimerId)
 		timer.resume(impBlinkTimerId)
 	end
-
+	if x2BonusTimerId ~= nil then
+		timer.resume(x2BonusTimerId)
+	end
 	timer.resume(bombTimerId)
 	timer.resume(bonusTimerId)
 	timer.resume(presentTimerId)
@@ -163,6 +172,16 @@ function endImp()
 	end
 end
 
+function x2Hit()
+	isOnX2Bonus = true
+	x2BonusTimerId = timer.performWithDelay(X2_DELAY, endX2)
+end
+
+function endX2()
+	isOnX2Bonus = false
+	x2BonusTimerId = nil
+end
+
 function dropPresentLine()
 	if starDroppingIndex < starDroppingMax then
 		local prensentNumberPerRow = math.floor(display.contentWidth / PRESENT_WIDTH) / 5
@@ -205,14 +224,25 @@ end
 
 local function dropPresent()
 	if table.getn(items) < itemsCountOnScreen then
-		local present = Item(TYPE_PRESENT, function()
-			game:increaseScore(1)
-			if game.score % 50 == 0 then
-				dropLife()
-			end
-		end, function() game:decreaseLives(1) end)
-		table.insert(items, present)
-		present:onEnterScene()
+		if isOnX2Bonus then
+			local present = Item(TYPE_X2_PRESENT, function()
+				game:increaseScore(2)
+				if game.score % 50 == 0 then
+					dropLife()
+				end
+			end, function() game:decreaseLives(1) end)
+			table.insert(items, present)
+			present:onEnterScene()
+		else
+			local present = Item(TYPE_PRESENT, function()
+				game:increaseScore(1)
+				if game.score % 50 == 0 then
+					dropLife()
+				end
+			end, function() game:decreaseLives(1) end)
+			table.insert(items, present)
+			present:onEnterScene()
+		end
 	end
 
 	delayBetweenPresents = math.max(DELAY_BETWEEN_PRESENTS_MIN, delayBetweenPresents - DELAY_BETWEEN_PRESENTS_MODIFIER)
@@ -234,18 +264,21 @@ local function dropBomb()
 end
 
 local function dropBonus()
-	local bonusType = math.random(1,4)
+	local bonusType = math.random(1,5)
 	local bonus
-
+--[[
 	if bonusType == 1 then
 		bonus = Item(TYPE_STAR_BONUS, function() startHit() end, nil, nil)
 	elseif bonusType == 2 then
 		bonus = Item(TYPE_IMP_BONUS, function() impHit() end, nil, nil)
 	elseif bonusType == 3 then
-		bonus = Item(TYPE_LIFE_BONUS, function() game:increaseLives(1) end, nil, nil)
+		bonus = Item(TYPE_LIFE_BONUS, function() game:increaseLives(LIVES_BONUS_INCREASE) end, nil, nil)
 	elseif bonusType == 4 then
 		bonus = Item(TYPE_ASPIRATOR_BONUS, function() paddle:toAspiratorMode(true) end, nil, nil)
-	end
+	elseif bonusType == 4 then
+--]]
+		bonus = Item(TYPE_X2_BONUS, function() x2Hit() end, nil, nil)
+	--end
 
 	table.insert(items, bonus)
 	bonus:onEnterScene()
@@ -412,6 +445,10 @@ function scene:exitScene( event )
 	if impBonusTimerId ~= nil then
 		timer.cancel(impBonusTimerId)
 		timer.cancel(impBlinkTimerId)
+	end
+	if x2BonusTimerId ~= nil then
+		timer.cancel(x2BonusTimerId)
+		isOnX2Bonus = false
 	end
 	if starWaterfallTimerId ~= nil then
 		timer.cancel(starWaterfallTimerId)
