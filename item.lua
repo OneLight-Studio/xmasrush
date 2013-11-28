@@ -12,8 +12,11 @@ TYPE_STAR_PRESENT = 'star_present'
 TYPE_IMP_BONUS = 'imp_bonus'
 TYPE_LIFE_BONUS = 'life'
 TYPE_ASPIRATOR_BONUS = 'aspirator'
+TYPE_X2_BONUS = 'x2'
+TYPE_X2_PRESENT = 'x2_present'
 
 PRESENT_IMG = "img/game_present_#index#.png"
+PRESENT_X2_IMG = "img/game_present_#index#_x2.png"
 PRESENT_IMG_INDEX_MIN = 1
 PRESENT_IMG_INDEX_MAX = 8
 PRESENT_WIDTH = 40
@@ -50,12 +53,12 @@ IMP_LEFT_IMG = "img/game_imp_left.png"
 IMP_RIGHT_IMG = "img/game_imp_right.png"
 IMP_MIN_SPEED = 0
 IMP_MAX_SPEED = 0
-
 IMP_BONUS_WIDTH = 57
 IMP_BONUS_HEIGHT = 48
 IMP_BONUS_IMG = "img/game_imp_bonus.png"
 IMP_BONUS_MIN_SPEED = 7
 IMP_BONUS_MAX_SPEED = 7
+IMP_SOUND = audio.loadSound("sound/bonus.mp3")
 
 ASPIRATOR_BONUS_WIDTH = 40
 ASPIRATOR_BONUS_HEIGHT = 42
@@ -63,6 +66,14 @@ ASPIRATOR_BONUS_IMG = "img/game_aspirator_bonus.png"
 ASPIRATOR_BONUS_MIN_SPEED = 7
 ASPIRATOR_BONUS_MAX_SPEED = 7
 ASPIRATOR_ASPIRATION_DELAY = 150
+ASPIRATOR_SOUND = audio.loadSound("sound/bonus.mp3")
+
+X2_BONUS_IMG = "img/game_x2_bonus.png"
+X2_BONUS_WIDTH = 32
+X2_BONUS_HEIGHT = 32
+X2_BONUS_MIN_SPEED = 7
+X2_BONUS_MAX_SPEED = 7
+X2_SOUND = audio.loadSound("sound/bonus.mp3")
 
 -- variables
 
@@ -72,20 +83,26 @@ local currentShowBounds
 
 -- core
 
-Item = class(function(this, type, hit, fall)
+Item = class(function(this, type, hit, fall, speedMin, speedMax)
 	this.type = type
 
 	if type == TYPE_PRESENT then
 		this.img = string.gsub(PRESENT_IMG, '#index#', math.random(PRESENT_IMG_INDEX_MIN, PRESENT_IMG_INDEX_MAX))
 		this.width = PRESENT_WIDTH
 		this.height = PRESENT_HEIGHT
-		this.speed = math.random(PRESENT_MIN_SPEED, PRESENT_MAX_SPEED)
+		this.speed = math.random(speedMin, speedMax)
 		this.sound = PRESENT_SOUND
 	elseif type == TYPE_STAR_PRESENT then
 		this.img = string.gsub(PRESENT_IMG, '#index#', math.random(PRESENT_IMG_INDEX_MIN, PRESENT_IMG_INDEX_MAX))
 		this.width = PRESENT_WIDTH
 		this.height = PRESENT_HEIGHT
 		this.speed = math.random(STAR_BONUS_PRESENT_MIN_SPEED, STAR_BONUS_PRESENT_MAX_SPEED)
+	elseif type == TYPE_X2_PRESENT then
+		this.img = string.gsub(PRESENT_X2_IMG, '#index#', math.random(PRESENT_IMG_INDEX_MIN, PRESENT_IMG_INDEX_MAX))
+		this.width = PRESENT_WIDTH
+		this.height = PRESENT_HEIGHT
+		this.speed = math.random(PRESENT_MIN_SPEED, PRESENT_MAX_SPEED)
+		this.sound = PRESENT_SOUND
 	elseif type == TYPE_BOMB then
 		this.img = BOMB_IMG
 		this.width = BOMB_WIDTH
@@ -116,11 +133,19 @@ Item = class(function(this, type, hit, fall)
 		this.width = IMP_BONUS_WIDTH
 		this.height = IMP_BONUS_HEIGHT
 		this.speed = math.random(IMP_BONUS_MIN_SPEED, IMP_BONUS_MAX_SPEED)
+		this.sound = IMP_SOUND
 	elseif type == TYPE_ASPIRATOR_BONUS then
 		this.img = ASPIRATOR_BONUS_IMG
 		this.width = ASPIRATOR_BONUS_WIDTH
 		this.height = ASPIRATOR_BONUS_HEIGHT
 		this.speed = math.random(ASPIRATOR_BONUS_MIN_SPEED, ASPIRATOR_BONUS_MAX_SPEED)
+		this.sound = ASPIRATOR_SOUND
+	elseif type == TYPE_X2_BONUS then
+		this.img = X2_BONUS_IMG
+		this.width = X2_BONUS_WIDTH
+		this.height = X2_BONUS_HEIGHT
+		this.speed = math.random(X2_BONUS_MIN_SPEED, X2_BONUS_MAX_SPEED)
+		this.sound = X2_SOUND
 	end
 
 	this.hit = hit
@@ -146,6 +171,12 @@ end
 
 function Item:elem()
 	return self.element
+end
+
+function Item:toFront()
+	if self.element then
+		self.element:toFront()
+	end
 end
 
 function Item:contentBounds()

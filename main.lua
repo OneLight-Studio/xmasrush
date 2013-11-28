@@ -7,13 +7,16 @@ display.setStatusBar(display.HiddenStatusBar)
 
 -- global constants
 
+LEVELS = { 25, 100, 200, 300, 450, 550, 675, 800, 900, 1000 }
 FONT = "Cartoon"
 BTN_IMG = "img/btn.png"
 BTN_IMG_PRESSED = "img/btn_pressed.png"
 BTN_SMALL_IMG = "img/btn_small.png"
 BTN_SMALL_IMG_PRESSED = "img/btn_small_pressed.png"
+BTN_SMALL_IMG_DISABLED = "img/btn_small_disabled.png"
 BTN_FONT_SIZE = 40
 BTN_LABEL_COLOR = { 44, 57, 130 }
+BTN_LABEL_COLOR_DISABLED = { 47, 57 , 130, 150 }
 BTN_SIZE = 60
 BTN_GAP = 10
 GAME_SETTINGS = "xmasrush.json"
@@ -64,11 +67,12 @@ if( gameSettings == nil ) then
     -- There are no settings. This is first time the user launch your game
     -- Create the default settings
     gameSettings = {}
+    gameSettings.level = 1
     gameSettings.highScore = 0
     gameSettings.soundEnable = true
     gameSettings.soundEffectEnable = true
 
-    loadsave.saveTable(gameSettings, "crazyxmas.json")
+    loadsave.saveTable(gameSettings, GAME_SETTINGS)
 end
 
 Runtime:addEventListener( "key", onKeyEvent )
