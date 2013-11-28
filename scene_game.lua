@@ -8,11 +8,11 @@ require "item"
 
 local PRESENT_SPEED = { { 3, 4 }, { 3, 5 }, { 4, 5 }, { 4, 6 }, { 5, 6 }, { 5, 7 }, { 5, 8 }, { 6, 8 }, { 7, 8 }, { 8, 8 } }
 local DELAY_BETWEEN_PRESENTS = { 1000, 800, 600, 450, 300, 250, 200, 150, 100, 100 }
-local DELAY_BETWEEN_BOMBS = { 5000, 4500, 4000, 3500, 3500, 3000, 3000, 2500, 2000, 1000 }
+local DELAY_BETWEEN_BOMBS = { 5000, 4500, 4000, 3500, 3500, 3000, 3000, 2500, 2000, 2000 }
 local DELAY_BETWEEN_BONUS = 11000
 local AUDIO_PITCH = { 1.0, 1.05, 1.1, 1.15, 1.2, 1.25, 1.3, 1.35, 1.4, 1.45 }
 local IMP_DELAY = 10000
-local MAX_ITEMS_ON_SCREEN = { 3, 4, 5, 5, 6, 6, 7, 7, 8, 9 }
+local MAX_ITEMS_ON_SCREEN = { 3, 4, 5, 5, 6, 6, 7, 7, 8, 8 }
 local X2_DELAY = 10000
 local DELAY_BETWEEN_MAX_ITEMS_ON_SCREEN = 15000
 local LIVES_START = 10
@@ -337,10 +337,14 @@ local function onEveryFrame(event)
 			Runtime:removeEventListener("enterFrame", onEveryFrame)
 			game:gameOver()
 			storyboard.showOverlay( "scene_game_over", {isModal = true, params = { game = game }} )
+		elseif game.score >= LEVELS[table.getn(LEVELS)] then
+			-- game if finished
+			storyboard.showOverlay("scene_game_finished")
 		else
 			-- keep the text visible
 			game:scoreLivesToFront()
 			menuButton:toFront()
+			paddle:toFront()
 		end
 	end
 end

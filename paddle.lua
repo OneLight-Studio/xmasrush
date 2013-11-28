@@ -88,6 +88,10 @@ function Paddle:elem()
 	return pad
 end
 
+function Paddle:toFront()
+	pad:toFront()
+end
+
 function Paddle:onEnterScene()
 	pad = display.newImageRect(PADDLE_IMG, PADDLE_WIDTH, PADDLE_HEIGHT)
 	pad.x = display.contentCenterX

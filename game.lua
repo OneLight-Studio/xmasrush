@@ -69,7 +69,7 @@ function Game:updateScore(positive)
 	if self.scoreLabel ~= nil then
 		display.remove(self.scoreLabel)
 	end
-	self.scoreLabel = display.newText(self.score .. "/" .. self.nextLevelScore, display.contentWidth - SCORE_WIDTH, 0, FONT, FONT_SIZE)
+	self.scoreLabel = display.newText(self.score .. "/" .. (self.nextLevelScore or self.score), display.contentWidth - SCORE_WIDTH, 0, FONT, FONT_SIZE)
 	self.scoreLabel.y = TXT_HEIGHT / 2
 	-- animate the label
 	local scale = TXT_SCALE_RATIO_POSITIVE
@@ -164,17 +164,20 @@ end
 
 function Game:increaseScore(number)
 	self.score = self.score + number
-	if self.nextLevelScore and self.score >= self.nextLevelScore then
-		self.level = self.level + 1
-		self.nextLevelScore = LEVELS[self.level]
-		if self.level > gameSettings.level then
-			gameSettings.level = self.level
-			loadsave.saveTable(gameSettings, GAME_SETTINGS)
-		end
-		self:updateLevel()
-		audio.play(audio.loadSound("sound/levelup.mp3"))
-	end
 	self:updateScore(number >= 0)
+	if self.nextLevelScore and self.score >= self.nextLevelScore then
+		if self.level < table.getn(LEVELS) then
+			-- level up
+			self.level = self.level + 1
+			self.nextLevelScore = LEVELS[self.level]
+			if self.level > gameSettings.level then
+				gameSettings.level = self.level
+				loadsave.saveTable(gameSettings, GAME_SETTINGS)
+			end
+			self:updateLevel()
+			audio.play(audio.loadSound("sound/levelup.mp3"))
+		end
+	end
 end
 
 function Game:decreaseScore(number)
