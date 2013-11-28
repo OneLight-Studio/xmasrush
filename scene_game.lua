@@ -268,7 +268,7 @@ local function dropBonus()
 		bonus = Item(TYPE_LIFE_BONUS, function() game:increaseLives(3) end, nil, nil)
 	elseif bonusType == 4 and game.level >= 3 then
 		bonus = Item(TYPE_ASPIRATOR_BONUS, function() paddle:toAspiratorMode(true) end, nil, nil)
-	elseif bonusType == 4 and game.level >= 1 then
+	elseif bonusType == 5 and game.level >= 1 then
 		bonus = Item(TYPE_X2_BONUS, function() x2Hit() end, nil, nil)
 	end
 
