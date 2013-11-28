@@ -179,6 +179,10 @@ function scene:exitScene( event )
 	textImp = nil
 	display.remove(textVacuum)
 	textVacuum = nil
+	display.remove(textX2)
+	textX2 = nil
+	display.remove(textEmpty)
+	textEmpty = nil
 
 	display.remove(imageGitf)
 	imageGitf = nil
@@ -192,6 +196,8 @@ function scene:exitScene( event )
 	imageImp = nil
 	display.remove(imageVacuum)
 	imageVacuum = nil
+	display.remove(imageX2)
+	imageX2 = nil
 end
 
 function scene:destroyScene( event )
