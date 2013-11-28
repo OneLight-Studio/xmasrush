@@ -6,9 +6,9 @@ require "item"
 
 -- constants
 
-local PRESENT_SPEED = { { 3, 4 }, { 3, 5 }, { 4, 5 }, { 4, 6 }, { 5, 6 }, { 5, 7 }, { 5, 8 }, { 6, 8 }, { 7, 8 }, { 8, 8 } }
-local DELAY_BETWEEN_PRESENTS = { 1000, 800, 600, 450, 300, 250, 200, 150, 100, 100 }
-local DELAY_BETWEEN_BOMBS = { 5000, 4500, 4000, 3500, 3500, 3000, 3000, 2500, 2000, 2000 }
+local PRESENT_SPEED = { { 3, 4 }, { 3, 5 }, { 4, 5 }, { 4, 6 }, { 4, 6 }, { 5, 6 }, { 5, 6 }, { 5, 7 }, { 5, 8 }, { 6, 8 } }
+local DELAY_BETWEEN_PRESENTS = { 1000, 800, 600, 450, 300, 300, 300, 250, 250, 250 }
+local DELAY_BETWEEN_BOMBS = { 5000, 4500, 4000, 3500, 3500, 3500, 3500, 3500, 3000, 3000 }
 local DELAY_BETWEEN_BONUS = 11000
 local AUDIO_PITCH = { 1.0, 1.05, 1.1, 1.15, 1.2, 1.25, 1.3, 1.35, 1.4, 1.45 }
 local IMP_DELAY = 10000
@@ -16,6 +16,9 @@ local MAX_ITEMS_ON_SCREEN = { 3, 4, 5, 5, 6, 6, 7, 7, 8, 8 }
 local X2_DELAY = 10000
 local DELAY_BETWEEN_MAX_ITEMS_ON_SCREEN = 15000
 local LIVES_START = 10
+local LAST_CHANCE_MIN_LEVEL = 8
+local LAST_CHANCE_MIN_LIVES = 3
+local LAST_CHANCE_MIN_RATIO = 5
 
 -- variables
 
@@ -174,7 +177,7 @@ end
 
 function dropPresentLine()
 	if starDroppingIndex < starDroppingMax then
-		local prensentNumberPerRow = math.floor(display.contentWidth / PRESENT_WIDTH) / 5
+		local prensentNumberPerRow = math.floor(display.contentWidth / PRESENT_WIDTH) / 10
 		
 		for i=0, prensentNumberPerRow, 1 do
 			local present = Item(TYPE_STAR_PRESENT, function() game:increaseScore(1) end, nil)
@@ -200,14 +203,32 @@ function dropPresentLine()
 	end
 end
 
+local function dropLife()
+	if math.random(1, LAST_CHANCE_MIN_RATIO) == 1 then
+		local life = Item(TYPE_LIFE_BONUS, function() game:increaseLives(3) end, nil, nil)
+		table.insert(items, life)
+		life:onEnterScene()
+	end
+end
+
 local function dropPresent()
 	if table.getn(items) < itemsCountOnScreen then
 		if isOnX2Bonus then
-			local present = Item(TYPE_X2_PRESENT, function() game:increaseScore(2) end, function() game:decreaseLives(1) end, PRESENT_SPEED[game.level][1], PRESENT_SPEED[game.level][2])
+			local present = Item(TYPE_X2_PRESENT, function() game:increaseScore(2) end, function()
+				game:decreaseLives(1)
+				if game.lives <= LAST_CHANCE_MIN_LIVES and game.level >= LAST_CHANCE_MIN_LEVEL then
+					dropLife()
+				end
+			end, PRESENT_SPEED[game.level][1], PRESENT_SPEED[game.level][2])
 			table.insert(items, present)
 			present:onEnterScene()
 		else
-			local present = Item(TYPE_PRESENT, function() game:increaseScore(1) end, function() game:decreaseLives(1) end, PRESENT_SPEED[game.level][1], PRESENT_SPEED[game.level][2])
+			local present = Item(TYPE_PRESENT, function() game:increaseScore(1) end, function()
+				game:decreaseLives(1)
+				if game.lives <= LAST_CHANCE_MIN_LIVES and game.level >= LAST_CHANCE_MIN_LEVEL then
+					dropLife()
+				end
+			end, PRESENT_SPEED[game.level][1], PRESENT_SPEED[game.level][2])
 			table.insert(items, present)
 			present:onEnterScene()
 		end
@@ -224,6 +245,9 @@ local function dropBomb()
 	local bomb = Item(TYPE_BOMB, function()
 		game:decreaseLives(5)
 		blink(paddle:elem(), BLINK_SPEED_FAST)
+		if game.lives <= LAST_CHANCE_MIN_LIVES and game.level >= LAST_CHANCE_MIN_LEVEL then
+			dropLife()
+		end
 	end, nil)
 	table.insert(items, bomb)
 	bomb:onEnterScene()

@@ -54,7 +54,7 @@ function scene:enterScene( event )
 	btnWebSiteUnderline = display.newLine(btnWebSite.x - (btnWebSite.contentWidth/2), btnWebSite.y + ((btnWebSite.contentHeight/2)-3), btnWebSite.x + (btnWebSite.contentWidth/2), btnWebSite.y + ((btnWebSite.contentHeight/2)-3))
 	btnWebSiteUnderline.width = 2
 
-	textCopyright = display.newText(language:getString("credits.copyright"), 0, 0, FONT, 16)
+	textCopyright = display.newText(language:getString("credits.copyright"), 0, 0, FONT, 14)
 	textCopyright.x = display.contentWidth / 2 
 	textCopyright.y = btnWebSiteUnderline.y + btnWebSiteUnderline.contentHeight / 2 + 25
 
