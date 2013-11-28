@@ -14,6 +14,7 @@
 	"help.star":"Triggers a rain of presents",
 	"help.imp":"An elf helps you to catch the presents",
 	"help.vacuum":"Your sleigh attracts the nearest presents",
+	"help.x2":"+2 points by gold presents",
 	"credits.copyright":"OneLight Studio is a trademark of Prometil.",
 	"credits.website":"www.onelight-studio.com",
 	"pts":" pts",
