@@ -60,7 +60,7 @@ function scene:enterScene( event )
 
 	local game = event.params.game
 	scoreText = display.newText(game.score .. "/" .. game.nextLevelScore, 0, 0, FONT, 40)
-	scoreText.x = display.contentCenterX + 40
+	scoreText.x = display.contentCenterX + 60
 	scoreText.y = display.contentCenterY - 50
 
 	--[[

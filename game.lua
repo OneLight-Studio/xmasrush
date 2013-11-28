@@ -4,9 +4,9 @@ require 'class'
 
 -- constants
 
-local SCORE_WIDTH = 150
-local LIVES_WIDTH = 150
-local FONT_SIZE = 30
+local SCORE_WIDTH = 130
+local LIVES_WIDTH = 100
+local FONT_SIZE = 20
 local TXT_HEIGHT = 40
 local TXT_SCALE_RATIO_POSITIVE = 2
 local TXT_SCALE_RATIO_NEGATIVE = 3
@@ -175,7 +175,9 @@ function Game:increaseScore(number)
 				loadsave.saveTable(gameSettings, GAME_SETTINGS)
 			end
 			self:updateLevel()
-			audio.play(audio.loadSound("sound/levelup.mp3"))
+			if gameSettings.soundEffectEnable then
+				audio.play(audio.loadSound("sound/levelup.mp3"))
+			end
 		end
 	end
 end
