@@ -181,14 +181,16 @@ end
 
 function Item:contentBounds()
 	if self.element ~= nil then
-		if self.img == IMP_IMG then
+		if self.img == IMP_LEFT_IMG or self.img == IMP_RIGHT_IMG then
 			local currentBounds = self.element.contentBounds
 			currentBounds.xMin = currentBounds.xMin
 			currentBounds.xMax = currentBounds.xMax - 10
-			currentBounds.yMin = currentBounds.yMin + 40
+			currentBounds.yMin = currentBounds.yMin + 70
 			currentBounds.yMax = currentBounds.yMax
 
 			--currentShowBounds = showBounds(currentBounds, currentShowBounds)
+
+			self.element:toFront()
 
 			return currentBounds
 		else
