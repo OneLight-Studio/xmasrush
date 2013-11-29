@@ -66,6 +66,8 @@ function scene:willEnterScene( event )
 end
 
 function scene:enterScene( event )
+	storyboard.isOverlay = true
+
 	if gameSettings.soundEffectEnable then
 		audio.play(audio.loadSound("sound/game_over.mp3"))
 	end
@@ -145,6 +147,8 @@ function scene:exitScene( event )
 		display.remove(btn)
 		btn = nil
 	end
+
+	storyboard.isOverlay = false
 end
 
 function scene:destroyScene( event )
