@@ -20,5 +20,11 @@
 	"pts":" pts",
 	"highscore":"New Highscore!",
 	"levels":"Select a level",
-	"level":"Level"
+	"level":"Level",
+	"share.url":"http://www.onelight-studio.com",
+	"share.text.1":"I've reached ",
+	"share.text.2":" points at the level ",
+	"share.text.3":" of Xmas Rush. What about you?",
+	"share.text.finished":"Yeah, I've finished Xmas Rush! What about you?",
+	"share.twitter":"OneLight_Studio"
 }

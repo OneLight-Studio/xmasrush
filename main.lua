@@ -67,6 +67,7 @@ if( gameSettings == nil ) then
     -- There are no settings. This is first time the user launch your game
     -- Create the default settings
     gameSettings = {}
+	gameSettings.finished = false
     gameSettings.level = 1
     gameSettings.highScore = 0
     gameSettings.soundEnable = true
