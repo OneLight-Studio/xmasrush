@@ -20,5 +20,11 @@
 	"pts":" pts",
 	"highscore":"Nouveau Record !",
 	"levels":"Choisis un niveau",
-	"level":"Niveau"
+	"level":"Niveau",
+	"share.url":"http://www.onelight-studio.com",
+	"share.text.1":"J'ai atteint ",
+	"share.text.2":" points au niveau ",
+	"share.text.3":" de Xmas Rush. Et vous ?",
+	"share.text.finished":"Super, j'ai terminé Xmas Rush! Et vous ?",
+	"share.twitter":"OneLight_Studio"
 }

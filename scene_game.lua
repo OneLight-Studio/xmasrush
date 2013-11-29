@@ -363,6 +363,8 @@ local function onEveryFrame(event)
 			storyboard.showOverlay( "scene_game_over", {isModal = true, params = { game = game }} )
 		elseif game.score >= LEVELS[table.getn(LEVELS)] then
 			-- game if finished
+			gameSettings.finished = true
+			loadsave.saveTable(gameSettings, GAME_SETTINGS)
 			storyboard.showOverlay("scene_game_finished")
 		else
 			-- keep the text visible
