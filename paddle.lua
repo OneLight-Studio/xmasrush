@@ -15,6 +15,11 @@ PADDLE_MODE_ASPIRATOR = 'mode_aspirator'
 DELAY_PADDLE_ASPIRATOR_MODE = 10000
 PADDLE_ASPIRATOR_MODE_IMG = "img/game_paddle_with_aspirator.png"
 PADDLE_ASPIRATOR_PADDING = 50
+PADDLE_MODE_BIG = 'mode_big'
+DELAY_PADDLE_BIG_MODE = 5000
+PADDLE_BIG_MODE_IMG = "img/game_paddle_big.png"
+PADDLE_BIG_MODE_WIDTH = 240
+PADDLE_BIG_MODE_HEIGHT = 216
 
 -- variables
 
@@ -28,33 +33,6 @@ local timerEnd
 
 local function onTouchScreen(event)
 	lastTouchedX = event.x
-
-	--[[
-	-- Code for the arcade mode paddle mouvements
-	local newX
-	local newY
-
-	if pad ~= nil then
-		newX = event.x
-		newY = event.y
-		if newX - pad.width / 2 < 0 then
-			newX = pad.width / 2
-		end
-		if newX + pad.width / 2 > display.contentWidth then
-			newX = display.contentWidth - pad.width / 2
-		end
-
-		if newY - pad.height / 2 < 0 then
-			newY = pad.height / 2
-		end
-		if newY + pad.height / 2 > display.contentHeight then
-			newY = display.contentHeight - pad.height / 2
-		end
-
-		pad.x = newX
-		pad.y = newY
-	end
-	--]]
 end
 
 -- core
@@ -166,6 +144,37 @@ function Paddle:toAspiratorMode(activate)
 			pad = display.newImageRect(PADDLE_IMG, PADDLE_WIDTH, PADDLE_HEIGHT)
 			pad.x = oldPad.x
 			pad.y = oldPad.y
+			
+			self.mode = PADDLE_MODE_NORMAL
+
+			self:cancelTimerPaddle()
+
+			display.remove(oldPad)
+			oldPad = nil
+		end
+	end
+end
+
+function Paddle:toBigMode(activate)
+	if pad ~= nil then
+		if activate == true then
+			local oldPad = pad
+			pad = display.newImageRect(PADDLE_BIG_MODE_IMG, PADDLE_BIG_MODE_WIDTH, PADDLE_BIG_MODE_HEIGHT)
+			pad.x = oldPad.x
+			pad.y = display.contentHeight - pad.height / 2
+			
+			display.remove(oldPad)
+			oldPad = nil
+
+			self.mode = PADDLE_MODE_BIG
+
+			timerBlink = timer.performWithDelay(DELAY_PADDLE_BIG_MODE - 2000, function () blink(pad, BLINK_SPEED_NORMAL) end)
+			timerEnd = timer.performWithDelay(DELAY_PADDLE_BIG_MODE, function () self:toBigMode(false) end)
+		else
+			local oldPad = pad
+			pad = display.newImageRect(PADDLE_IMG, PADDLE_WIDTH, PADDLE_HEIGHT)
+			pad.x = oldPad.x
+			pad.y = display.contentHeight - pad.height / 2
 			
 			self.mode = PADDLE_MODE_NORMAL
 
