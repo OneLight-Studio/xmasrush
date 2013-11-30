@@ -7,6 +7,7 @@ require 'class'
 PADDLE_WIDTH = 100
 PADDLE_HEIGHT = 90
 PADDLE_IMG = "img/game_paddle.png"
+PADDLE_IMG_GOLD = "img/game_paddle_gold.png"
 PADDLE_INDEX_MIN = 0
 PADDLE_INDEX_MAX = 5
 PADDLE_SPEED = 60
@@ -16,7 +17,7 @@ DELAY_PADDLE_ASPIRATOR_MODE = 10000
 PADDLE_ASPIRATOR_MODE_IMG = "img/game_paddle_with_aspirator.png"
 PADDLE_ASPIRATOR_PADDING = 50
 PADDLE_MODE_BIG = 'mode_big'
-DELAY_PADDLE_BIG_MODE = 5000
+DELAY_PADDLE_BIG_MODE = 5500
 PADDLE_BIG_MODE_IMG = "img/game_paddle_big.png"
 PADDLE_BIG_MODE_WIDTH = 240
 PADDLE_BIG_MODE_HEIGHT = 216
@@ -71,7 +72,7 @@ function Paddle:toFront()
 end
 
 function Paddle:onEnterScene()
-	pad = display.newImageRect(PADDLE_IMG, PADDLE_WIDTH, PADDLE_HEIGHT)
+	pad = display.newImageRect(gameSettings.finished and PADDLE_IMG_GOLD or PADDLE_IMG, PADDLE_WIDTH, PADDLE_HEIGHT)
 	pad.x = display.contentCenterX
 	pad.y = display.contentHeight - pad.height / 2
 
@@ -137,11 +138,11 @@ function Paddle:toAspiratorMode(activate)
 
 			self.mode = PADDLE_MODE_ASPIRATOR
 
-			timerBlink = timer.performWithDelay(DELAY_PADDLE_ASPIRATOR_MODE - 2000, function () blink(pad, BLINK_SPEED_NORMAL) end)
+			--timerBlink = timer.performWithDelay(DELAY_PADDLE_ASPIRATOR_MODE - 2000, function () blink(pad, BLINK_SPEED_NORMAL) end)
 			timerEnd = timer.performWithDelay(DELAY_PADDLE_ASPIRATOR_MODE, function () self:toAspiratorMode(false) end)
 		else
 			local oldPad = pad
-			pad = display.newImageRect(PADDLE_IMG, PADDLE_WIDTH, PADDLE_HEIGHT)
+			pad = display.newImageRect(gameSettings.finished and PADDLE_IMG_GOLD or PADDLE_IMG, PADDLE_WIDTH, PADDLE_HEIGHT)
 			pad.x = oldPad.x
 			pad.y = oldPad.y
 			
@@ -168,7 +169,8 @@ function Paddle:toBigMode(activate)
 
 			self.mode = PADDLE_MODE_BIG
 
-			timerBlink = timer.performWithDelay(DELAY_PADDLE_BIG_MODE - 2000, function () blink(pad, BLINK_SPEED_NORMAL) end)
+			blink(pad, BLINK_SPEED_FAST)
+			--timerBlink = timer.performWithDelay(DELAY_PADDLE_BIG_MODE - 2000, function () blink(pad, BLINK_SPEED_NORMAL) end)
 			timerEnd = timer.performWithDelay(DELAY_PADDLE_BIG_MODE, function () self:toBigMode(false) end)
 		else
 			local oldPad = pad

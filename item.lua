@@ -23,15 +23,15 @@ PRESENT_X2_IMG = "img/game_present_#index#_x2.png"
 PRESENT_SNOWFLAKE_IMG = "img/game_present_#index#_frozen.png"
 PRESENT_IMG_INDEX_MIN = 1
 PRESENT_IMG_INDEX_MAX = 8
-PRESENT_WIDTH = 40
-PRESENT_HEIGHT = 50
+PRESENT_WIDTH = 35
+PRESENT_HEIGHT = 43
 PRESENT_MIN_SPEED = 2
 PRESENT_MAX_SPEED = 4
 PRESENT_SOUND = audio.loadSound("sound/blop.mp3")
 
 BOMB_IMG = "img/game_bomb.png"
-BOMB_WIDTH = 40
-BOMB_HEIGHT = 45
+BOMB_WIDTH = 35
+BOMB_HEIGHT = 39
 BOMB_MIN_SPEED = 3
 BOMB_MAX_SPEED = 3
 BOMB_SOUND = audio.loadSound("sound/bomb.mp3")
@@ -44,8 +44,8 @@ LIFE_BONUS_MAX_SPEED = 6
 LIFE_BONUS_SOUND = audio.loadSound("sound/life_up.mp3")
 
 STAR_BONUS_IMG = "img/game_star.png"
-STAR_BONUS_WIDTH = 40
-STAR_BONUS_HEIGHT = 40
+STAR_BONUS_WIDTH = 35
+STAR_BONUS_HEIGHT = 35
 STAR_BONUS_MIN_SPEED = 7
 STAR_BONUS_MAX_SPEED = 7
 STAR_BONUS_PRESENT_MIN_SPEED = 7
@@ -62,7 +62,7 @@ IMP_BONUS_HEIGHT = 42
 IMP_BONUS_IMG = "img/game_imp_bonus.png"
 IMP_BONUS_MIN_SPEED = 7
 IMP_BONUS_MAX_SPEED = 7
-IMP_SOUND = audio.loadSound("sound/bonus.mp3")
+IMP_SOUND = audio.loadSound("sound/bonus_imp.mp3")
 
 ASPIRATOR_BONUS_WIDTH = 40
 ASPIRATOR_BONUS_HEIGHT = 42
@@ -70,7 +70,7 @@ ASPIRATOR_BONUS_IMG = "img/game_aspirator_bonus.png"
 ASPIRATOR_BONUS_MIN_SPEED = 7
 ASPIRATOR_BONUS_MAX_SPEED = 7
 ASPIRATOR_ASPIRATION_DELAY = 150
-ASPIRATOR_SOUND = audio.loadSound("sound/bonus.mp3")
+ASPIRATOR_SOUND = audio.loadSound("sound/bonus_aspirator.mp3")
 
 X2_BONUS_IMG = "img/game_x2_bonus.png"
 X2_BONUS_WIDTH = 40
@@ -84,14 +84,14 @@ SNOWFLAKE_BONUS_WIDTH = 40
 SNOWFLAKE_BONUS_HEIGHT = 47
 SNOWFLAKE_BONUS_MIN_SPEED = 7
 SNOWFLAKE_BONUS_MAX_SPEED = 7
-SNOWFLAKE_SOUND = audio.loadSound("sound/wind.mp3")
+SNOWFLAKE_SOUND = audio.loadSound("sound/bonus_snowflake.mp3")
 
 BIG_BONUS_IMG = "img/game_big_bonus.png"
 BIG_BONUS_WIDTH = 25
 BIG_BONUS_HEIGHT = 70
 BIG_BONUS_MIN_SPEED = 7
 BIG_BONUS_MAX_SPEED = 7
-BIG_SOUND = audio.loadSound("sound/big_bonus_sound.mp3")
+BIG_SOUND = audio.loadSound("sound/bonus_big.mp3")
 
 -- variables
 
@@ -217,14 +217,16 @@ end
 
 function Item:contentBounds()
 	if self.element ~= nil then
-		if self.img == IMP_IMG then
+		if self.img == IMP_LEFT_IMG or self.img == IMP_RIGHT_IMG then
 			local currentBounds = self.element.contentBounds
 			currentBounds.xMin = currentBounds.xMin
 			currentBounds.xMax = currentBounds.xMax - 10
-			currentBounds.yMin = currentBounds.yMin + 40
+			currentBounds.yMin = currentBounds.yMin + 70
 			currentBounds.yMax = currentBounds.yMax
 
 			--currentShowBounds = showBounds(currentBounds, currentShowBounds)
+
+			self.element:toFront()
 
 			return currentBounds
 		else

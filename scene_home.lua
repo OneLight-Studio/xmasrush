@@ -21,7 +21,7 @@ local snow
 
 -- constants
 
-local BTN_Y_MIN = 120
+local BTN_Y_MIN = 150
 
 -- local functions
 local function updateBtnPosition()
@@ -127,7 +127,7 @@ end
 function scene:createScene( event )
 	this = self
     display.newImage(self.view, "img/bg.jpg" )
-	display.newText({ parent=self.view, text=language:getString("game.name"), x=display.contentWidth / 2, y=30, font=FONT, fontSize=70 })
+	display.newText({ parent=self.view, text=language:getString("game.name"), x=display.contentWidth / 2, y=50, font=FONT, fontSize=70 })
 	self.view:insert(addButton(language:getString("menu.play"), function(event) moveToScene("scene_levels") end))
 	--self.view:insert(addButton(language:getString("menu.scores"), function(event) moveToScene("scene_highscores") end))
 	self.view:insert(addButtonSmall(1, "img/home_help.png", "img/home_help_pressed.png", function(event) moveToScene("scene_help") end))

@@ -232,34 +232,53 @@ end
 
 local function dropPresent()
 	if table.getn(items) < itemsCountOnScreen then
+		local present
 		if isOnX2Bonus then
-			local present = Item(TYPE_X2_PRESENT, function() game:increaseScore(2) end, function()
-				game:decreaseLives(1)
-				if game.lives <= LAST_CHANCE_MIN_LIVES and game.level >= LAST_CHANCE_MIN_LEVEL then
-					dropLife()
-				end
-			end, PRESENT_SPEED[game.level][1], PRESENT_SPEED[game.level][2])
-			table.insert(items, present)
-			present:onEnterScene()
+			present = Item(TYPE_X2_PRESENT, 
+				function() 
+					game:increaseScore(2) 
+				end, 
+				function()
+					game:decreaseLives(1)
+					if game.lives <= LAST_CHANCE_MIN_LIVES and game.level >= LAST_CHANCE_MIN_LEVEL then
+						dropLife()
+					end
+				end, 
+				PRESENT_SPEED[game.level][1], 
+				PRESENT_SPEED[game.level][2]
+			)
 		elseif isOnSnowflakeBonus then
-			local present = Item(TYPE_SNOWFLAKE_PRESENT, function() game:increaseScore(1) end, function()
-				game:decreaseLives(1)
-				if game.lives <= LAST_CHANCE_MIN_LIVES and game.level >= LAST_CHANCE_MIN_LEVEL then
-					dropLife()
-				end
-			end, PRESENT_SPEED[game.level][1] / 2, PRESENT_SPEED[game.level][2] / 2)
-			table.insert(items, present)
-			present:onEnterScene()
+			present = Item(TYPE_SNOWFLAKE_PRESENT,
+				function() 
+					game:increaseScore(1) 
+				end,
+				function()
+					game:decreaseLives(1)
+					if game.lives <= LAST_CHANCE_MIN_LIVES and game.level >= LAST_CHANCE_MIN_LEVEL then
+						dropLife()
+					end
+				end,
+				PRESENT_SPEED[game.level][1] / 3,
+				PRESENT_SPEED[game.level][2] / 3
+			)
 		else
-			local present = Item(TYPE_PRESENT, function() game:increaseScore(1) end, function()
-				game:decreaseLives(1)
-				if game.lives <= LAST_CHANCE_MIN_LIVES and game.level >= LAST_CHANCE_MIN_LEVEL then
-					dropLife()
-				end
-			end, PRESENT_SPEED[game.level][1], PRESENT_SPEED[game.level][2])
-			table.insert(items, present)
-			present:onEnterScene()
+			present = Item(TYPE_PRESENT,
+				function() 
+					game:increaseScore(1) 
+				end, 
+				function()
+					game:decreaseLives(1)
+					if game.lives <= LAST_CHANCE_MIN_LIVES and game.level >= LAST_CHANCE_MIN_LEVEL then
+						dropLife()
+					end
+				end,
+				PRESENT_SPEED[game.level][1],
+				PRESENT_SPEED[game.level][2]
+			)
 		end
+
+		table.insert(items, present)
+		present:onEnterScene()
 	end
 
 	audioLoopPitch = AUDIO_PITCH[game.level]
@@ -285,10 +304,10 @@ local function dropBomb()
 end
 
 local function dropBonus()
-	local bonusType = math.random(1,math.min(game.level, 7))
+	local bonusType = math.random(1, math.min(game.level, 7))
 	local bonus
-	--[[
-	if bonusType == 1 and game.level >= 1 then
+	
+	if bonusType == 1 then
 		bonus = Item(TYPE_X2_BONUS, function() x2Hit() end, nil, nil)
 	elseif bonusType == 2 then
 		bonus = Item(TYPE_IMP_BONUS, function() impHit() end, nil, nil)
@@ -298,14 +317,11 @@ local function dropBonus()
 		bonus = Item(TYPE_LIFE_BONUS, function() game:increaseLives(3) end, nil, nil)
 	elseif bonusType == 5 then
 		bonus = Item(TYPE_STAR_BONUS, function() startHit() end, nil, nil)
-	elseif bonusType == 6 and game.level >= 1 then
+	elseif bonusType == 6 then
 		bonus = Item(TYPE_SNOWFLAKE_BONUS, function() snowflakeHit() end, nil, nil)
-	elseif bonusType == 7 and game.level >= 1 then
+	elseif bonusType == 7 then
 		bonus = Item(TYPE_BIG_BONUS, function() paddle:toBigMode(true) end, nil, nil)
-	end--]]
-
-	--bonus = Item(TYPE_BIG_BONUS, function() paddle:toBigMode(true) end, nil, nil)
-	bonus = Item(TYPE_SNOWFLAKE_BONUS, function() snowflakeHit() end, nil, nil)
+	end
 
 	if bonus then
 		if game.level > 1 and bonusType == lastBonusType then
@@ -364,7 +380,7 @@ local function onEveryFrame(event)
 						item:remove()
 
 						if paddle.mode == PADDLE_MODE_BIG and item.type == TYPE_BOMB then
-							item:onHit(game, true)
+							--item:onHit(game, true)
 						else
 							item:onHit(game)
 						end
@@ -403,6 +419,8 @@ local function onEveryFrame(event)
 			storyboard.showOverlay( "scene_game_over", {isModal = true, params = { game = game }} )
 		elseif game.score >= LEVELS[table.getn(LEVELS)] then
 			-- game if finished
+			gameSettings.finished = true
+			loadsave.saveTable(gameSettings, GAME_SETTINGS)
 			storyboard.showOverlay("scene_game_finished")
 		else
 			-- keep the text visible

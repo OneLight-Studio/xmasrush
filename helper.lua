@@ -42,7 +42,7 @@ function blink(element, speed)
 	local delay
 
 	if speed == BLINK_SPEED_FAST then
-		iteration = 10
+		iteration = 120
 		delay = 50
 	elseif speed == BLINK_SPEED_NORMAL then
 		iteration = 20
