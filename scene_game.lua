@@ -14,6 +14,7 @@ local AUDIO_PITCH = { 1.0, 1.05, 1.1, 1.15, 1.2, 1.25, 1.3, 1.35, 1.4, 1.45 }
 local IMP_DELAY = 10000
 local MAX_ITEMS_ON_SCREEN = { 3, 4, 5, 5, 6, 6, 7, 7, 8, 8 }
 local X2_DELAY = 10000
+local SNOWFLAKE_DELAY = 10000
 local DELAY_BETWEEN_MAX_ITEMS_ON_SCREEN = 15000
 local LIVES_START = 10
 local LAST_CHANCE_MIN_LEVEL = 8
@@ -41,6 +42,7 @@ local bombTimerId
 local bonusTimerId
 local impBonusTimerId
 local x2BonusTimerId
+local snowflakeBonusTimerId
 local impBlinkTimerId
 local impToLeft
 local starWaterfallTimerId
@@ -48,6 +50,7 @@ local starDroppingIndex = 0
 local starDroppingMax = 20
 local isOnPause = false
 local isOnX2Bonus = false
+local isOnSnowflakeBonus = false
 local songChannel
 local imp
 local level
@@ -88,6 +91,9 @@ function pauseGame()
 	if x2BonusTimerId ~= nil then
 		timer.pause(x2BonusTimerId)
 	end
+	if snowflakeBonusTimerId ~= nil then
+		timer.pause(snowflakeBonusTimerId)
+	end
 
 	timer.pause(bombTimerId)
 	timer.pause(bonusTimerId)
@@ -110,6 +116,9 @@ function resumeGame()
 	end
 	if x2BonusTimerId ~= nil then
 		timer.resume(x2BonusTimerId)
+	end
+	if snowflakeBonusTimerId ~= nil then
+		timer.resume(snowflakeBonusTimerId)
 	end
 	timer.resume(bombTimerId)
 	timer.resume(bonusTimerId)
@@ -175,6 +184,16 @@ function endX2()
 	x2BonusTimerId = nil
 end
 
+function snowflakeHit()
+	isOnSnowflakeBonus = true
+	snowflakeBonusTimerId = timer.performWithDelay(SNOWFLAKE_DELAY, endSnowflake)
+end
+
+function endSnowflake()
+	isOnSnowflakeBonus = false
+	snowflakeBonusTimerId = nil
+end
+
 function dropPresentLine()
 	if starDroppingIndex < starDroppingMax then
 		local prensentNumberPerRow = math.floor(display.contentWidth / PRESENT_WIDTH) / 10
@@ -213,25 +232,53 @@ end
 
 local function dropPresent()
 	if table.getn(items) < itemsCountOnScreen then
+		local present
 		if isOnX2Bonus then
-			local present = Item(TYPE_X2_PRESENT, function() game:increaseScore(2) end, function()
-				game:decreaseLives(1)
-				if game.lives <= LAST_CHANCE_MIN_LIVES and game.level >= LAST_CHANCE_MIN_LEVEL then
-					dropLife()
-				end
-			end, PRESENT_SPEED[game.level][1], PRESENT_SPEED[game.level][2])
-			table.insert(items, present)
-			present:onEnterScene()
+			present = Item(TYPE_X2_PRESENT, 
+				function() 
+					game:increaseScore(2) 
+				end, 
+				function()
+					game:decreaseLives(1)
+					if game.lives <= LAST_CHANCE_MIN_LIVES and game.level >= LAST_CHANCE_MIN_LEVEL then
+						dropLife()
+					end
+				end, 
+				PRESENT_SPEED[game.level][1], 
+				PRESENT_SPEED[game.level][2]
+			)
+		elseif isOnSnowflakeBonus then
+			present = Item(TYPE_SNOWFLAKE_PRESENT,
+				function() 
+					game:increaseScore(1) 
+				end,
+				function()
+					game:decreaseLives(1)
+					if game.lives <= LAST_CHANCE_MIN_LIVES and game.level >= LAST_CHANCE_MIN_LEVEL then
+						dropLife()
+					end
+				end,
+				PRESENT_SPEED[game.level][1] / 3,
+				PRESENT_SPEED[game.level][2] / 3
+			)
 		else
-			local present = Item(TYPE_PRESENT, function() game:increaseScore(1) end, function()
-				game:decreaseLives(1)
-				if game.lives <= LAST_CHANCE_MIN_LIVES and game.level >= LAST_CHANCE_MIN_LEVEL then
-					dropLife()
-				end
-			end, PRESENT_SPEED[game.level][1], PRESENT_SPEED[game.level][2])
-			table.insert(items, present)
-			present:onEnterScene()
+			present = Item(TYPE_PRESENT,
+				function() 
+					game:increaseScore(1) 
+				end, 
+				function()
+					game:decreaseLives(1)
+					if game.lives <= LAST_CHANCE_MIN_LIVES and game.level >= LAST_CHANCE_MIN_LEVEL then
+						dropLife()
+					end
+				end,
+				PRESENT_SPEED[game.level][1],
+				PRESENT_SPEED[game.level][2]
+			)
 		end
+
+		table.insert(items, present)
+		present:onEnterScene()
 	end
 
 	audioLoopPitch = AUDIO_PITCH[game.level]
@@ -257,19 +304,23 @@ local function dropBomb()
 end
 
 local function dropBonus()
-	local bonusType = math.random(1,5)
+	local bonusType = math.random(1, math.min(game.level, 7))
 	local bonus
-
-	if bonusType == 1 and game.level >= 5 then
-		bonus = Item(TYPE_STAR_BONUS, function() startHit() end, nil, nil)
-	elseif bonusType == 2 and game.level >= 2 then
-		bonus = Item(TYPE_IMP_BONUS, function() impHit() end, nil, nil)
-	elseif bonusType == 3 and game.level >= 4 then
-		bonus = Item(TYPE_LIFE_BONUS, function() game:increaseLives(3) end, nil, nil)
-	elseif bonusType == 4 and game.level >= 3 then
-		bonus = Item(TYPE_ASPIRATOR_BONUS, function() paddle:toAspiratorMode(true) end, nil, nil)
-	elseif bonusType == 5 and game.level >= 1 then
+	
+	if bonusType == 1 then
 		bonus = Item(TYPE_X2_BONUS, function() x2Hit() end, nil, nil)
+	elseif bonusType == 2 then
+		bonus = Item(TYPE_IMP_BONUS, function() impHit() end, nil, nil)
+	elseif bonusType == 3 then
+		bonus = Item(TYPE_ASPIRATOR_BONUS, function() paddle:toAspiratorMode(true) end, nil, nil)
+	elseif bonusType == 4 then
+		bonus = Item(TYPE_LIFE_BONUS, function() game:increaseLives(3) end, nil, nil)
+	elseif bonusType == 5 then
+		bonus = Item(TYPE_STAR_BONUS, function() startHit() end, nil, nil)
+	elseif bonusType == 6 then
+		bonus = Item(TYPE_SNOWFLAKE_BONUS, function() snowflakeHit() end, nil, nil)
+	elseif bonusType == 7 then
+		bonus = Item(TYPE_BIG_BONUS, function() paddle:toBigMode(true) end, nil, nil)
 	end
 
 	if bonus then
@@ -327,7 +378,12 @@ local function onEveryFrame(event)
 					if isBoundsInBounds(itemBounds, paddleBounds) or item:aspiratedDone() then
 						table.remove(items, i)
 						item:remove()
-						item:onHit(game)
+
+						if paddle.mode == PADDLE_MODE_BIG and item.type == TYPE_BOMB then
+							--item:onHit(game, true)
+						else
+							item:onHit(game)
+						end
 					end
 				end
 
@@ -456,6 +512,10 @@ function scene:exitScene( event )
 	if x2BonusTimerId ~= nil then
 		timer.cancel(x2BonusTimerId)
 		isOnX2Bonus = false
+	end
+	if snowflakeBonusTimerId ~= nil then
+		timer.cancel(snowflakeBonusTimerId)
+		isOnSnowflakeBonus = false
 	end
 	if starWaterfallTimerId ~= nil then
 		timer.cancel(starWaterfallTimerId)
