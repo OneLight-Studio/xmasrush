@@ -1,4 +1,5 @@
 -- Scene Game Over
+require "item"
 
 -- variables
 
@@ -77,9 +78,9 @@ function scene:enterScene( event )
 	gameOverText.x = display.contentCenterX
 	gameOverText.y = display.contentCenterY - 120
 
-	scoreImg = display.newImage("img/game_present_4.png")
-	scoreImg.x = display.contentCenterX - 90
-	scoreImg.y = display.contentCenterY - 40
+	scoreImg = display.newImageRect("img/game_present_4.png", PRESENT_WIDTH, PRESENT_HEIGHT)
+	scoreImg.x = display.contentCenterX - 80
+	scoreImg.y = display.contentCenterY - 48
 
 	local game = event.params.game
 	scoreText = display.newText(game.score .. "/" .. game.nextLevelScore, 0, 0, FONT, 30)
