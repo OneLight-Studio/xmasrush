@@ -131,6 +131,7 @@ function Game:updateLives(positive)
 end
 
 function Game:updateLevel()
+	self.newLevel = true
 	local levelText = display.newText(language:getString("level") .. " " .. self.level, 0, 0, FONT, 50)
 	levelText.x = display.contentCenterX
 	levelText.y = display.contentCenterY

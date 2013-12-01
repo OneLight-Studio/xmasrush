@@ -291,7 +291,7 @@ end
 local function dropBomb()
 	local bomb = Item(TYPE_BOMB, function()
 		game:decreaseLives(5)
-		blink(paddle:elem(), BLINK_SPEED_FAST)
+		blink(paddle:elem(), BLINK_SPEED_BOMB)
 		if game.lives <= LAST_CHANCE_MIN_LIVES and game.level >= LAST_CHANCE_MIN_LEVEL then
 			dropLife()
 		end
@@ -304,7 +304,13 @@ local function dropBomb()
 end
 
 local function dropBonus()
-	local bonusType = math.random(1, math.min(game.level, 7))
+	local bonusType = 0
+	if game.newLevel and game.level <= 7 then
+		bonusType = game.level
+		game.newLevel = false
+	else
+		bonusType = math.random(1, math.min(game.level, 7))
+	end
 	local bonus
 	
 	if bonusType == 1 then
@@ -323,19 +329,14 @@ local function dropBonus()
 		bonus = Item(TYPE_BIG_BONUS, function() paddle:toBigMode(true) end, nil, nil)
 	end
 
-	if bonus then
-		if game.level > 1 and bonusType == lastBonusType then
-			-- force a different bonus
-			dropBonus()
-		else
-			lastBonusType = bonusType
-			table.insert(items, bonus)
-			bonus:onEnterScene()
-			bonusTimerId = timer.performWithDelay(DELAY_BETWEEN_BONUS, dropBonus)
-		end
-	else
-		-- retry
+	if game.level > 1 and bonusType == lastBonusType then
+		-- force a different bonus
 		dropBonus()
+	else
+		lastBonusType = bonusType
+		table.insert(items, bonus)
+		bonus:onEnterScene()
+		bonusTimerId = timer.performWithDelay(DELAY_BETWEEN_BONUS, dropBonus)
 	end
 end
 

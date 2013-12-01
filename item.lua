@@ -41,7 +41,7 @@ LIFE_BONUS_WIDTH = 40
 LIFE_BONUS_HEIGHT = 35
 LIFE_BONUS_MIN_SPEED = 6
 LIFE_BONUS_MAX_SPEED = 6
-LIFE_BONUS_SOUND = audio.loadSound("sound/life_up.mp3")
+LIFE_BONUS_SOUND = audio.loadSound("sound/bonus_life.mp3")
 
 STAR_BONUS_IMG = "img/game_star.png"
 STAR_BONUS_WIDTH = 35
@@ -77,7 +77,7 @@ X2_BONUS_WIDTH = 40
 X2_BONUS_HEIGHT = 22
 X2_BONUS_MIN_SPEED = 7
 X2_BONUS_MAX_SPEED = 7
-X2_SOUND = audio.loadSound("sound/bonus.mp3")
+X2_SOUND = audio.loadSound("sound/bonus_x2.mp3")
 
 SNOWFLAKE_BONUS_IMG = "img/game_snowflake_bonus.png"
 SNOWFLAKE_BONUS_WIDTH = 40
@@ -119,7 +119,7 @@ Item = class(function(this, type, hit, fall, speedMin, speedMax)
 		this.img = string.gsub(PRESENT_X2_IMG, '#index#', math.random(PRESENT_IMG_INDEX_MIN, PRESENT_IMG_INDEX_MAX))
 		this.width = PRESENT_WIDTH
 		this.height = PRESENT_HEIGHT
-		this.speed = math.random(PRESENT_MIN_SPEED, PRESENT_MAX_SPEED)
+		this.speed = math.random(speedMin, speedMax)
 		this.sound = PRESENT_SOUND
 	elseif type == TYPE_SNOWFLAKE_PRESENT then
 		this.img = string.gsub(PRESENT_SNOWFLAKE_IMG, '#index#', math.random(PRESENT_IMG_INDEX_MIN, PRESENT_IMG_INDEX_MAX))
