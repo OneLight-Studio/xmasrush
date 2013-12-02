@@ -8,7 +8,7 @@
 	"menu.quit":"Quitter",
 	"menu.retry":"Rejouer",
 	"menu.tuto.continue":"Ok D'ac !",
-	"help.objectif":"Rattrape le plus de cadeaux possible de niveau en niveau !",
+	"help.objectif":"Rattrape tous les cadeaux de niveau en niveau !",
 	"help.gitf":"+1 point si tu attrapes un cadeau, sinon -1 vie",
 	"help.life":"Un coeur te fait gagner 3 vies",
 	"help.bomb":"Évite les bombes, elles te font perdre 5 vies",
