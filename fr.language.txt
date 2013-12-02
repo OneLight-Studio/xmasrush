@@ -15,7 +15,7 @@
 	"help.star":"Déclenche une pluie de cadeaux",
 	"help.imp":"Un lutin t'aide à attraper les cadeaux",
 	"help.vacuum":"Attire les cadeaux les plus proches de toi",
-	"help.x2":"+2 points par cadeaux dorés",
+	"help.x2":"+2 points par cadeau doré",
 	"help.snowflake":"Ralentit les cadeaux",
 	"help.big":"Tu deviens invincible !",
 	"credits.copyright":"OneLight Studio est une marque déposée de la société Prometil.",
