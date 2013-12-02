@@ -55,6 +55,7 @@ local songChannel
 local imp
 local level
 local lastBonusType = -1
+local bonusTutoTimerId
 
 -- local functions
 
@@ -94,6 +95,9 @@ function pauseGame()
 	if snowflakeBonusTimerId ~= nil then
 		timer.pause(snowflakeBonusTimerId)
 	end
+	if bonusTutoTimerId ~= nil then
+		timer.pause(bonusTutoTimerId)
+	end
 
 	timer.pause(bombTimerId)
 	timer.pause(bonusTimerId)
@@ -119,6 +123,9 @@ function resumeGame()
 	end
 	if snowflakeBonusTimerId ~= nil then
 		timer.resume(snowflakeBonusTimerId)
+	end
+	if bonusTutoTimerId ~= nil then
+		timer.resume(bonusTutoTimerId)
 	end
 	timer.resume(bombTimerId)
 	timer.resume(bonusTimerId)
@@ -279,6 +286,12 @@ local function dropPresent()
 
 		table.insert(items, present)
 		present:onEnterScene()
+		if not gameSettings.tuto[TYPE_PRESENT] then
+			bonusTutoTimerId = timer.performWithDelay(500, function()
+				gameSettings.tuto[TYPE_PRESENT] = true
+				storyboard.showOverlay("scene_bonus_tuto", { isModal = true, params = { bonusType = TYPE_PRESENT, bonusItem = present } } )
+			end)
+		end
 	end
 
 	audioLoopPitch = AUDIO_PITCH[game.level]
@@ -298,6 +311,12 @@ local function dropBomb()
 	end, nil)
 	table.insert(items, bomb)
 	bomb:onEnterScene()
+	if not gameSettings.tuto[TYPE_BOMB] then
+		bonusTutoTimerId = timer.performWithDelay(500, function()
+			gameSettings.tuto[TYPE_BOMB] = true
+			storyboard.showOverlay("scene_bonus_tuto", { isModal = true, params = { bonusType = TYPE_BOMB, bonusItem = bomb } } )
+		end)
+	end
 
 	delayBetweenBombs = DELAY_BETWEEN_BOMBS[game.level]
 	bombTimerId = timer.performWithDelay(delayBetweenBombs, dropBomb)
@@ -337,6 +356,13 @@ local function dropBonus()
 		table.insert(items, bonus)
 		bonus:onEnterScene()
 		bonusTimerId = timer.performWithDelay(DELAY_BETWEEN_BONUS, dropBonus)
+
+		if not gameSettings.tuto[bonus.type] then
+			bonusTutoTimerId = timer.performWithDelay(300, function()
+				gameSettings.tuto[bonus.type] = true
+				storyboard.showOverlay("scene_bonus_tuto", { isModal = true, params = { bonusType = bonus.type, bonusItem = bonus } } )
+			end)
+		end
 	end
 end
 

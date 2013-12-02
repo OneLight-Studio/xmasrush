@@ -79,6 +79,7 @@ if( gameSettings == nil ) then
     gameSettings.highScore = 0
     gameSettings.soundEnable = true
     gameSettings.soundEffectEnable = true
+	gameSettings.tuto = {}
 
     loadsave.saveTable(gameSettings, GAME_SETTINGS)
 end
