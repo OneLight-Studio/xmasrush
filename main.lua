@@ -3,8 +3,6 @@ display.setStatusBar(display.HiddenStatusBar)
 
 require "helper"
 
-display.setStatusBar(display.HiddenStatusBar)
-
 -- global constants
 
 LEVELS = { 50, 100, 200, 400, 600, 850, 1100, 1400, 1700, 2000 }
@@ -48,9 +46,18 @@ function onKeyEvent(event)
 	local keyName = event.keyName
 
    	if "back" == keyName then
-		local storyboard = require 'storyboard'
-		if storyboard.getCurrentSceneName() == "scene_game" then
-			showPause()
+		if storyboard.getCurrentSceneName() == "scene_credits" or
+		   storyboard.getCurrentSceneName() == "scene_help" or
+		   storyboard.getCurrentSceneName() == "scene_highscores" or
+		   storyboard.getCurrentSceneName() == "scene_levels" then
+			storyboard.gotoScene("scene_home")
+			return true
+		elseif storyboard.getCurrentSceneName() == "scene_game" then
+			if storyboard.isOverlay then
+				storyboard.gotoScene("scene_home")
+			else
+				showPause()
+			end
 			return true
 		end
 	end

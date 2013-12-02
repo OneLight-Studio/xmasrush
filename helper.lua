@@ -36,6 +36,7 @@ end
 BLINK_SPEED_FAST = 'blink_fast'
 BLINK_SPEED_NORMAL = 'blink_normal'
 BLINK_SPEED_SLOW = 'blink_slow'
+BLINK_SPEED_BOMB = 'blink_bomb'
 
 function blink(element, speed)
 	local iteration
@@ -50,6 +51,9 @@ function blink(element, speed)
 	elseif speed == BLINK_SPEED_SLOW then
 		iteration = 10
 		delay = 200
+	elseif speed == BLINK_SPEED_BOMB then
+		iteration = 16
+		delay = 50
 	else
 		iteration = 0
 		delay = 500

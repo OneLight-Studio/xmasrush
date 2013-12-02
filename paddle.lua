@@ -19,8 +19,8 @@ PADDLE_ASPIRATOR_PADDING = 50
 PADDLE_MODE_BIG = 'mode_big'
 DELAY_PADDLE_BIG_MODE = 5500
 PADDLE_BIG_MODE_IMG = "img/game_paddle_big.png"
-PADDLE_BIG_MODE_WIDTH = 240
-PADDLE_BIG_MODE_HEIGHT = 216
+PADDLE_BIG_MODE_WIDTH = 200
+PADDLE_BIG_MODE_HEIGHT = 180
 
 -- variables
 
@@ -138,7 +138,7 @@ function Paddle:toAspiratorMode(activate)
 
 			self.mode = PADDLE_MODE_ASPIRATOR
 
-			--timerBlink = timer.performWithDelay(DELAY_PADDLE_ASPIRATOR_MODE - 2000, function () blink(pad, BLINK_SPEED_NORMAL) end)
+			timerBlink = timer.performWithDelay(DELAY_PADDLE_ASPIRATOR_MODE - 2000, function () blink(pad, BLINK_SPEED_NORMAL) end)
 			timerEnd = timer.performWithDelay(DELAY_PADDLE_ASPIRATOR_MODE, function () self:toAspiratorMode(false) end)
 		else
 			local oldPad = pad
@@ -170,7 +170,6 @@ function Paddle:toBigMode(activate)
 			self.mode = PADDLE_MODE_BIG
 
 			blink(pad, BLINK_SPEED_FAST)
-			--timerBlink = timer.performWithDelay(DELAY_PADDLE_BIG_MODE - 2000, function () blink(pad, BLINK_SPEED_NORMAL) end)
 			timerEnd = timer.performWithDelay(DELAY_PADDLE_BIG_MODE, function () self:toBigMode(false) end)
 		else
 			local oldPad = pad
