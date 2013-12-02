@@ -115,6 +115,7 @@ Item = class(function(this, type, hit, fall, speedMin, speedMax)
 		this.width = PRESENT_WIDTH
 		this.height = PRESENT_HEIGHT
 		this.speed = math.random(STAR_BONUS_PRESENT_MIN_SPEED, STAR_BONUS_PRESENT_MAX_SPEED)
+		this.sound = PRESENT_SOUND
 	elseif type == TYPE_X2_PRESENT then
 		this.img = string.gsub(PRESENT_X2_IMG, '#index#', math.random(PRESENT_IMG_INDEX_MIN, PRESENT_IMG_INDEX_MAX))
 		this.width = PRESENT_WIDTH
