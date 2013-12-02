@@ -11,7 +11,7 @@
 	"help.objectif":"Rattrape le plus de cadeaux possible de niveau en niveau !",
 	"help.gitf":"+1 point si tu attrapes un cadeau, sinon -1 vie",
 	"help.life":"Un coeur te fait gagner 3 vies",
-	"help.bomb":"Évite les bombes, elle te font perdre 5 vies",
+	"help.bomb":"Évite les bombes, elles te font perdre 5 vies",
 	"help.star":"Déclenche une pluie de cadeaux",
 	"help.imp":"Un lutin t'aide à attraper les cadeaux",
 	"help.vacuum":"Attire les cadeaux les plus proches de toi",
