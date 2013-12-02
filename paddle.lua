@@ -18,9 +18,15 @@ PADDLE_ASPIRATOR_MODE_IMG = "img/game_paddle_with_aspirator.png"
 PADDLE_ASPIRATOR_PADDING = 50
 PADDLE_MODE_BIG = 'mode_big'
 DELAY_PADDLE_BIG_MODE = 5500
-PADDLE_BIG_MODE_IMG = "img/game_paddle_big.png"
-PADDLE_BIG_MODE_WIDTH = 200
-PADDLE_BIG_MODE_HEIGHT = 180
+PADDLE_BIG_MODE_IMG_STATE_1 = "img/game_paddle_big_state_1.png"
+PADDLE_BIG_MODE_IMG_STATE_1_WIDTH = 130
+PADDLE_BIG_MODE_IMG_STATE_1_HEIGHT = 117
+PADDLE_BIG_MODE_IMG_STATE_2 = "img/game_paddle_big_state_2.png"
+PADDLE_BIG_MODE_IMG_STATE_2_WIDTH = 160
+PADDLE_BIG_MODE_IMG_STATE_2_HEIGHT = 144
+PADDLE_BIG_MODE_IMG_STATE_3 = "img/game_paddle_big_state_3.png"
+PADDLE_BIG_MODE_IMG_STATE_3_WIDTH = 200
+PADDLE_BIG_MODE_IMG_STATE_3_HEIGHT = 180
 
 -- variables
 
@@ -159,17 +165,38 @@ end
 function Paddle:toBigMode(activate)
 	if pad ~= nil then
 		if activate == true then
+
 			local oldPad = pad
-			pad = display.newImageRect(PADDLE_BIG_MODE_IMG, PADDLE_BIG_MODE_WIDTH, PADDLE_BIG_MODE_HEIGHT)
+			pad = display.newImageRect(PADDLE_BIG_MODE_IMG_STATE_1, PADDLE_BIG_MODE_IMG_STATE_1_WIDTH, PADDLE_BIG_MODE_IMG_STATE_1_HEIGHT)
 			pad.x = oldPad.x
 			pad.y = display.contentHeight - pad.height / 2
 			
 			display.remove(oldPad)
 			oldPad = nil
 
+			timer.performWithDelay(150, function ()
+				local oldPad = pad
+				pad = display.newImageRect(PADDLE_BIG_MODE_IMG_STATE_2, PADDLE_BIG_MODE_IMG_STATE_2_WIDTH, PADDLE_BIG_MODE_IMG_STATE_2_HEIGHT)
+				pad.x = oldPad.x
+				pad.y = display.contentHeight - pad.height / 2
+				
+				display.remove(oldPad)
+				oldPad = nil
+			end)
+
+			timer.performWithDelay(300, function ()
+				local oldPad = pad
+				pad = display.newImageRect(PADDLE_BIG_MODE_IMG_STATE_3, PADDLE_BIG_MODE_IMG_STATE_3_WIDTH, PADDLE_BIG_MODE_IMG_STATE_3_HEIGHT)
+				pad.x = oldPad.x
+				pad.y = display.contentHeight - pad.height / 2
+				
+				display.remove(oldPad)
+				oldPad = nil
+			end)
+
 			self.mode = PADDLE_MODE_BIG
 
-			blink(pad, BLINK_SPEED_FAST)
+			timerBlink = timer.performWithDelay(DELAY_PADDLE_BIG_MODE - 2000, function () blink(pad, BLINK_SPEED_NORMAL) end)
 			timerEnd = timer.performWithDelay(DELAY_PADDLE_BIG_MODE, function () self:toBigMode(false) end)
 		else
 			local oldPad = pad
