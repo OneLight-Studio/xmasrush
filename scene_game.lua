@@ -289,6 +289,7 @@ local function dropPresent()
 		if not gameSettings.tuto[TYPE_PRESENT] then
 			bonusTutoTimerId = timer.performWithDelay(500, function()
 				gameSettings.tuto[TYPE_PRESENT] = true
+				loadsave.saveTable(gameSettings, GAME_SETTINGS)
 				storyboard.showOverlay("scene_bonus_tuto", { isModal = true, params = { bonusType = TYPE_PRESENT, bonusItem = present } } )
 			end)
 		end
@@ -314,6 +315,7 @@ local function dropBomb()
 	if not gameSettings.tuto[TYPE_BOMB] then
 		bonusTutoTimerId = timer.performWithDelay(500, function()
 			gameSettings.tuto[TYPE_BOMB] = true
+			loadsave.saveTable(gameSettings, GAME_SETTINGS)
 			storyboard.showOverlay("scene_bonus_tuto", { isModal = true, params = { bonusType = TYPE_BOMB, bonusItem = bomb } } )
 		end)
 	end
@@ -360,6 +362,7 @@ local function dropBonus()
 		if not gameSettings.tuto[bonus.type] then
 			bonusTutoTimerId = timer.performWithDelay(300, function()
 				gameSettings.tuto[bonus.type] = true
+				loadsave.saveTable(gameSettings, GAME_SETTINGS)
 				storyboard.showOverlay("scene_bonus_tuto", { isModal = true, params = { bonusType = bonus.type, bonusItem = bonus } } )
 			end)
 		end
