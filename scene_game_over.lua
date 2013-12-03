@@ -100,7 +100,10 @@ function scene:enterScene( event )
 		game.restart = true
 		storyboard.hideOverlay()
 	end)
-	quitBtn = addButton(2, language:getString("menu.quit"), function() moveToScene("scene_home") end)
+	quitBtn = addButton(2, language:getString("menu.quit"), function() 
+		game.quit = true
+		moveToScene("scene_home") 
+	end)
 
 	local url = language:getString("share.url")
 	local title = language:getString("game.name")

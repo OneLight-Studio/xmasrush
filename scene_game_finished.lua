@@ -71,7 +71,11 @@ function scene:enterScene( event )
 	img.x = display.contentCenterX
 	img.y = display.contentCenterY
 
-	quitBtn = addButton(language:getString("menu.quit"), function() moveToScene("scene_home") end)
+	local game = event.params.game
+	quitBtn = addButton(language:getString("menu.quit"), function() 
+		game.quit = true
+		moveToScene("scene_home") 
+	end)
 
 	local url = language:getString("share.url")
 	local title = language:getString("game.name")

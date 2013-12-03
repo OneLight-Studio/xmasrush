@@ -29,5 +29,6 @@
 	"share.text.2":" points au niveau ",
 	"share.text.3":" de Xmas Rush. Et vous ?",
 	"share.text.finished":"Super, j'ai terminé Xmas Rush! Et vous ?",
-	"share.twitter":"OneLight_Studio"
+	"share.twitter":"OneLight_Studio",
+	"countdown.go":"Go !"
 }

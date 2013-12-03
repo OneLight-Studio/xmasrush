@@ -136,7 +136,7 @@ function Game:updateLevel()
 	self.newLevel = true
 	self.levelText = display.newText(language:getString("level") .. " " .. self.level, 0, 0, FONT, 50)
 	self.levelText.x = display.contentCenterX
-	self.levelText.y = display.contentCenterY
+	self.levelText.y = display.contentCenterY - 50
 	self.levelText.alpha = 0
 	transition.to(self.levelText, {
 		alpha = 1, time = 500, onComplete = function()

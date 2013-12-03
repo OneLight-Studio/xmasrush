@@ -83,8 +83,12 @@ function scene:enterScene( event )
 	bg = display.newRect(0, 0, display.contentWidth, display.contentHeight)
 	bg:setFillColor(0, 0, 0, 100)
 
+	local game = event.params.game
 	resumeBtn = addButton(language:getString("menu.resume"), function(event) storyboard.hideOverlay() end)
-	quitBtn = addButton(language:getString("menu.quit"), function(event) moveToScene("scene_home") end)
+	quitBtn = addButton(language:getString("menu.quit"), function(event) 
+		game.quit = true
+		moveToScene("scene_home") 
+	end)
 
 	soundBtn = addButtonSmall(1,
 		gameSettings.soundEnable and "img/home_sound_on.png" or "img/home_sound_off.png", 
