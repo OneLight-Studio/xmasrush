@@ -54,8 +54,6 @@ function scene:willEnterScene( event )
 end
 
 function scene:enterScene( event )
-	storyboard.isOverlay = true
-
 	if gameSettings.soundEffectEnable then
 		audio.play(audio.loadSound("sound/game_finished.mp3"))
 	end
@@ -77,18 +75,18 @@ function scene:enterScene( event )
 		moveToScene("scene_home") 
 	end)
 
-	local url = language:getString("share.url")
-	local title = language:getString("game.name")
-	local summary = language:getString("share.text.finished")
+	local url = url_encode(language:getString("share.url"))
+	local title = url_encode(language:getString("game.name"))
+	local summary = url_encode(language:getString("share.text.finished"))
 	addButtonSmall(1, "img/btn_fb.png", "img/btn_fb_pressed.png", function()
-		system.openURL("http://www.facebook.com/sharer/sharer.php?s=100&p[url]=" .. url .. "&p[title]=" .. title .. "&p[summary]=" .. summary)
+		system.openURL("http://www.facebook.com/sharer/sharer.php?m2w&s=100&p[url]=" .. url .. "&p[title]=" .. title .. "&p[summary]=" .. summary)
 	end)
 	addButtonSmall(2, "img/btn_googleplus.png", "img/btn_googleplus_pressed.png", function()
 		system.openURL("https://plus.google.com/share?url=" .. url)
 	end)
 	addButtonSmall(3, "img/btn_twitter.png", "img/btn_twitter_pressed.png", function()
-		local hashtags = string.gsub(language:getString("game.name"), "%s+", "")
-		local via = language:getString("share.twitter")
+		local hashtags = url_encode(string.gsub(language:getString("game.name"), "%s+", ""))
+		local via = url_encode(language:getString("share.twitter"))
 		system.openURL("https://twitter.com/intent/tweet?url=" .. url .. "&text=" .. summary .. "&related=" .. via .. "&hashtags=" .. hashtags .. "&via=" .. via)
 	end)
 end
@@ -106,8 +104,6 @@ function scene:exitScene( event )
 		display.remove(btn)
 		btn = nil
 	end
-
-	storyboard.isOverlay = false
 end
 
 function scene:destroyScene( event )

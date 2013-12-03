@@ -46,18 +46,7 @@ function onKeyEvent(event)
 	local keyName = event.keyName
 
    	if "back" == keyName then
-		if storyboard.getCurrentSceneName() == "scene_credits" or
-		   storyboard.getCurrentSceneName() == "scene_help" or
-		   storyboard.getCurrentSceneName() == "scene_highscores" or
-		   storyboard.getCurrentSceneName() == "scene_levels" then
-			storyboard.gotoScene("scene_home")
-			return true
-		elseif storyboard.getCurrentSceneName() == "scene_game" then
-			if storyboard.isOverlay then
-				storyboard.gotoScene("scene_home")
-			else
-				showPause()
-			end
+		if storyboard.getCurrentSceneName() ~= "scene_home" then
 			return true
 		end
 	end
