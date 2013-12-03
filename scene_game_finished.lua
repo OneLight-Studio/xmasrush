@@ -12,7 +12,7 @@ local quitBtn
 local btnSmall = {}
 local nbBtn = 0
 
-local BTN_Y_MIN = 250
+local BTN_Y_MIN = 260
 local BTN_SMALL_COUNT = 3
 
 local function addButton(title, onTap)
@@ -67,7 +67,7 @@ function scene:enterScene( event )
 	text.x = display.contentCenterX
 	text.y = display.contentCenterY - 100
 
-	img = display.newImage("img/game_paddle_gold.png", PADDLE_WIDTH, PADDLE_HEIGHT)
+	img = display.newImageRect("img/game_paddle_gold.png", PADDLE_WIDTH, PADDLE_HEIGHT_GOLD)
 	img.x = display.contentCenterX
 	img.y = display.contentCenterY
 

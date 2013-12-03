@@ -25,6 +25,8 @@ PRESENT_IMG_INDEX_MIN = 1
 PRESENT_IMG_INDEX_MAX = 8
 PRESENT_WIDTH = 35
 PRESENT_HEIGHT = 43
+PRESENT_FROZEN_WIDTH = 40
+PRESENT_FROZEN_HEIGHT = 50
 PRESENT_MIN_SPEED = 2
 PRESENT_MAX_SPEED = 4
 PRESENT_SOUND = audio.loadSound("sound/blop.mp3")
@@ -124,8 +126,8 @@ Item = class(function(this, type, hit, fall, speedMin, speedMax)
 		this.sound = PRESENT_SOUND
 	elseif type == TYPE_SNOWFLAKE_PRESENT then
 		this.img = string.gsub(PRESENT_SNOWFLAKE_IMG, '#index#', math.random(PRESENT_IMG_INDEX_MIN, PRESENT_IMG_INDEX_MAX))
-		this.width = PRESENT_WIDTH
-		this.height = PRESENT_HEIGHT
+		this.width = PRESENT_FROZEN_WIDTH
+		this.height = PRESENT_FROZEN_HEIGHT
 		this.speed = math.random(speedMin, speedMax)
 		this.sound = PRESENT_SOUND
 	elseif type == TYPE_BOMB then

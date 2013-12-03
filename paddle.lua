@@ -6,6 +6,7 @@ require 'class'
 
 PADDLE_WIDTH = 100
 PADDLE_HEIGHT = 90
+PADDLE_HEIGHT_GOLD = 113
 PADDLE_IMG = "img/game_paddle.png"
 PADDLE_IMG_GOLD = "img/game_paddle_gold.png"
 PADDLE_INDEX_MIN = 0
@@ -78,7 +79,7 @@ function Paddle:toFront()
 end
 
 function Paddle:onEnterScene()
-	pad = display.newImageRect(gameSettings.finished and PADDLE_IMG_GOLD or PADDLE_IMG, PADDLE_WIDTH, PADDLE_HEIGHT)
+	pad = display.newImageRect(gameSettings.finished and PADDLE_IMG_GOLD or PADDLE_IMG, PADDLE_WIDTH, gameSettings.finished and PADDLE_HEIGHT_GOLD or PADDLE_HEIGHT)
 	pad.x = display.contentCenterX
 	pad.y = display.contentHeight - pad.height / 2
 
@@ -200,7 +201,7 @@ function Paddle:toBigMode(activate)
 			timerEnd = timer.performWithDelay(DELAY_PADDLE_BIG_MODE, function () self:toBigMode(false) end)
 		else
 			local oldPad = pad
-			pad = display.newImageRect(PADDLE_IMG, PADDLE_WIDTH, PADDLE_HEIGHT)
+			pad = display.newImageRect(gameSettings.finished and PADDLE_IMG_GOLD or PADDLE_IMG, PADDLE_WIDTH, gameSettings.finished and PADDLE_HEIGHT_GOLD or PADDLE_HEIGHT)
 			pad.x = oldPad.x
 			pad.y = display.contentHeight - pad.height / 2
 			
