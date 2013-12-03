@@ -20,6 +20,7 @@
 	"help.big":"Tu deviens invincible !",
 	"credits.copyright":"OneLight Studio est une marque déposée de la société Prometil.",
 	"credits.website":"www.onelight-studio.com",
+	"credits.freesounds":"Les sons de Xmas Rush sont fournis par le site freesounds.org",
 	"pts":" pts",
 	"highscore":"Nouveau Record !",
 	"levels":"Choisis un niveau",
@@ -29,5 +30,6 @@
 	"share.text.2":" points au niveau ",
 	"share.text.3":" de Xmas Rush. Et vous ?",
 	"share.text.finished":"Super, j'ai terminé Xmas Rush! Et vous ?",
-	"share.twitter":"OneLight_Studio"
+	"share.twitter":"OneLight_Studio",
+	"countdown.go":"Go !"
 }

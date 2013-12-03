@@ -110,27 +110,27 @@ function scene:enterScene( event )
 	textEmpty = display.newText(" ", startXText, textBig.y + HEIGHT_SPACE_BETWEEN_ELEMENT, display.contentWidth - ((startXImage*2)+5), 40, FONT, 16)
 	textEmpty.y = textBig.y + textBig.contentHeight / 2 + HEIGHT_SPACE_BETWEEN_ELEMENT
 
-	imageGitf = display.newImageRect("img/help_presents.png", 32, 32)
+	imageGitf = display.newImageRect("img/help_presents.png", 30, 32)
 	imageGitf.x = startXImage
 	imageGitf.y = textObjectif.y  - (imageGitf.height / 3)
 
-	imageBomb = display.newImageRect("img/game_bomb.png", 32, 32)
+	imageBomb = display.newImageRect("img/game_bomb.png", 28, 32)
 	imageBomb.x = startXImage
 	imageBomb.y = textGitf.y + textGitf.contentHeight / 2 + HEIGHT_SPACE_BETWEEN_ELEMENT - (imageBomb.height / 3)
 
-	imageX2 = display.newImageRect("img/game_x2_bonus.png", 32, 32)
+	imageX2 = display.newImageRect("img/game_x2_bonus.png", 32, 18)
 	imageX2.x = startXImage
 	imageX2.y = textBomb.y + textBomb.contentHeight / 2 + HEIGHT_SPACE_BETWEEN_ELEMENT - (imageX2.height / 3)
 
-	imageImp = display.newImageRect("img/game_imp_bonus.png", 32, 32)
+	imageImp = display.newImageRect("img/game_imp_bonus.png", 32, 27)
 	imageImp.x = startXImage
 	imageImp.y = textX2.y + textX2.contentHeight / 2 + HEIGHT_SPACE_BETWEEN_ELEMENT - (imageImp.height / 3)
 
-	imageVacuum = display.newImageRect("img/game_aspirator_bonus.png", 32, 32)
+	imageVacuum = display.newImageRect("img/game_aspirator_bonus.png", 29, 32)
 	imageVacuum.x = startXImage
 	imageVacuum.y = textImp.y + textImp.contentHeight / 2 + HEIGHT_SPACE_BETWEEN_ELEMENT - (imageVacuum.height / 3)
 
-	imageLife = display.newImageRect("img/game_life.png", 32, 32)
+	imageLife = display.newImageRect("img/game_life.png", 32, 28)
 	imageLife.x = startXImage
 	imageLife.y = textVacuum.y + textVacuum.contentHeight / 2 + HEIGHT_SPACE_BETWEEN_ELEMENT - (imageLife.height / 4)
 
@@ -138,14 +138,13 @@ function scene:enterScene( event )
 	imageStar.x = startXImage
 	imageStar.y = textLife.y + textLife.contentHeight / 2 + HEIGHT_SPACE_BETWEEN_ELEMENT - (imageStar.height / 3)
 
-	imageSnowflake = display.newImageRect("img/game_snowflake_bonus.png", 32, 32)
+	imageSnowflake = display.newImageRect("img/game_snowflake_bonus.png", 27, 32)
 	imageSnowflake.x = startXImage
 	imageSnowflake.y = textStar.y + textStar.contentHeight / 2 + HEIGHT_SPACE_BETWEEN_ELEMENT - (imageSnowflake.height / 3)
 	
-	imageBig = display.newImageRect("img/game_big_bonus.png", 32, 32)
+	imageBig = display.newImageRect("img/game_big_bonus.png", 12, 32)
 	imageBig.x = startXImage
 	imageBig.y = textSnowflake.y + textSnowflake.contentHeight / 2 + HEIGHT_SPACE_BETWEEN_ELEMENT - (imageBig.height / 3)
-
 
 	group:insert(textGitf)
 	group:insert(textLife)

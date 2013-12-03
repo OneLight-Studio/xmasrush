@@ -61,7 +61,7 @@ function blink(element, speed)
 
 	timer.performWithDelay(delay, function()
 		if element ~= nil and element.alpha ~= nil then
-			element.alpha = element.alpha < 1 and 1 or 0
+			element.alpha = element.alpha < 1 and 1 or 0.3
 		end
 	end, iteration)
 end

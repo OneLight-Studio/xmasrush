@@ -46,16 +46,6 @@ local function addButtonSmall(position, img, img_pressed, onTap)
 	return btn
 end
 
-local function url_encode(str)
-	if (str) then
-		str = string.gsub (str, "\n", "\r\n")
-		str = string.gsub (str, "([^%w %-%_%.%~])",
-			function (c) return string.format ("%%%02X", string.byte(c)) end)
-		str = string.gsub (str, " ", "+")
-	end
-	return str	
-end
-
 -- scene functions
 
 function scene:createScene( event )
@@ -110,21 +100,24 @@ function scene:enterScene( event )
 		game.restart = true
 		storyboard.hideOverlay()
 	end)
-	quitBtn = addButton(2, language:getString("menu.quit"), function() moveToScene("scene_home") end)
+	quitBtn = addButton(2, language:getString("menu.quit"), function() 
+		game.quit = true
+		moveToScene("scene_home") 
+	end)
 
 	local url = language:getString("share.url")
 	local title = language:getString("game.name")
 	local summary = language:getString("share.text.finished") .. game.score .. language:getString("share.text.2") .. game.level .. language:getString("share.text.3")
 	addButtonSmall(1, "img/btn_fb.png", "img/btn_fb_pressed.png", function()
-		system.openURL(url_encode("http://www.facebook.com/sharer/sharer.php?s=100&p[url]=" .. url .. "&p[title]=" .. title .. "&p[summary]=" .. summary))
+		system.openURL("http://www.facebook.com/sharer/sharer.php?s=100&p[url]=" .. url .. "&p[title]=" .. title .. "&p[summary]=" .. summary)
 	end)
 	addButtonSmall(2, "img/btn_googleplus.png", "img/btn_googleplus_pressed.png", function()
-		system.openURL(url_encode("https://plus.google.com/share?url=" .. url))
+		system.openURL("https://plus.google.com/share?url=" .. url)
 	end)
 	addButtonSmall(3, "img/btn_twitter.png", "img/btn_twitter_pressed.png", function()
 		local hashtags = string.gsub(language:getString("game.name"), "%s+", "")
 		local via = language:getString("share.twitter")
-		system.openURL(url_encode("https://twitter.com/intent/tweet?url=" .. url .. "&text=" .. summary .. "&related=" .. via .. "&hashtags=" .. hashtags .. "&via=" .. via))
+		system.openURL("https://twitter.com/intent/tweet?url=" .. url .. "&text=" .. summary .. "&related=" .. via .. "&hashtags=" .. hashtags .. "&via=" .. via)
 	end)
 end
 

@@ -71,8 +71,27 @@ local function createMenuBtn()
 	menuButton.y = menuButton.height / 2 + 5
 end
 
+local function countdown(x)
+	local countdownTxt = display.newText(x > 0 and x or language:getString("countdown.go"), 0, 0, FONT, 80)
+	countdownTxt.x = display.contentCenterX
+	countdownTxt.y = display.contentCenterY
+	transition.to(countdownTxt, {
+		alpha = 1, time = 500, onComplete = function()
+			transition.to(countdownTxt, {
+				alpha = 0, time = 500, onComplete = function()
+					display.remove(countdownTxt)
+					countdownTxt = nil
+					if x > 0 then
+						countdown(x - 1)
+					end
+				end
+			})
+		end
+	})
+end
+
 function showPause()
-	storyboard.showOverlay( "scene_game_pause", {isModal = true} )
+	storyboard.showOverlay( "scene_game_pause", {isModal = true, params = { game = game }} )
 end
 
 function pauseGame()
@@ -107,34 +126,37 @@ function pauseGame()
 end
 
 function resumeGame()
-	if gameSettings.soundEnable then
-		audio.resume(songChannel)
-	end
+	countdown(3)
+	timer.performWithDelay(3000, function()
+		if gameSettings.soundEnable then
+			audio.resume(songChannel)
+		end
 
-	if starWaterfallTimerId ~= nil then
-		timer.resume(starWaterfallTimerId)
-	end
-	if impBonusTimerId ~= nil then
-		timer.resume(impBonusTimerId)
-		timer.resume(impBlinkTimerId)
-	end
-	if x2BonusTimerId ~= nil then
-		timer.resume(x2BonusTimerId)
-	end
-	if snowflakeBonusTimerId ~= nil then
-		timer.resume(snowflakeBonusTimerId)
-	end
-	if bonusTutoTimerId ~= nil then
-		timer.resume(bonusTutoTimerId)
-	end
-	timer.resume(bombTimerId)
-	timer.resume(bonusTimerId)
-	timer.resume(presentTimerId)
+		if starWaterfallTimerId ~= nil then
+			timer.resume(starWaterfallTimerId)
+		end
+		if impBonusTimerId ~= nil then
+			timer.resume(impBonusTimerId)
+			timer.resume(impBlinkTimerId)
+		end
+		if x2BonusTimerId ~= nil then
+			timer.resume(x2BonusTimerId)
+		end
+		if snowflakeBonusTimerId ~= nil then
+			timer.resume(snowflakeBonusTimerId)
+		end
+		if bonusTutoTimerId ~= nil then
+			timer.resume(bonusTutoTimerId)
+		end
+		timer.resume(bombTimerId)
+		timer.resume(bonusTimerId)
+		timer.resume(presentTimerId)
 
-	paddle:resumePaddle()
+		paddle:resumePaddle()
 
-	createMenuBtn()
-	isOnPause = false
+		createMenuBtn()
+		isOnPause = false
+	end)
 end
 
 function startHit()
@@ -184,6 +206,15 @@ end
 function x2Hit()
 	isOnX2Bonus = true
 	x2BonusTimerId = timer.performWithDelay(X2_DELAY, endX2)
+	for i,item in ipairs(items) do
+		if item.type == TYPE_PRESENT then
+			local newItem = Item(TYPE_X2_PRESENT, function() game:increaseScore(2) end, item.fall, item.speed, item.speed)
+			newItem:onEnterScene(item.element.x, item.element.y)
+			item:remove()
+			item = nil
+			items[i] = newItem
+		end
+	end
 end
 
 function endX2()
@@ -194,6 +225,15 @@ end
 function snowflakeHit()
 	isOnSnowflakeBonus = true
 	snowflakeBonusTimerId = timer.performWithDelay(SNOWFLAKE_DELAY, endSnowflake)
+	for i,item in ipairs(items) do
+		if item.type == TYPE_PRESENT then
+			local newItem = Item(TYPE_SNOWFLAKE_PRESENT, item.hit, item.fall, PRESENT_SPEED[game.level][1] / 3, PRESENT_SPEED[game.level][2] / 3)
+			newItem:onEnterScene(item.element.x, item.element.y)
+			item:remove()
+			item = nil
+			items[i] = newItem
+		end
+	end
 end
 
 function endSnowflake()
@@ -451,7 +491,7 @@ local function onEveryFrame(event)
 			-- game if finished
 			gameSettings.finished = true
 			loadsave.saveTable(gameSettings, GAME_SETTINGS)
-			storyboard.showOverlay("scene_game_finished")
+			storyboard.showOverlay("scene_game_finished", { params = { game = game } })
 		else
 			-- keep the text visible
 			game:scoreLivesToFront()
@@ -488,35 +528,38 @@ function scene:enterScene( event )
 	audio.stop()
 	audio.setVolume(1.0)
 
-	-- listeners
-	Runtime:addEventListener("enterFrame", onEveryFrame)
-
-	-- sounds
-	audioLoop = audio.loadSound("sound/jingle_bells.mp3")
-
-	songChannel = audio.play(audioLoop, { channel=1, loops=-1 })
-	if gameSettings.soundEnable == false then
-		audio.pause(songChannel)
-	end
-	audioLoopSource = audio.getSourceFromChannel(1)
-	audioLoopPitch = AUDIO_PITCH[game.level]
-	al.Source(audioLoopSource, al.PITCH, audioLoopPitch)
-
-	-- start
 	bg = display.newImage( "img/bg.jpg" )
-	createMenuBtn()
 
 	delayBetweenPresents = DELAY_BETWEEN_PRESENTS[game.level]
 	delayBetweenBombs = DELAY_BETWEEN_BOMBS[game.level]
 	itemsCountOnScreen = MAX_ITEMS_ON_SCREEN[game.level]
 
+	lastBonusType = -1
+
 	paddle:onEnterScene()
 	game:onEnterScene()
 
-	lastBonusType = -1
-	dropPresent()
-	bombTimerId = timer.performWithDelay(delayBetweenBombs, dropBomb)
-	bonusTimerId = timer.performWithDelay(DELAY_BETWEEN_BONUS, dropBonus)
+	countdown(3)
+
+	timer.performWithDelay(3000, function()
+		-- listeners
+		Runtime:addEventListener("enterFrame", onEveryFrame)
+		-- sounds
+		audioLoop = audio.loadSound("sound/jingle_bells.mp3")
+		songChannel = audio.play(audioLoop, { channel=1, loops=-1 })
+		if gameSettings.soundEnable == false then
+			audio.pause(songChannel)
+		end
+		audioLoopSource = audio.getSourceFromChannel(1)
+		audioLoopPitch = AUDIO_PITCH[game.level]
+		al.Source(audioLoopSource, al.PITCH, audioLoopPitch)
+
+		createMenuBtn()
+
+		dropPresent()
+		bombTimerId = timer.performWithDelay(delayBetweenBombs, dropBomb)
+		bonusTimerId = timer.performWithDelay(DELAY_BETWEEN_BONUS, dropBonus)
+	end)
 end
 
 function scene:exitScene( event )
@@ -567,6 +610,9 @@ function scene:overlayEnded( event )
 		self:exitScene()
 		isOnPause = false
 		self:enterScene({ params = { level = game.level } })
+	elseif game.quit then
+		self:exitScene()
+		isOnPause = false
 	else
 		resumeGame()
 	end

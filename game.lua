@@ -63,6 +63,8 @@ function Game:onExitScene()
 	self.livesImage = nil
 	display.remove(self.scoreImage)
 	self.scoreImage = nil
+	display.remove(self.levelText)
+	self.levelText = nil
 end
 
 function Game:updateScore(positive)
@@ -132,15 +134,16 @@ end
 
 function Game:updateLevel()
 	self.newLevel = true
-	local levelText = display.newText(language:getString("level") .. " " .. self.level, 0, 0, FONT, 50)
-	levelText.x = display.contentCenterX
-	levelText.y = display.contentCenterY
-	levelText.alpha = 0
-	transition.to(levelText, {
+	self.levelText = display.newText(language:getString("level") .. " " .. self.level, 0, 0, FONT, 50)
+	self.levelText.x = display.contentCenterX
+	self.levelText.y = display.contentCenterY - 50
+	self.levelText.alpha = 0
+	transition.to(self.levelText, {
 		alpha = 1, time = 500, onComplete = function()
-			transition.to(levelText, {
+			transition.to(self.levelText, {
 				alpha = 0, time = 3000, onComplete = function()
-					display.remove(levelText)
+					display.remove(self.levelText)
+					self.levelText = nil
 				end
 			})
 		end

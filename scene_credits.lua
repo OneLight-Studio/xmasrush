@@ -12,6 +12,7 @@ local imageLogo
 local textCopyright
 local btnWebSite
 local btnWebSiteUnderline
+local textFreesounds
 
 -- scene functions
 
@@ -44,7 +45,7 @@ function scene:enterScene( event )
 
 	imageLogo = display.newImageRect("img/credits_logo.png", 133, 133)
 	imageLogo.x = display.contentWidth / 2 
-	imageLogo.y = imageLogo.contentHeight / 2 + 45
+	imageLogo.y = imageLogo.contentHeight / 2 + 35
 
 	btnWebSite = display.newText(language:getString("credits.website"), 0, 0, FONT, 28)
 	btnWebSite.x = display.contentWidth / 2
@@ -57,6 +58,10 @@ function scene:enterScene( event )
 	textCopyright = display.newText(language:getString("credits.copyright"), 0, 0, FONT, 14)
 	textCopyright.x = display.contentWidth / 2 
 	textCopyright.y = btnWebSiteUnderline.y + btnWebSiteUnderline.contentHeight / 2 + 25
+
+	textFreesounds = display.newText(language:getString("credits.freesounds"), 0, 0, FONT, 14)
+	textFreesounds.x = display.contentCenterX
+	textFreesounds.y = textCopyright.y + textCopyright.contentHeight / 2 + 20
 
 	group:insert(bg)
 	group:insert(rect)
@@ -85,6 +90,8 @@ function scene:exitScene( event )
 	btnWebSite = nil
 	display.remove(btnWebSiteUnderline)
 	btnWebSiteUnderline = nil
+	display.remove(textFreesounds)
+	textFreesounds = nil
 end
 
 function scene:destroyScene( event )
