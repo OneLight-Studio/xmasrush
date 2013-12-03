@@ -2,3 +2,5 @@
 crazyxmas.sublime-project
 crazyxmas.sublime-workspace
 build/
+*.mobileprovision
+*.cer

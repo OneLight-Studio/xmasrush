@@ -141,7 +141,7 @@ function Game:updateLevel()
 	transition.to(self.levelText, {
 		alpha = 1, time = 500, onComplete = function()
 			transition.to(self.levelText, {
-				alpha = 0, time = 3000, onComplete = function()
+				alpha = 0, time = 2000, onComplete = function()
 					display.remove(self.levelText)
 					self.levelText = nil
 				end

@@ -6,6 +6,7 @@ require "item"
 
 -- constants
 
+local COUNTDOWN = 1500
 local PRESENT_SPEED = { { 3, 4 }, { 3, 5 }, { 4, 5 }, { 4, 6 }, { 4, 6 }, { 5, 6 }, { 5, 6 }, { 5, 7 }, { 5, 8 }, { 6, 8 } }
 local DELAY_BETWEEN_PRESENTS = { 1000, 800, 600, 450, 300, 300, 300, 250, 250, 250 }
 local DELAY_BETWEEN_BOMBS = { 5000, 4500, 4000, 3500, 3500, 3500, 3500, 3500, 3000, 3000 }
@@ -76,9 +77,9 @@ local function countdown(x)
 	countdownTxt.x = display.contentCenterX
 	countdownTxt.y = display.contentCenterY
 	transition.to(countdownTxt, {
-		alpha = 1, time = 500, onComplete = function()
+		alpha = 1, time = COUNTDOWN / 6, onComplete = function()
 			transition.to(countdownTxt, {
-				alpha = 0, time = 500, onComplete = function()
+				alpha = 0, time = COUNTDOWN / 6, onComplete = function()
 					display.remove(countdownTxt)
 					countdownTxt = nil
 					if x > 0 then
@@ -127,7 +128,7 @@ end
 
 function resumeGame()
 	countdown(3)
-	timer.performWithDelay(3000, function()
+	timer.performWithDelay(COUNTDOWN, function()
 		if gameSettings.soundEnable then
 			audio.resume(songChannel)
 		end
@@ -539,9 +540,13 @@ function scene:enterScene( event )
 	paddle:onEnterScene()
 	game:onEnterScene()
 
-	countdown(3)
+	local firstTime = not gameSettings.tuto[TYPE_PRESENT]
+	-- don't show the countdown the first time: the game will be stopped with the first present
+	if not firstTime then
+		countdown(3)
+	end
 
-	timer.performWithDelay(3000, function()
+	timer.performWithDelay(firstTime and 0 or COUNTDOWN, function()
 		-- listeners
 		Runtime:addEventListener("enterFrame", onEveryFrame)
 		-- sounds
