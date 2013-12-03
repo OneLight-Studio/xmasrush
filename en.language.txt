@@ -20,6 +20,7 @@
 	"help.big":"Your become invincible!",
 	"credits.copyright":"OneLight Studio is a trademark of Prometil.",
 	"credits.website":"www.onelight-studio.com",
+	"credits.freesounds":"The sounds of Xmas Rush are provided by freesounds.org",
 	"pts":" pts",
 	"highscore":"New Highscore!",
 	"levels":"Choose a level",
