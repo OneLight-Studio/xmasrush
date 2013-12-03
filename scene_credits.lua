@@ -90,6 +90,8 @@ function scene:exitScene( event )
 	btnWebSite = nil
 	display.remove(btnWebSiteUnderline)
 	btnWebSiteUnderline = nil
+	display.remove(textFreesounds)
+	textFreesounds = nil
 end
 
 function scene:destroyScene( event )
