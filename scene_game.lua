@@ -184,6 +184,15 @@ end
 function x2Hit()
 	isOnX2Bonus = true
 	x2BonusTimerId = timer.performWithDelay(X2_DELAY, endX2)
+	for i,item in ipairs(items) do
+		if item.type == TYPE_PRESENT then
+			local newItem = Item(TYPE_X2_PRESENT, function() game:increaseScore(2) end, item.fall, item.speed, item.speed)
+			newItem:onEnterScene(item.element.x, item.element.y)
+			item:remove()
+			item = nil
+			items[i] = newItem
+		end
+	end
 end
 
 function endX2()
@@ -194,6 +203,15 @@ end
 function snowflakeHit()
 	isOnSnowflakeBonus = true
 	snowflakeBonusTimerId = timer.performWithDelay(SNOWFLAKE_DELAY, endSnowflake)
+	for i,item in ipairs(items) do
+		if item.type == TYPE_PRESENT then
+			local newItem = Item(TYPE_SNOWFLAKE_PRESENT, item.hit, item.fall, PRESENT_SPEED[game.level][1] / 3, PRESENT_SPEED[game.level][2] / 3)
+			newItem:onEnterScene(item.element.x, item.element.y)
+			item:remove()
+			item = nil
+			items[i] = newItem
+		end
+	end
 end
 
 function endSnowflake()
