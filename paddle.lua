@@ -149,7 +149,7 @@ function Paddle:toAspiratorMode(activate)
 			timerEnd = timer.performWithDelay(DELAY_PADDLE_ASPIRATOR_MODE, function () self:toAspiratorMode(false) end)
 		else
 			local oldPad = pad
-			pad = display.newImageRect(gameSettings.finished and PADDLE_IMG_GOLD or PADDLE_IMG, PADDLE_WIDTH, PADDLE_HEIGHT)
+			pad = display.newImageRect(gameSettings.finished and PADDLE_IMG_GOLD or PADDLE_IMG, PADDLE_WIDTH, gameSettings.finished and PADDLE_HEIGHT_GOLD or PADDLE_HEIGHT)
 			pad.x = oldPad.x
 			pad.y = oldPad.y
 			
