@@ -36,6 +36,7 @@ local lastTouchedX
 local currentShowBounds
 local timerBlink
 local timerEnd
+local timerBig
 
 -- functions
 
@@ -175,7 +176,7 @@ function Paddle:toBigMode(activate)
 			display.remove(oldPad)
 			oldPad = nil
 
-			timer.performWithDelay(150, function ()
+			timerBig = timer.performWithDelay(200, function ()
 				local oldPad = pad
 				pad = display.newImageRect(PADDLE_BIG_MODE_IMG_STATE_2, PADDLE_BIG_MODE_IMG_STATE_2_WIDTH, PADDLE_BIG_MODE_IMG_STATE_2_HEIGHT)
 				pad.x = oldPad.x
@@ -185,7 +186,7 @@ function Paddle:toBigMode(activate)
 				oldPad = nil
 			end)
 
-			timer.performWithDelay(300, function ()
+			timerBig = timer.performWithDelay(400, function ()
 				local oldPad = pad
 				pad = display.newImageRect(PADDLE_BIG_MODE_IMG_STATE_3, PADDLE_BIG_MODE_IMG_STATE_3_WIDTH, PADDLE_BIG_MODE_IMG_STATE_3_HEIGHT)
 				pad.x = oldPad.x
@@ -222,6 +223,9 @@ function Paddle:pausePaddle()
 	if timerEnd ~= nil then
 		timer.pause(timerEnd)
 	end
+	if timerBig ~= nil then
+		timer.pause(timerBig)
+	end
 end
 
 function Paddle:resumePaddle()
@@ -231,6 +235,9 @@ function Paddle:resumePaddle()
 	if timerEnd ~= nil then
 		timer.resume(timerEnd)
 	end
+	if timerBig ~= nil then
+		timer.resume(timerBig)
+	end
 end
 
 function Paddle:cancelTimerPaddle()
@@ -239,5 +246,8 @@ function Paddle:cancelTimerPaddle()
 	end
 	if timerEnd ~= nil then
 		timer.cancel(timerEnd)
+	end
+	if timerBig ~= nil then
+		timer.cancel(timerBig)
 	end
 end
