@@ -16,18 +16,25 @@ PADDLE_MODE_NORMAL = 'mode_normal'
 PADDLE_MODE_ASPIRATOR = 'mode_aspirator'
 DELAY_PADDLE_ASPIRATOR_MODE = 10000
 PADDLE_ASPIRATOR_MODE_IMG = "img/game_paddle_with_aspirator.png"
+PADDLE_ASPIRATOR_MODE_IMG_GOLD = "img/game_paddle_gold_with_aspirator.png"
 PADDLE_ASPIRATOR_PADDING = 50
 PADDLE_MODE_BIG = 'mode_big'
 DELAY_PADDLE_BIG_MODE = 5500
 PADDLE_BIG_MODE_IMG_STATE_1 = "img/game_paddle_big_state_1.png"
+PADDLE_BIG_MODE_IMG_STATE_1_GOLD = "img/game_paddle_gold_big_state_1.png"
 PADDLE_BIG_MODE_IMG_STATE_1_WIDTH = 130
 PADDLE_BIG_MODE_IMG_STATE_1_HEIGHT = 117
+PADDLE_BIG_MODE_IMG_STATE_1_HEIGHT_GOLD = 147
 PADDLE_BIG_MODE_IMG_STATE_2 = "img/game_paddle_big_state_2.png"
+PADDLE_BIG_MODE_IMG_STATE_2_GOLD = "img/game_paddle_gold_big_state_2.png"
 PADDLE_BIG_MODE_IMG_STATE_2_WIDTH = 160
 PADDLE_BIG_MODE_IMG_STATE_2_HEIGHT = 144
+PADDLE_BIG_MODE_IMG_STATE_2_HEIGHT_GOLD = 181
 PADDLE_BIG_MODE_IMG_STATE_3 = "img/game_paddle_big_state_3.png"
+PADDLE_BIG_MODE_IMG_STATE_3_GOLD = "img/game_paddle_gold_big_state_3.png"
 PADDLE_BIG_MODE_IMG_STATE_3_WIDTH = 200
 PADDLE_BIG_MODE_IMG_STATE_3_HEIGHT = 180
+PADDLE_BIG_MODE_IMG_STATE_3_HEIGHT_GOLD = 226
 
 -- variables
 
@@ -137,7 +144,7 @@ function Paddle:toAspiratorMode(activate)
 	if pad ~= nil then
 		if activate == true then
 			local oldPad = pad
-			pad = display.newImageRect(PADDLE_ASPIRATOR_MODE_IMG, PADDLE_WIDTH, PADDLE_HEIGHT)
+			pad = display.newImageRect(gameSettings.finished and PADDLE_ASPIRATOR_MODE_IMG_GOLD or PADDLE_ASPIRATOR_MODE_IMG, PADDLE_WIDTH, gameSettings.finished and PADDLE_HEIGHT_GOLD or PADDLE_HEIGHT)
 			pad.x = oldPad.x
 			pad.y = oldPad.y
 			
@@ -169,7 +176,7 @@ function Paddle:toBigMode(activate)
 		if activate == true then
 
 			local oldPad = pad
-			pad = display.newImageRect(PADDLE_BIG_MODE_IMG_STATE_1, PADDLE_BIG_MODE_IMG_STATE_1_WIDTH, PADDLE_BIG_MODE_IMG_STATE_1_HEIGHT)
+			pad = display.newImageRect(gameSettings.finished and PADDLE_BIG_MODE_IMG_STATE_1_GOLD or PADDLE_BIG_MODE_IMG_STATE_1, PADDLE_BIG_MODE_IMG_STATE_1_WIDTH, gameSettings.finished and PADDLE_BIG_MODE_IMG_STATE_1_HEIGHT_GOLD or PADDLE_BIG_MODE_IMG_STATE_1_HEIGHT)
 			pad.x = oldPad.x
 			pad.y = display.contentHeight - pad.height / 2
 			
@@ -178,7 +185,7 @@ function Paddle:toBigMode(activate)
 
 			timerBig = timer.performWithDelay(200, function ()
 				local oldPad = pad
-				pad = display.newImageRect(PADDLE_BIG_MODE_IMG_STATE_2, PADDLE_BIG_MODE_IMG_STATE_2_WIDTH, PADDLE_BIG_MODE_IMG_STATE_2_HEIGHT)
+				pad = display.newImageRect(gameSettings.finished and PADDLE_BIG_MODE_IMG_STATE_2_GOLD or PADDLE_BIG_MODE_IMG_STATE_2, PADDLE_BIG_MODE_IMG_STATE_2_WIDTH, gameSettings.finished and PADDLE_BIG_MODE_IMG_STATE_2_HEIGHT_GOLD or PADDLE_BIG_MODE_IMG_STATE_2_HEIGHT)
 				pad.x = oldPad.x
 				pad.y = display.contentHeight - pad.height / 2
 				
@@ -188,7 +195,7 @@ function Paddle:toBigMode(activate)
 
 			timerBig = timer.performWithDelay(400, function ()
 				local oldPad = pad
-				pad = display.newImageRect(PADDLE_BIG_MODE_IMG_STATE_3, PADDLE_BIG_MODE_IMG_STATE_3_WIDTH, PADDLE_BIG_MODE_IMG_STATE_3_HEIGHT)
+				pad = display.newImageRect(gameSettings.finished and PADDLE_BIG_MODE_IMG_STATE_3_GOLD or PADDLE_BIG_MODE_IMG_STATE_3, PADDLE_BIG_MODE_IMG_STATE_3_WIDTH, gameSettings.finished and PADDLE_BIG_MODE_IMG_STATE_3_HEIGHT_GOLD or PADDLE_BIG_MODE_IMG_STATE_3_HEIGHT)
 				pad.x = oldPad.x
 				pad.y = display.contentHeight - pad.height / 2
 				
