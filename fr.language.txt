@@ -25,7 +25,7 @@
 	"highscore":"Nouveau Record !",
 	"levels":"Choisis un niveau",
 	"level":"Niveau",
-	"share.url":"http://www.onelight-studio.com/index.php?app=xmasrush",
+	"share.url":"http://www.xmasrushgame.com",
 	"share.text.1":"J'ai atteint ",
 	"share.text.2":" points au niveau ",
 	"share.text.3":" de Xmas Rush. Et vous ?",

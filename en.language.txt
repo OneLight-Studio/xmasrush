@@ -25,7 +25,7 @@
 	"highscore":"New Highscore!",
 	"levels":"Choose a level",
 	"level":"Level",
-	"share.url":"http://www.onelight-studio.com/index.php?app=xmasrush",
+	"share.url":"http://www.xmasrushgame.com",
 	"share.text.1":"I've reached ",
 	"share.text.2":" points at the level ",
 	"share.text.3":" of Xmas Rush. What about you?",
