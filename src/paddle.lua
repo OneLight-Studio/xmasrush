@@ -1,6 +1,6 @@
 -- Paddle
 
-require 'src.class'
+require 'src.util.class'
 
 -- constants
 

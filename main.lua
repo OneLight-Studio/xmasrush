@@ -1,7 +1,7 @@
 -- Main
 display.setStatusBar(display.HiddenStatusBar)
 
-require "src.helper"
+require "src.util.helper"
 
 -- global constants
 
@@ -26,9 +26,9 @@ local storyboard = require "storyboard"
 
 -- global variables
 
-loadsave = require("src.loadsave")
+loadsave = require("src.util.loadsave")
 gameSettings = loadsave.loadTable(GAME_SETTINGS)
-language = require("src.rosetta").new()
+language = require("src.util.rosetta").new()
 
 
 -- functions
@@ -73,7 +73,13 @@ if( gameSettings == nil ) then
     gameSettings.soundEnable = true
     gameSettings.soundEffectEnable = true
 	gameSettings.tuto = {}
+	gameSettings.arcade = false
 
+    loadsave.saveTable(gameSettings, GAME_SETTINGS)
+end
+-- v2
+if gameSettings.arcade == nil then
+	gameSettings.arcade = false
     loadsave.saveTable(gameSettings, GAME_SETTINGS)
 end
 

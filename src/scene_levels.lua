@@ -10,6 +10,7 @@ local rect
 local title
 local closeBtn
 local levelBtns = {}
+local arcadeBtn
 
 local LVL_COUNT = 10
 local ROWS = 2
@@ -17,7 +18,12 @@ local LVL_PER_ROW = LVL_COUNT / ROWS
 local TITLE_Y = 50
 local TITLE_FONT_SIZE = 50
 local BTN_X_MIN = BTN_SIZE / 2 + (display.contentWidth - LVL_PER_ROW * (BTN_SIZE + BTN_GAP)) / 2
-local BTN_Y_MIN = TITLE_Y + (display.contentHeight - ROWS * (BTN_SIZE + BTN_GAP)) / 2
+local BTN_Y_MIN
+if gameSettings.arcade then
+	BTN_Y_MIN = TITLE_Y + 70
+else
+	BTN_Y_MIN = TITLE_Y + (display.contentHeight - ROWS * (BTN_SIZE + BTN_GAP)) / 2
+end
 
 -- local functions
 
@@ -39,6 +45,21 @@ local function addLevelButton(lvl, enabled)
 	local col = (lvl - 1) % LVL_PER_ROW
 	btn.x = BTN_X_MIN + col * (BTN_SIZE + BTN_GAP)
 	btn.y = BTN_Y_MIN + row * (BTN_SIZE + BTN_GAP) 
+	return btn
+end
+
+local function addArcadeButton()
+	local btn = widget.newButton({
+		defaultFile = BTN_IMG,
+		overFile = BTN_IMG_PRESSED,
+		label = language:getString("level.arcade"),
+		labelColor = { default = BTN_LABEL_COLOR },
+		font = FONT,
+		fontSize = BTN_FONT_SIZE,
+		onRelease = onTap
+	})
+	btn.x = display.contentCenterX
+	btn.y = display.contentHeight - 60
 	return btn
 end
 
@@ -77,6 +98,9 @@ function scene:enterScene( event )
 	for i=1,10 do
 		levelBtns[i] = addLevelButton(i, level and level >= i)
 	end
+	if gameSettings.arcade then
+		arcadeBtn = addArcadeButton()
+	end
 
 	self.view:insert(bg)
 	self.view:insert(rect)
@@ -96,6 +120,8 @@ function scene:exitScene( event )
 		display.remove(levelBtns[i])
 		levelBtns[i] = nil
 	end
+	display.remove(arcadeBtn)
+	arcadeBtn = nil
 end
 
 function scene:destroyScene( event )
