@@ -1,6 +1,6 @@
 -- Game
 
-require 'class'
+require 'src.class'
 
 -- constants
 

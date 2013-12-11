@@ -1,7 +1,7 @@
 -- Main
 display.setStatusBar(display.HiddenStatusBar)
 
-require "helper"
+require "src.helper"
 
 -- global constants
 
@@ -26,19 +26,23 @@ local storyboard = require "storyboard"
 
 -- global variables
 
-loadsave = require("loadsave")
+loadsave = require("src.loadsave")
 gameSettings = loadsave.loadTable(GAME_SETTINGS)
-language = require("rosetta").new()
+language = require("src.rosetta").new()
 
 
 -- functions
 
-function moveToScene(name)
-	storyboard.gotoScene(name)
+function moveToScene(name, params)
+	storyboard.gotoScene("src." .. name, params)
 end
 
 function moveToSceneFade(name)
-	storyboard.gotoScene(name,"fade", 1000)
+	storyboard.gotoScene("src." .. name,"fade", 1000)
+end
+
+function moveToOverlay(name, params)
+	storyboard.showOverlay("src." .. name, params)
 end
 
 	-- Android specific

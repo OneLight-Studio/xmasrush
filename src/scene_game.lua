@@ -1,8 +1,8 @@
 -- Scene Game
 
-require "game"
-require "paddle"
-require "item"
+require "src.game"
+require "src.paddle"
+require "src.item"
 
 -- constants
 
@@ -92,7 +92,7 @@ local function countdown(x)
 end
 
 function showPause()
-	storyboard.showOverlay( "scene_game_pause", {isModal = true, params = { game = game }} )
+	moveToOverlay( "scene_game_pause", {isModal = true, params = { game = game }} )
 end
 
 function pauseGame()
@@ -331,7 +331,7 @@ local function dropPresent()
 			bonusTutoTimerId = timer.performWithDelay(500, function()
 				gameSettings.tuto[TYPE_PRESENT] = true
 				loadsave.saveTable(gameSettings, GAME_SETTINGS)
-				storyboard.showOverlay("scene_bonus_tuto", { isModal = true, params = { bonusType = TYPE_PRESENT, bonusItem = present } } )
+				moveToOverlay("scene_bonus_tuto", { isModal = true, params = { bonusType = TYPE_PRESENT, bonusItem = present } } )
 			end)
 		end
 	end
@@ -357,7 +357,7 @@ local function dropBomb()
 		bonusTutoTimerId = timer.performWithDelay(500, function()
 			gameSettings.tuto[TYPE_BOMB] = true
 			loadsave.saveTable(gameSettings, GAME_SETTINGS)
-			storyboard.showOverlay("scene_bonus_tuto", { isModal = true, params = { bonusType = TYPE_BOMB, bonusItem = bomb } } )
+			moveToOverlay("scene_bonus_tuto", { isModal = true, params = { bonusType = TYPE_BOMB, bonusItem = bomb } } )
 		end)
 	end
 
@@ -404,7 +404,7 @@ local function dropBonus()
 			bonusTutoTimerId = timer.performWithDelay(300, function()
 				gameSettings.tuto[bonus.type] = true
 				loadsave.saveTable(gameSettings, GAME_SETTINGS)
-				storyboard.showOverlay("scene_bonus_tuto", { isModal = true, params = { bonusType = bonus.type, bonusItem = bonus } } )
+				moveToOverlay("scene_bonus_tuto", { isModal = true, params = { bonusType = bonus.type, bonusItem = bonus } } )
 			end)
 		end
 	end
@@ -487,12 +487,12 @@ local function onEveryFrame(event)
 		if game.lives <= 0 then
 			Runtime:removeEventListener("enterFrame", onEveryFrame)
 			game:gameOver()
-			storyboard.showOverlay( "scene_game_over", {isModal = true, params = { game = game }} )
+			moveToOverlay( "scene_game_over", {isModal = true, params = { game = game }} )
 		elseif game.score >= LEVELS[table.getn(LEVELS)] then
 			-- game if finished
 			gameSettings.finished = true
 			loadsave.saveTable(gameSettings, GAME_SETTINGS)
-			storyboard.showOverlay("scene_game_finished", { params = { game = game } })
+			moveToOverlay("scene_game_finished", { params = { game = game } })
 		else
 			-- keep the text visible
 			game:scoreLivesToFront()
