@@ -1,6 +1,6 @@
 -- Item
 
-require 'class'
+require 'src.class'
 
 -- constants
 

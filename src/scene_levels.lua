@@ -31,7 +31,7 @@ local function addLevelButton(lvl, enabled)
 		fontSize = BTN_FONT_SIZE,
 		onRelease = function()
 			if enabled then
-				storyboard.gotoScene("scene_game", { params = { level = lvl } })
+				moveToScene("scene_game", { params = { level = lvl } })
 			end
 		end
 	})

@@ -1,5 +1,5 @@
 -- Scene Game Over
-require "item"
+require "src.item"
 
 -- variables
 

@@ -48,7 +48,7 @@ end
 
 local loadSettings = function()
 
-	local contents = loadFileContents("language.settings.txt")
+	local contents = loadFileContents("lang/settings.json")
 
 	local settings = decodeJsonData(contents)
 	
@@ -56,7 +56,7 @@ local loadSettings = function()
 end
 
 local loadLanguage = function(name)
-	local contents = loadFileContents(name .. ".language.txt")
+	local contents = loadFileContents("lang/" .. name .. ".json")
 	
 	local language = decodeJsonData(contents)
 	
