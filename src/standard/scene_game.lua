@@ -1,8 +1,8 @@
 -- Scene Game
 
-require "src.game"
-require "src.paddle"
-require "src.item"
+require "src.standard.game"
+require "src.standard.paddle"
+require "src.common.item"
 
 -- constants
 
@@ -16,7 +16,6 @@ local IMP_DELAY = 10000
 local MAX_ITEMS_ON_SCREEN = { 3, 4, 5, 5, 6, 6, 7, 7, 8, 8 }
 local X2_DELAY = 10000
 local SNOWFLAKE_DELAY = 10000
-local DELAY_BETWEEN_MAX_ITEMS_ON_SCREEN = 15000
 local LIVES_START = 10
 local LAST_CHANCE_MIN_LEVEL = 8
 local LAST_CHANCE_MIN_LIVES = 3
@@ -486,8 +485,7 @@ local function onEveryFrame(event)
 		-- check lives
 		if game.lives <= 0 then
 			Runtime:removeEventListener("enterFrame", onEveryFrame)
-			game:gameOver()
-			moveToOverlay( "scene_game_over", {isModal = true, params = { game = game }} )
+			moveToOverlay( "standard.scene_game_over", {isModal = true, params = { game = game }} )
 		elseif game.score >= LEVELS[table.getn(LEVELS)] then
 			-- game if finished
 			gameSettings.finished = true

@@ -1,5 +1,5 @@
 -- Scene Game Over
-require "src.item"
+require "src.common.item"
 
 -- variables
 
@@ -64,27 +64,26 @@ function scene:enterScene( event )
 	bg = display.newRect(0, 0, display.contentWidth, display.contentHeight)
 	bg:setFillColor(0, 0, 0, 180)
 
-	gameOverText = display.newText(language:getString("game.over"), 0, 0, FONT, 60)
+	gameOverText = display.newText(language:getString("game.over.arcade"), 0, 0, FONT, 60)
 	gameOverText.x = display.contentCenterX
 	gameOverText.y = display.contentCenterY - 120
 
 	scoreImg = display.newImageRect("img/game_present_4.png", PRESENT_WIDTH, PRESENT_HEIGHT)
-	scoreImg.x = display.contentCenterX - 80
+	scoreImg.x = display.contentCenterX - 50
 	scoreImg.y = display.contentCenterY - 48
 
 	local game = event.params.game
-	scoreText = display.newText(game.score .. "/" .. game.nextLevelScore, 0, 0, FONT, 30)
+	scoreText = display.newText(game.score, 0, 0, FONT, 30)
 	scoreText.x = display.contentCenterX + 30
 	scoreText.y = display.contentCenterY - 40
 
-	--[[
 	if game.newHighscore then
 		timer.performWithDelay(350, function()
 			highscoreText = display.newText(language:getString("highscore"), 0, 0, 200, 150, FONT, 30)
-			highscoreText.x = display.contentCenterX + 170
-			highscoreText.y = display.contentCenterY + 20
+			highscoreText.x = display.contentCenterX - 100
+			highscoreText.y = display.contentCenterY - 20
 			highscoreText.align = "center"
-			highscoreText:rotate(35)
+			highscoreText:rotate(-35)
 			transition.from(highscoreText, { xScale = 5, yScale = 5, time = 100, onComplete = function()
 				if gameSettings.soundEffectEnable then
 					audio.play(audio.loadSound("sound/highscore.mp3"))
@@ -92,7 +91,6 @@ function scene:enterScene( event )
 			end})
 		end)
 	end
-	--]]
 
 	retryBtn = addButton(1, language:getString("menu.retry"), function()
 		game.restart = true
@@ -105,7 +103,7 @@ function scene:enterScene( event )
 
 	local url = url_encode(language:getString("share.url"))
 	local title = url_encode(language:getString("game.name"))
-	local summary = url_encode(language:getString("share.text.1") .. game.score .. language:getString("share.text.2") .. game.level .. language:getString("share.text.3"))
+	local summary = url_encode(language:getString("share.highscore.1") .. game.score .. language:getString("share.highscore.2"))
 	addButtonSmall(1, "img/btn_fb.png", "img/btn_fb_pressed.png", function()
 		system.openURL("http://www.facebook.com/sharer/sharer.php?m2w&s=100&p[url]=" .. url .. "&p[title]=" .. title .. "&p[summary]=" .. summary)
 	end)

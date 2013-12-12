@@ -34,15 +34,19 @@ language = require("src.util.rosetta").new()
 -- functions
 
 function moveToScene(name, params)
-	storyboard.gotoScene("src." .. name, params)
+	local common = string.find(name, "%.") == nil
+	storyboard.gotoScene("src." .. (common and "common." or "") .. name, params)
 end
 
 function moveToSceneFade(name)
-	storyboard.gotoScene("src." .. name,"fade", 1000)
+	local common = string.find(name, "%.") == nil
+	print((common and "common." or "not common"))
+	storyboard.gotoScene("src." .. (common and "common." or "") .. name,"fade", 1000)
 end
 
 function moveToOverlay(name, params)
-	storyboard.showOverlay("src." .. name, params)
+	local common = string.find(name, "%.") == nil
+	storyboard.showOverlay("src." .. (common and "common." or "") .. name, params)
 end
 
 	-- Android specific
@@ -69,17 +73,18 @@ if( gameSettings == nil ) then
     gameSettings = {}
 	gameSettings.finished = false
     gameSettings.level = 1
-    gameSettings.highScore = 0
     gameSettings.soundEnable = true
     gameSettings.soundEffectEnable = true
 	gameSettings.tuto = {}
 	gameSettings.arcade = false
+    gameSettings.highscores = {}
 
     loadsave.saveTable(gameSettings, GAME_SETTINGS)
 end
 -- v2
 if gameSettings.arcade == nil then
 	gameSettings.arcade = false
+    gameSettings.highscores = {}
     loadsave.saveTable(gameSettings, GAME_SETTINGS)
 end
 

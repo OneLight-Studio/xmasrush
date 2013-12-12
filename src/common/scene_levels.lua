@@ -37,7 +37,7 @@ local function addLevelButton(lvl, enabled)
 		fontSize = BTN_FONT_SIZE,
 		onRelease = function()
 			if enabled then
-				moveToScene("scene_game", { params = { level = lvl } })
+				moveToScene("standard.scene_game", { params = { level = lvl } })
 			end
 		end
 	})
@@ -56,7 +56,9 @@ local function addArcadeButton()
 		labelColor = { default = BTN_LABEL_COLOR },
 		font = FONT,
 		fontSize = BTN_FONT_SIZE,
-		onRelease = onTap
+		onRelease = function()
+			moveToScene("arcade.scene_game")
+		end
 	})
 	btn.x = display.contentCenterX
 	btn.y = display.contentHeight - 60

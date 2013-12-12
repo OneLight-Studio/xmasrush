@@ -1,6 +1,7 @@
 {
 	"game.name":"Xmas Rush",
 	"game.over":"Game Over",
+	"game.over.arcade":"Time's up",
 	"game.finished":"You win!",
 	"menu.play":"Play",
 	"menu.scores":"High Scores",
@@ -31,6 +32,8 @@
 	"share.text.2":" points at the level ",
 	"share.text.3":" of Xmas Rush. What about you?",
 	"share.text.finished":"Yeah, I've finished Xmas Rush! What about you?",
+	"share.highscore.1":"I've reached ",
+	"share.highscore.2":" points at Xmas Rush! What about you?",
 	"share.twitter":"OneLight_Studio",
 	"countdown.go":"Go!"
 }

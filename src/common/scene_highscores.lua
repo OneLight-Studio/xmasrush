@@ -44,7 +44,7 @@ function scene:enterScene( event )
 			score = highscores[i] .. language:getString("pts")
 		end
 		labels[i] = display.newText(i .. ".", display.contentCenterX - 50, i * 25, FONT, 20)
-		scores[i] = display.newText(score, display.contentCenterX + 10, i * 25, FONT, 20)
+		scores[i] = display.newText(score, display.contentCenterX, i * 25, FONT, 20)
 	end
 
 	self.view:insert(bg)
