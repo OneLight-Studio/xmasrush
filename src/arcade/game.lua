@@ -1,5 +1,6 @@
--- Game
+-- GameArcade
 
+package.loaded["src.standard.game"] = nil
 require 'src.util.class'
 
 -- constants
@@ -7,10 +8,6 @@ require 'src.util.class'
 local SCORE_WIDTH = 60
 local FONT_SIZE = 20
 local TXT_HEIGHT = 40
-local TXT_SCALE_RATIO_POSITIVE = 2
-local TXT_SCALE_RATIO_NEGATIVE = 3
-local TXT_SCALE_TIME_POSITIVE = 100
-local TXT_SCALE_TIME_NEGATIVE = 200
 
 -- variables
 
@@ -18,11 +15,12 @@ local TXT_SCALE_TIME_NEGATIVE = 200
 
 -- core
 
-Game = class(function(this)
+GameArcade = class(function(this)
 end)
 
-function Game:onEnterScene()
+function GameArcade:onEnterScene()
 	self.score = 0
+	self.combo = 1
 
 	self.scoreImage = display.newImage( "img/game_menu_score.png" )
 	self.scoreImage.x = display.contentWidth - self.scoreImage.width / 2  - SCORE_WIDTH
@@ -34,10 +32,10 @@ function Game:onEnterScene()
 	end
 	self.newHighscore = false
 
-	self:updateScore(true)
+	self:updateScore(0)
 end
 
-function Game:onExitScene()
+function GameArcade:onExitScene()
 	self.score = nil
 
 	display.remove(self.scoreLabel)
@@ -46,32 +44,68 @@ function Game:onExitScene()
 	self.scoreImage = nil
 	display.remove(self.chronoLabel)
 	self.chronoLabel = nil
+	display.remove(self.comboLabel)
+	self.comboLabel = nil
 end
 
-function Game:updateScore(positive)
+function GameArcade:updateScore(number)
 	if self.scoreLabel ~= nil then
 		display.remove(self.scoreLabel)
+		display.scoreLabel = nil
 	end
 	self.scoreLabel = display.newText(self.score, display.contentWidth - SCORE_WIDTH, 0, FONT, FONT_SIZE)
 	self.scoreLabel.y = TXT_HEIGHT / 2
 	-- animate the label
-	local scale = TXT_SCALE_RATIO_POSITIVE
-	local time = TXT_SCALE_TIME_POSITIVE
-	if not positive then
-		self.scoreLabel:setTextColor(255, 0, 0)
-		scale = TXT_SCALE_RATIO_NEGATIVE
-		time = TXT_SCALE_TIME_NEGATIVE
-	end
 	transition.to(self.scoreLabel, {
-		xScale=scale, yScale=scale, time=time, onComplete=function(event)
+		xScale=2, yScale=2, time=100, onComplete=function(event)
 			transition.to(self.scoreLabel, {
-				xScale=1, yScale=1, time=time, onComplete=function(event)
-					self.scoreLabel:setTextColor(255, 255, 255)
-				end
+				xScale=1, yScale=1, time=100
 			})
 		end
 	})
-
+	-- combo
+	if number ~= self.combo then
+		if number <= 0 then
+			if self.comboLabel then
+				self.comboLabel:setTextColor(255, 0, 0)
+				transition.to(self.comboLabel, {
+					xScale=5, yScale=5, time=200, onComplete=function(event)
+						transition.to(self.comboLabel, {
+							xScale=1, yScale=1, alpha=0, time=200, onComplete=function()
+								display.remove(self.comboLabel)
+								self.comboLabel = nil
+							end
+						})
+					end
+				})
+			end
+		else
+			self.combo = number
+			if self.comboLabel ~= nil then
+				display.remove(self.comboLabel)
+				self.comboLabel = nil
+			end
+			if number > 1 then
+				self.comboLabel = display.newText("x" .. number, 0, 0, FONT, FONT_SIZE)
+				self.comboLabel.x = display.contentCenterX
+				self.comboLabel.y = display.contentCenterY
+				self.comboLabel.alpha = 0
+				self.comboLabel:setTextColor(170, 170, 255)
+				transition.to(self.comboLabel, {
+					xScale=10, yScale=10, alpha=1, time=200, onComplete=function()
+						transition.to(self.comboLabel, {
+							xScale=1, yScale=1, x=self.scoreLabel.x, y=TXT_HEIGHT, time=200, onComplete=function(event)
+								transition.to(self.comboLabel, {
+									xScale=1, yScale=1, time=200
+								})
+							end
+						})
+					end
+				})
+			end
+		end
+	end
+	-- highscore
 	if self.highscore > 0 and self.score > self.highscore and not self.newHighscore then
 		local highscoreText = display.newText(language:getString("highscore"), 0, 0, FONT, 50)
 		highscoreText.x = display.contentCenterX
@@ -81,14 +115,16 @@ function Game:updateScore(positive)
 		end, 6)
 		timer.performWithDelay(1000, function()
 			display.remove(highscoreText)
+			highscoreText = nil
 		end)
 		self.newHighscore = true
 	end
 end
 
-function Game:updateChrono(seconds)
+function GameArcade:updateChrono(seconds)
 	if self.chronoLabel then
 		display.remove(self.chronoLabel)
+		self.chronoLabel = nil
 	end
 	self.chronoLabel = display.newText(string.format("%d:%02d", math.floor(seconds / 60), seconds % 60), 0, 0, FONT, FONT_SIZE)
 	self.chronoLabel.x = display.contentCenterX
@@ -105,7 +141,7 @@ function Game:updateChrono(seconds)
 	end
 end
 
-function Game:textToFront()
+function GameArcade:textToFront()
 	if self.scoreImage then
 		self.scoreImage:toFront()
 	end
@@ -115,19 +151,17 @@ function Game:textToFront()
 	if self.chronoLabel then
 		self.chronoLabel:toFront()
 	end
+	if self.comboLabel then
+		self.comboLabel:toFront()
+	end
 end
 
-function Game:increaseScore(number)
+function GameArcade:increaseScore(number)
 	self.score = self.score + number
-	self:updateScore(number >= 0)
+	self:updateScore(number)
 end
 
-function Game:decreaseScore(number)
-	self.score = self.score - number
-	self:updateScore(number <= 0)
-end
-
-function Game:gameOver()
+function GameArcade:gameOver()
 	if not gameSettings.highscores then
 		gameSettings.highscores = {	self.score }
 		loadsave.saveTable(gameSettings, GAME_SETTINGS)
@@ -141,12 +175,12 @@ function Game:gameOver()
 				break
 			end
 		end
-		if not done and table.getn(gameSettings.highscores) < MAX_HIGHSCORES then
+		if not done and #gameSettings.highscores < MAX_HIGHSCORES then
 			table.insert(gameSettings.highscores, self.score)
 			loadsave.saveTable(gameSettings, GAME_SETTINGS)
 		end
 	end
-	while table.getn(gameSettings.highscores) > MAX_HIGHSCORES do
+	while #gameSettings.highscores > MAX_HIGHSCORES do
 		table.remove(gameSettings.highscores, MAX_HIGHSCORES + 1)
 	end
 end

@@ -1,5 +1,6 @@
--- Paddle
+-- PaddleArcade
 
+package.loaded["src.standard.paddle"] = nil
 require 'src.util.class'
 
 -- constants
@@ -70,26 +71,26 @@ end
 
 -- core
 
-Paddle = class(function(this)
+PaddleArcade = class(function(this)
 	this.mode = PADDLE_MODE_NORMAL
 end)
 
-function Paddle:move()
+function PaddleArcade:move()
 	if doMove then
 		pad.x = lastTouchedX
 		pad.y = lastTouchedY
 	end
 end
 
-function Paddle:elem()
+function PaddleArcade:elem()
 	return pad
 end
 
-function Paddle:toFront()
+function PaddleArcade:toFront()
 	pad:toFront()
 end
 
-function Paddle:onEnterScene()
+function PaddleArcade:onEnterScene()
 	pad = display.newImageRect(gameSettings.finished and PADDLE_IMG_GOLD or PADDLE_IMG, PADDLE_WIDTH, gameSettings.finished and PADDLE_HEIGHT_GOLD or PADDLE_HEIGHT)
 	pad.x = display.contentCenterX
 	pad.y = display.contentCenterY
@@ -101,7 +102,7 @@ function Paddle:onEnterScene()
 	Runtime:addEventListener("touch", onTouchScreen)
 end
 
-function Paddle:onExitScene()
+function PaddleArcade:onExitScene()
 	lastTouchedX = display.contentCenterX
 
 	self:cancelTimerPaddle()
@@ -111,7 +112,7 @@ function Paddle:onExitScene()
 	Runtime:removeEventListener("touch", onTouchScreen)
 end
 
-function Paddle:contentBounds()
+function PaddleArcade:contentBounds()
 	if pad ~= nil then
 		local bounds = pad.contentBounds
 		bounds.xMin = bounds.xMin
@@ -127,7 +128,7 @@ function Paddle:contentBounds()
 	return nil
 end
 
-function Paddle:aspiratorContentBounds()
+function PaddleArcade:aspiratorContentBounds()
 	if pad ~= nil then
 		local bounds = self:contentBounds()
 		bounds.xMin = bounds.xMin - PADDLE_ASPIRATOR_PADDING
@@ -143,7 +144,7 @@ function Paddle:aspiratorContentBounds()
 	return nil
 end
 
-function Paddle:toAspiratorMode(activate)
+function PaddleArcade:toAspiratorMode(activate)
 	if pad ~= nil then
 		if activate == true then
 			local oldPad = pad
@@ -174,7 +175,7 @@ function Paddle:toAspiratorMode(activate)
 	end
 end
 
-function Paddle:toBigMode(activate)
+function PaddleArcade:toBigMode(activate)
 	if pad ~= nil then
 		if activate == true then
 
@@ -226,7 +227,7 @@ function Paddle:toBigMode(activate)
 	end
 end
 
-function Paddle:pausePaddle()
+function PaddleArcade:pausePaddle()
 	if timerBlink ~= nil then
 		timer.pause(timerBlink)
 	end
@@ -238,7 +239,7 @@ function Paddle:pausePaddle()
 	end
 end
 
-function Paddle:resumePaddle()
+function PaddleArcade:resumePaddle()
 	if timerBlink ~= nil then
 		timer.resume(timerBlink)
 	end
@@ -250,7 +251,7 @@ function Paddle:resumePaddle()
 	end
 end
 
-function Paddle:cancelTimerPaddle()
+function PaddleArcade:cancelTimerPaddle()
 	if timerBlink ~= nil then
 		timer.cancel(timerBlink)
 	end

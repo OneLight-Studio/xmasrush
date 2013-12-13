@@ -1,5 +1,6 @@
 -- Game
 
+package.loaded["src.arcade.game"] = nil
 require 'src.util.class'
 
 -- constants
@@ -64,6 +65,7 @@ end
 function Game:updateScore(positive)
 	if self.scoreLabel ~= nil then
 		display.remove(self.scoreLabel)
+		self.scoreLabel = nil
 	end
 	self.scoreLabel = display.newText(self.score .. "/" .. (self.nextLevelScore or self.score), display.contentWidth - SCORE_WIDTH, 0, FONT, FONT_SIZE)
 	self.scoreLabel.y = TXT_HEIGHT / 2
@@ -89,6 +91,7 @@ end
 function Game:updateLives(positive)
 	if self.livesLabel ~= nil then
 		display.remove(self.livesLabel)
+		self.livesLabel = nil
 	end
 	self.livesLabel = display.newText(self.lives, display.contentCenterX, 0, FONT, FONT_SIZE)
 	self.livesLabel.y = TXT_HEIGHT / 2
@@ -149,7 +152,7 @@ function Game:increaseScore(number)
 	self.score = self.score + number
 	self:updateScore(number >= 0)
 	if self.nextLevelScore and self.score >= self.nextLevelScore then
-		if self.level < table.getn(LEVELS) then
+		if self.level < #LEVELS then
 			-- level up
 			self.level = self.level + 1
 			self.nextLevelScore = LEVELS[self.level]

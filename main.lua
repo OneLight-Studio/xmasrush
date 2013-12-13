@@ -35,17 +35,46 @@ language = require("src.util.rosetta").new()
 
 function moveToScene(name, params)
 	local common = string.find(name, "%.") == nil
+	if not common then
+		-- prevent conflicts
+		if string.find(name, "arcade") ~= nil then
+			local oldScene = name:gsub("arcade", "standard")
+			storyboard.removeScene("src." .. oldScene)
+		elseif string.find(name, "standard") ~= nil then
+			local oldScene = name:gsub("standard", "arcade")
+			storyboard.removeScene("src." .. oldScene)
+		end
+	end
 	storyboard.gotoScene("src." .. (common and "common." or "") .. name, params)
 end
 
 function moveToSceneFade(name)
 	local common = string.find(name, "%.") == nil
-	print((common and "common." or "not common"))
+	if not common then
+		-- prevent conflicts
+		if string.find(name, "arcade") ~= nil then
+			local oldScene = name:gsub("arcade", "standard")
+			storyboard.removeScene("src." .. oldScene)
+		elseif string.find(name, "standard") ~= nil then
+			local oldScene = name:gsub("standard", "arcade")
+			storyboard.removeScene("src." .. oldScene)
+		end
+	end
 	storyboard.gotoScene("src." .. (common and "common." or "") .. name,"fade", 1000)
 end
 
 function moveToOverlay(name, params)
 	local common = string.find(name, "%.") == nil
+	if not common then
+		-- prevent conflicts
+		if string.find(name, "arcade") ~= nil then
+			local oldScene = name:gsub("arcade", "standard")
+			storyboard.removeScene("src." .. oldScene)
+		elseif string.find(name, "standard") ~= nil then
+			local oldScene = name:gsub("standard", "arcade")
+			storyboard.removeScene("src." .. oldScene)
+		end
+	end
 	storyboard.showOverlay("src." .. (common and "common." or "") .. name, params)
 end
 

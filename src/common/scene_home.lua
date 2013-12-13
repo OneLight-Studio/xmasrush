@@ -28,7 +28,7 @@ end
 
 -- local functions
 local function updateBtnPosition()
-	local nbBtnSmall = table.getn(btnSmall)
+	local nbBtnSmall = #btnSmall
 	local even = nbBtnSmall % 2 ~= 0
 	for i, b in ipairs(btnSmall) do
 		i = i - 0.5

@@ -10,13 +10,15 @@ local COUNTDOWN = 1500
 local PRESENT_SPEED = { 8, 10 }
 local DELAY_BETWEEN_PRESENTS = 250
 local DELAY_BETWEEN_BOMBS = 2000
-local DELAY_BETWEEN_BONUS = 6000
+local DELAY_BETWEEN_BONUS = 5000
 local AUDIO_PITCH = 1.5
 local IMP_DELAY = 10000
 local MAX_ITEMS_ON_SCREEN = 30
 local X2_DELAY = 10000
 local SNOWFLAKE_DELAY = 10000
-local GAME_DURATION = 10
+local GAME_DURATION = 60
+local PRESENTS_COMBO = 50
+local BOMB_PAUSE = 3000
 
 -- variables
 
@@ -51,9 +53,10 @@ local songChannel
 local imp
 local lastBonusType = -1
 local bonusTutoTimerId
-local pointsPerPresent = 1
+local consecutivePresents = 0
 local gameTimer
 local seconds
+local bombPauseTimer
 
 -- local functions
 
@@ -115,6 +118,9 @@ function pauseGame()
 	if bonusTutoTimerId ~= nil then
 		timer.pause(bonusTutoTimerId)
 	end
+	if bombPauseTimer then
+		timer.pause(bombPauseTimer)
+	end
 
 	timer.pause(gameTimer)
 	timer.pause(bombTimerId)
@@ -147,6 +153,9 @@ function resumeGame()
 		if bonusTutoTimerId ~= nil then
 			timer.resume(bonusTutoTimerId)
 		end
+		if bombPauseTimer ~= nil then
+			timer.resume(bombPauseTimer)
+		end
 		timer.resume(gameTimer)
 		timer.resume(bombTimerId)
 		timer.resume(bonusTimerId)
@@ -161,7 +170,11 @@ end
 
 function startHit()
 	for i, item in pairs(items) do
-		item:remove()
+		if item then
+			items[i] = nil
+			item:remove()
+			item = nil
+		end
 	end
 
 	timer.pause(bombTimerId)
@@ -206,16 +219,16 @@ end
 function x2Hit()
 	isOnX2Bonus = true
 	x2BonusTimerId = timer.performWithDelay(X2_DELAY, endX2)
-	for i,item in ipairs(items) do
-		if item.type == TYPE_PRESENT then
+	for i,item in pairs(items) do
+		if item and item.type == TYPE_PRESENT then
 			local newItem = Item(TYPE_X2_PRESENT, function()
-				game:increaseScore(pointsPerPresent * 2)
-				pointsPerPresent = pointsPerPresent + 1
+				consecutivePresents = consecutivePresents + 1
+				game:increaseScore((1 + math.floor(consecutivePresents / PRESENTS_COMBO) * 2))
 			end, item.fall, item.speed, item.speed)
 			newItem:onEnterScene(item.element.x, item.element.y)
+			items[i] = newItem
 			item:remove()
 			item = nil
-			items[i] = newItem
 		end
 	end
 end
@@ -228,13 +241,13 @@ end
 function snowflakeHit()
 	isOnSnowflakeBonus = true
 	snowflakeBonusTimerId = timer.performWithDelay(SNOWFLAKE_DELAY, endSnowflake)
-	for i,item in ipairs(items) do
-		if item.type == TYPE_PRESENT then
+	for i,item in pairs(items) do
+		if item and item.type == TYPE_PRESENT then
 			local newItem = Item(TYPE_SNOWFLAKE_PRESENT, item.hit, item.fall, PRESENT_SPEED[1] / 3, PRESENT_SPEED[2] / 3)
 			newItem:onEnterScene(item.element.x, item.element.y)
+			items[i] = newItem
 			item:remove()
 			item = nil
-			items[i] = newItem
 		end
 	end
 end
@@ -244,14 +257,39 @@ function endSnowflake()
 	snowflakeBonusTimerId = nil
 end
 
+function bombHit()
+	consecutivePresents = 0
+	blink(paddle:elem(), BLINK_SPEED_BOMB)
+	game:updateScore(0)
+	for i, item in pairs(items) do
+		if item and item.type ~= TYPE_BOMB then
+			transition.to(item:elem(), {
+				xScale=2, yScale=2, alpha=0, time=300, onComplete=function(event)
+					items[i] = nil
+					item:remove()
+					item = nil
+				end
+			})
+		end
+	end
+
+	timer.pause(bonusTimerId)
+	timer.pause(presentTimerId)
+	bombPauseTimer = timer.performWithDelay(BOMB_PAUSE, endBombPause)
+end
+
+function endBombPause()
+	timer.resume(bonusTimerId)
+	timer.resume(presentTimerId)
+end
+
 function dropPresentLine()
 	if starDroppingIndex < starDroppingMax then
-		local prensentNumberPerRow = math.floor(display.contentWidth / PRESENT_WIDTH) / 10
+		local prensentNumberPerRow = math.floor(display.contentWidth / PRESENT_WIDTH) / 5
 		
 		for i=0, prensentNumberPerRow, 1 do
 			local present = Item(TYPE_STAR_PRESENT, function()
-				game:increaseScore(1)
-				pointsPerPresent = pointsPerPresent + 1
+				game:increaseScore(1 + math.floor(consecutivePresents / PRESENTS_COMBO))
 			end, nil)
 			table.insert(items, present)
 			present:onEnterScene()
@@ -276,41 +314,35 @@ function dropPresentLine()
 end
 
 local function dropPresent()
-	if table.getn(items) < itemsCountOnScreen then
+	if #items < itemsCountOnScreen then
 		local present
 		if isOnX2Bonus then
 			present = Item(TYPE_X2_PRESENT, 
 				function() 
-					game:increaseScore(2 * pointsPerPresent) 
-					pointsPerPresent = pointsPerPresent + 1
+					consecutivePresents = consecutivePresents + 1
+					game:increaseScore((1 + math.floor(consecutivePresents / PRESENTS_COMBO) * 2)) 
 				end, 
-				function()
-					pointsPerPresent = 1
-				end, 
+				nil,
 				PRESENT_SPEED[1], 
 				PRESENT_SPEED[2]
 			)
 		elseif isOnSnowflakeBonus then
 			present = Item(TYPE_SNOWFLAKE_PRESENT,
 				function() 
-					game:increaseScore(pointsPerPresent) 
-					pointsPerPresent = pointsPerPresent + 1
+					consecutivePresents = consecutivePresents + 1
+					game:increaseScore(1 + math.floor(consecutivePresents / PRESENTS_COMBO)) 
 				end,
-				function()
-					pointsPerPresent = 1
-				end,
+				nil,
 				PRESENT_SPEED[1] / 3,
 				PRESENT_SPEED[2] / 3
 			)
 		else
 			present = Item(TYPE_PRESENT,
 				function() 
-					game:increaseScore(pointsPerPresent) 
-					pointsPerPresent = pointsPerPresent + 1
+					consecutivePresents = consecutivePresents + 1
+					game:increaseScore(1 + math.floor(consecutivePresents / PRESENTS_COMBO)) 
 				end, 
-				function()
-					pointsPerPresent = 1
-				end,
+				nil,
 				PRESENT_SPEED[1],
 				PRESENT_SPEED[2]
 			)
@@ -331,11 +363,7 @@ local function dropPresent()
 end
 
 local function dropBomb()
-	local bomb = Item(TYPE_BOMB, function()
-		pointsPerPresent = 1
-		blink(paddle:elem(), BLINK_SPEED_BOMB)
-		-- TODO Blow up items on the screen
-	end, nil)
+	local bomb = Item(TYPE_BOMB, bombHit, nil)
 	table.insert(items, bomb)
 	bomb:onEnterScene()
 	if not gameSettings.tuto[TYPE_BOMB] then
@@ -407,56 +435,56 @@ local function onEveryFrame(event)
 		end
 
 		-- move each item
-		-- TODO Don't remove in the loop!!
 		for i, item in pairs(items) do
-			item:startTranslate()
+			if item then
+				item:startTranslate()
 
-			itemBounds = item:contentBounds()
+				itemBounds = item:contentBounds()
 
-			if itemBounds ~= nil and paddleBounds ~= nil then
-				-- remove the item if it is in the paddle
-				if paddleAspiratorBounds ~= nil and item.type ~= TYPE_BOMB and item.aspirated == nil then
-					if isBoundsInBounds(itemBounds, paddleAspiratorBounds) then
-						local toX = paddleBounds.xMin + ((paddleBounds.xMax - paddleBounds.xMin) / 2)
-						local toY = paddleBounds.yMin + 10
+				if itemBounds ~= nil and paddleBounds ~= nil then
+					-- remove the item if it is in the paddle
+					if paddleAspiratorBounds ~= nil and item.type ~= TYPE_BOMB and item.aspirated == nil then
+						if isBoundsInBounds(itemBounds, paddleAspiratorBounds) then
+							local toX = paddleBounds.xMin + ((paddleBounds.xMax - paddleBounds.xMin) / 2)
+							local toY = paddleBounds.yMin + 10
 
-						item:aspiratedTo(toX, toY)
-					end
-				else
-					if isBoundsInBounds(itemBounds, paddleBounds) or item:aspiratedDone() then
-						table.remove(items, i)
-						item:remove()
-
-						if paddle.mode == PADDLE_MODE_BIG and item.type == TYPE_BOMB then
-							--item:onHit(game, true)
-						else
-							item:onHit(game)
+							item:aspiratedTo(toX, toY)
+						end
+					else
+						if isBoundsInBounds(itemBounds, paddleBounds) or item:aspiratedDone() then
+							items[i] = nil
+							item:remove()
+							if paddle.mode == PADDLE_MODE_BIG and item.type == TYPE_BOMB then
+								--item:onHit(game, true)
+							else
+								item:onHit(game)
+							end
 						end
 					end
-				end
 
-				-- remove only present items if it is in the imp
-				if imp ~= nil and impBounds ~= nil then
-					if isBoundsInBounds(itemBounds, impBounds) then
-						table.remove(items, i)
-						item:remove()
-						if item.type ~= TYPE_BOMB then
-							item:onHit(game)
+					-- remove only present items if it is in the imp
+					if imp ~= nil and impBounds ~= nil then
+						if isBoundsInBounds(itemBounds, impBounds) then
+							items[i] = nil
+							item:remove()
+							if item.type ~= TYPE_BOMB then
+								item:onHit(game)
+							end
 						end
 					end
+					
+					-- remove the item if it is out of the screen
+					if itemBounds.yMin > display.contentHeight then
+						items[i] = nil
+						item:remove()
+						item:onFall(game)
+					end
 				end
-				
-				-- remove the item if it is out of the screen
-				if itemBounds.yMin > display.contentHeight then
-					table.remove(items, i)
-					item:remove()
-					item:onFall(game)
-				end
-			end
 
-			-- put bombs to front
-			if item.type == TYPE_BOMB then
-				item:toFront()
+				-- put bombs to front
+				if item.type == TYPE_BOMB then
+					item:toFront()
+				end
 			end
 		end
 
@@ -468,8 +496,10 @@ end
 
 function clearItems()
 	for i, item in pairs(items) do
-		item:onExitScene()
-		items[i] = nil
+		if item then
+			item:onExitScene()
+			items[i] = nil
+		end
 	end
 end
 
@@ -495,9 +525,9 @@ function scene:willEnterScene( event )
 end
 
 function scene:enterScene( event )
-    paddle = Paddle()
-	game = Game()
-	pointsPerPresent = 1
+    paddle = PaddleArcade()
+	game = GameArcade()
+	consecutivePresents = 0
 
 	-- init
 	math.randomseed(os.time())

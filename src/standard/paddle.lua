@@ -1,5 +1,6 @@
 -- Paddle
 
+package.loaded["src.arcade.paddle"] = nil
 require 'src.util.class'
 
 -- constants
