@@ -18,6 +18,7 @@ TYPE_BIG_BONUS = 'big'
 TYPE_SNOWFLAKE_BONUS = 'snowflake'
 TYPE_SNOWFLAKE_PRESENT = 'snowflake_present'
 TYPE_ARCADE_BONUS = 'arcade_bonus'
+TYPE_HOURGLASS_BONUS = 'hourglass_bonus'
 
 PRESENT_IMG = "img/game_present_#index#.png"
 PRESENT_X2_IMG = "img/game_present_#index#_x2.png"
@@ -102,6 +103,13 @@ ARCADE_BONUS_HEIGHT = 35
 ARCADE_BONUS_MIN_SPEED = 7
 ARCADE_BONUS_MAX_SPEED = 7
 ARCADE_SOUND = audio.loadSound("sound/bonus_arcade.mp3")
+
+HOURGLASS_BONUS_IMG = "img/game_hourglass_bonus.png"
+HOURGLASS_BONUS_WIDTH = 26
+HOURGLASS_BONUS_HEIGHT = 47
+HOURGLASS_BONUS_MIN_SPEED = 7
+HOURGLASS_BONUS_MAX_SPEED = 7
+HOURGLASS_SOUND = audio.loadSound("sound/bonus_hourglass.mp3")
 
 -- variables
 
@@ -199,6 +207,12 @@ Item = class(function(this, type, hit, fall, speedMin, speedMax)
 		this.height = ARCADE_BONUS_HEIGHT
 		this.speed = math.random(ARCADE_BONUS_MIN_SPEED, ARCADE_BONUS_MAX_SPEED)
 		this.sound = ARCADE_SOUND
+	elseif type == TYPE_HOURGLASS_BONUS then
+		this.img = HOURGLASS_BONUS_IMG
+		this.width = HOURGLASS_BONUS_WIDTH
+		this.height = HOURGLASS_BONUS_HEIGHT
+		this.speed = math.random(HOURGLASS_BONUS_MIN_SPEED, HOURGLASS_BONUS_MAX_SPEED)
+		this.sound = HOURGLASS_SOUND
 	end
 
 	this.hit = hit

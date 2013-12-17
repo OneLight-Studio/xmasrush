@@ -84,7 +84,7 @@ function GameArcade:updateScore(number)
 	end
 end
 
-function GameArcade:updateChrono(seconds)
+function GameArcade:updateChrono(seconds, addTime)
 	if self.chronoLabel then
 		display.remove(self.chronoLabel)
 		self.chronoLabel = nil
@@ -93,17 +93,29 @@ function GameArcade:updateChrono(seconds)
 	-- + 14 to adapte with the background
 	self.chronoLabel.x = display.contentCenterX + 14
 	self.chronoLabel.y = TXT_HEIGHT / 2
-	if seconds <= 3 then
-		self.chronoLabel:setTextColor(255, 0, 0)
-		transition.to(self.chronoLabel, {
-			xScale=5, yScale=5, time=200, onComplete=function(event)
-				transition.to(self.chronoLabel, {
-					xScale=1, yScale=1, time=200
-				})
-			end
-		})
-	else
-		self.chronoLabel:setTextColor(128, 128, 128)
+
+	if addTime then
+		self.chronoLabel:setTextColor(0, 255, 0)
+			transition.to(self.chronoLabel, {
+				xScale=5, yScale=5, time=200, onComplete=function(event)
+					transition.to(self.chronoLabel, {
+						xScale=1, yScale=1, time=200
+					})
+				end
+			})
+	else	
+		if seconds <= 3 then
+			self.chronoLabel:setTextColor(255, 0, 0)
+			transition.to(self.chronoLabel, {
+				xScale=5, yScale=5, time=200, onComplete=function(event)
+					transition.to(self.chronoLabel, {
+						xScale=1, yScale=1, time=200
+					})
+				end
+			})
+		else
+			self.chronoLabel:setTextColor(128, 128, 128)
+		end
 	end
 end
 

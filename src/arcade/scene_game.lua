@@ -230,6 +230,13 @@ function x2Hit()
 	end
 end
 
+function hourglassHit()
+	seconds = seconds + 5
+	game:updateChrono(seconds, true)
+end
+
+
+
 function endX2()
 	isOnX2Bonus = false
 	x2BonusTimerId = nil
@@ -371,7 +378,7 @@ local function dropBomb()
 end
 
 local function dropBonus()
-	local bonusType = math.random(1, 6)
+	local bonusType = math.random(1, 7)
 	local bonus
 	
 	if bonusType == 1 then
@@ -390,6 +397,8 @@ local function dropBonus()
 		paddle:toAspiratorMode(false)
 		paddle:toBigMode(false)
 		bonus = Item(TYPE_BIG_BONUS, function() paddle:toBigMode(true) end, nil, nil)
+	elseif bonusType == 7 then
+		bonus = Item(TYPE_HOURGLASS_BONUS, function() hourglassHit() end, nil, nil)
 	end
 
 	if bonusType == lastBonusType then
@@ -505,7 +514,7 @@ end
 
 function gameCountdown()
 	seconds = seconds - 1
-	game:updateChrono(seconds)
+	game:updateChrono(seconds, false)
 	if seconds > 0 then
 		gameTimer = timer.performWithDelay(1000, gameCountdown)
 	else
@@ -545,7 +554,7 @@ function scene:enterScene( event )
 	delayBetweenBombs = DELAY_BETWEEN_BOMBS
 	itemsCountOnScreen = MAX_ITEMS_ON_SCREEN
 	seconds = GAME_DURATION
-	game:updateChrono(seconds)
+	game:updateChrono(seconds, false)
 
 	lastBonusType = -1
 

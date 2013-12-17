@@ -18,6 +18,7 @@ local textImp
 local textVacuum
 local textSnowflake
 local textBig
+local textHourglass
 local textEmpty
 
 local imageGitf
@@ -27,6 +28,7 @@ local imageStar
 local imageImp
 local imageVacuum
 local imageSnowflake
+local imageHourglass
 local imageBig
 
 local INIT_Y_FIRST_ELEMENT = 20
@@ -46,7 +48,6 @@ function scene:enterScene( event )
 	local startX = 15;
 	local startXImage = startX + 25
 	local startXText = startX + 50
-
 
 	local groupView = self.view
 
@@ -111,8 +112,16 @@ function scene:enterScene( event )
 	textBig = display.newText(language:getString("help.big"), startXText, textSnowflake.y + HEIGHT_SPACE_BETWEEN_ELEMENT, display.contentWidth - ((startXImage*2)+5), 40, FONT, 16)
 	textBig.y = textSnowflake.y + textSnowflake.contentHeight / 2 + HEIGHT_SPACE_BETWEEN_ELEMENT
 
-	textEmpty = display.newText(" ", startXText, textBig.y + HEIGHT_SPACE_BETWEEN_ELEMENT, display.contentWidth - ((startXImage*2)+5), 40, FONT, 16)
-	textEmpty.y = textBig.y + textBig.contentHeight / 2 + HEIGHT_SPACE_BETWEEN_ELEMENT
+	if gameSettings.arcade then
+		textHourglass = display.newText(language:getString("help.hourglass"), startXText, textBig.y + HEIGHT_SPACE_BETWEEN_ELEMENT, display.contentWidth - ((startXImage*2)+5), 40, FONT, 16)
+		textHourglass.y = textBig.y + textBig.contentHeight / 2 + HEIGHT_SPACE_BETWEEN_ELEMENT
+
+		textEmpty = display.newText(" ", startXText, textHourglass.y + HEIGHT_SPACE_BETWEEN_ELEMENT, display.contentWidth - ((startXImage*2)+5), 40, FONT, 16)
+		textEmpty.y = textHourglass.y + textHourglass.contentHeight / 2 + HEIGHT_SPACE_BETWEEN_ELEMENT
+	else
+		textEmpty = display.newText(" ", startXText, textBig.y + HEIGHT_SPACE_BETWEEN_ELEMENT, display.contentWidth - ((startXImage*2)+5), 40, FONT, 16)
+		textEmpty.y = textBig.y + textBig.contentHeight / 2 + HEIGHT_SPACE_BETWEEN_ELEMENT
+	end
 
 	imageGitf = display.newImageRect("img/help_presents.png", 30, 32)
 	imageGitf.x = startXImage
@@ -150,6 +159,12 @@ function scene:enterScene( event )
 	imageBig.x = startXImage
 	imageBig.y = textSnowflake.y + textSnowflake.contentHeight / 2 + HEIGHT_SPACE_BETWEEN_ELEMENT - (imageBig.height / 3)
 
+	if gameSettings.arcade then
+		imageHourglass = display.newImageRect("img/game_hourglass_bonus.png", 18, 32)
+		imageHourglass.x = startXImage
+		imageHourglass.y = textBig.y + textBig.contentHeight / 2 + HEIGHT_SPACE_BETWEEN_ELEMENT - (imageBig.height / 3)
+	end
+
 	group:insert(textGitf)
 	group:insert(textLife)
 	group:insert(textBomb)
@@ -159,6 +174,9 @@ function scene:enterScene( event )
 	group:insert(textX2)
 	group:insert(textSnowflake)
 	group:insert(textBig)
+	if gameSettings.arcade then
+		group:insert(textHourglass)
+	end
 	group:insert(textEmpty)
 
 	group:insert(imageGitf)
@@ -170,7 +188,9 @@ function scene:enterScene( event )
 	group:insert(imageX2)
 	group:insert(imageSnowflake)
 	group:insert(imageBig)
-
+	if gameSettings.arcade then
+		group:insert(imageHourglass)
+	end
 	groupView:insert(bg)
 	groupView:insert(rect)
 	groupView:insert(cancelButton)
@@ -209,6 +229,8 @@ function scene:exitScene( event )
 	textSnowflake = nil
 	display.remove(textBig)
 	textBig = nil
+	display.remove(textHourglass)
+	textHourglass = nil
 	display.remove(textEmpty)
 	textEmpty = nil
 
@@ -230,6 +252,8 @@ function scene:exitScene( event )
 	imageSnowflake = nil
 	display.remove(imageBig)
 	imageBig = nil
+	display.remove(imageHourglass)
+	imageHourglass = nil
 
 end
 

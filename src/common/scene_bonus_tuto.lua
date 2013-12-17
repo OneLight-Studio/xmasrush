@@ -62,6 +62,8 @@ function scene:enterScene( event )
 		bonusTxtString = "help.snowflake"
 	elseif bonusType == TYPE_BIG_BONUS then
 		bonusTxtString = "help.big"
+	elseif bonusType == TYPE_HOURGLASS_BONUS then
+		bonusTxtString = "help.hourglass"
 	end
 
 	bonusImg = display.newImageRect(bonusItem.img, bonusItem.element.width, bonusItem.element.height)
