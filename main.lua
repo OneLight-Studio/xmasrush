@@ -83,7 +83,8 @@ function onKeyEvent(event)
 	local keyName = event.keyName
 
    	if "back" == keyName then
-		if storyboard.getCurrentSceneName() ~= "scene_home" then
+   		print( storyboard.getCurrentSceneName() )
+		if storyboard.getCurrentSceneName() ~= "src.common.scene_home" then
 			return true
 		end
 	end
