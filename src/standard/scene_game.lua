@@ -382,7 +382,6 @@ local function dropBomb()
 end
 
 function dropArcade()
-	print "dropArcade"
 	local arcade = Item(TYPE_ARCADE_BONUS, function()
 		gameSettings.arcade = true
 		loadsave.saveTable(gameSettings, GAME_SETTINGS)
