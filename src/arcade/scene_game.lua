@@ -7,6 +7,7 @@ require "src.common.item"
 -- constants
 
 local COUNTDOWN = 1500
+local TIME_COUNTDOWN = 1000
 local PRESENT_SPEED = { 8, 10 }
 local DELAY_BETWEEN_PRESENTS = 250
 local DELAY_BETWEEN_BOMBS = 2000
@@ -254,11 +255,29 @@ function snowflakeHit()
 			item = nil
 		end
 	end
+
+	if TIME_COUNTDOWN <= 1000 then
+		TIME_COUNTDOWN = TIME_COUNTDOWN * 3
+		if gameTimer ~= nil then
+			timer.cancel(gameTimer)
+		end
+		gameTimer = timer.performWithDelay(TIME_COUNTDOWN, gameCountdown)
+	end
+
 end
 
 function endSnowflake()
 	isOnSnowflakeBonus = false
 	snowflakeBonusTimerId = nil
+
+	if TIME_COUNTDOWN > 1000 then
+		TIME_COUNTDOWN = TIME_COUNTDOWN / 3
+		if gameTimer ~= nil then
+			timer.cancel(gameTimer)
+		end
+		gameTimer = timer.performWithDelay(TIME_COUNTDOWN, gameCountdown)
+	end
+
 end
 
 function bombHit()
@@ -516,7 +535,7 @@ function gameCountdown()
 	seconds = seconds - 1
 	game:updateChrono(seconds, false)
 	if seconds > 0 then
-		gameTimer = timer.performWithDelay(1000, gameCountdown)
+		gameTimer = timer.performWithDelay(TIME_COUNTDOWN, gameCountdown)
 	else
 		game:gameOver()
 		moveToOverlay("arcade.scene_game_over", {isModal = true, params = { game = game }})
@@ -579,7 +598,7 @@ function scene:enterScene( event )
 		createMenuBtn()
 
 		dropPresent()
-		gameTimer = timer.performWithDelay(1000, gameCountdown)
+		gameTimer = timer.performWithDelay(TIME_COUNTDOWN, gameCountdown)
 		bombTimerId = timer.performWithDelay(delayBetweenBombs, dropBomb)
 		bonusTimerId = timer.performWithDelay(DELAY_BETWEEN_BONUS, dropBonus)
 	end)
@@ -598,6 +617,9 @@ function scene:exitScene( event )
 	endImp()
 	clearItems()
 
+	if gameTimer ~= nil then
+		timer.cancel(gameTimer)
+	end
 	timer.cancel(presentTimerId)
 	timer.cancel(bombTimerId)
 	timer.cancel(bonusTimerId)
