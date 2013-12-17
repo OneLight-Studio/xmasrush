@@ -107,7 +107,7 @@ function Game:updateLives(positive)
 		xScale=scale, yScale=scale, time=time, onComplete=function(event)
 			transition.to(self.livesLabel, {
 				xScale=1, yScale=1, time=time, onComplete=function(event)
-					self.livesLabel:setTextColor(255, 255, 255)
+					self.livesLabel:setTextColor(128, 128, 128)
 				end
 			})
 		end

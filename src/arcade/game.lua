@@ -90,7 +90,8 @@ function GameArcade:updateChrono(seconds)
 		self.chronoLabel = nil
 	end
 	self.chronoLabel = display.newText(string.format("%d:%02d", math.floor(seconds / 60), seconds % 60), 0, 0, FONT, FONT_SIZE)
-	self.chronoLabel.x = display.contentCenterX
+	-- + 14 to adapte with the background
+	self.chronoLabel.x = display.contentCenterX + 14
 	self.chronoLabel.y = TXT_HEIGHT / 2
 	if seconds <= 3 then
 		self.chronoLabel:setTextColor(255, 0, 0)
@@ -101,6 +102,8 @@ function GameArcade:updateChrono(seconds)
 				})
 			end
 		})
+	else
+		self.chronoLabel:setTextColor(128, 128, 128)
 	end
 end
 
@@ -137,8 +140,6 @@ function GameArcade:updateCombo()
 	
 	local increaseCombo = math.floor(self.consecutivePresents / PRESENTS_COMBO)
 
-	print (self.consecutivePresents .." -> "..increaseCombo .. " -> " .. self.combo .. " -> " .. self.previousCombo)
-	
 	if self.consecutivePresents == 0 and self.previousCombo == 0 then
 		self.combo = 1
 	end
