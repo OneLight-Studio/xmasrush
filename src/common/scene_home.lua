@@ -180,7 +180,7 @@ function scene:createScene( event )
 	this.view:insert(bg)
 
 	local title = display.newText({ parent=self.view, text=language:getString("game.name"), x=display.contentWidth / 2, y=50, font=FONT, fontSize=70 })
-	local gradient = graphics.newGradient( { 255, 255, 255 }, { 200, 200, 200 }, "down" )
+	local gradient = graphics.newGradient( { 255, 255, 255 }, { 200, 200, 200 }, "left" )
 	title:setTextColor( gradient )
 
 	setupPlayBtn()
