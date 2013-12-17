@@ -132,6 +132,12 @@ end
 function resumeGame()
 	countdown(3)
 	timer.performWithDelay(COUNTDOWN, function()
+
+		timer.resume(presentTimerId)
+		timer.resume(gameTimer)
+		timer.resume(bombTimerId)
+		timer.resume(bonusTimerId)
+
 		if gameSettings.soundEnable then
 			audio.resume(songChannel)
 		end
@@ -155,11 +161,7 @@ function resumeGame()
 		if bombPauseTimer ~= nil then
 			timer.resume(bombPauseTimer)
 		end
-		timer.resume(gameTimer)
-		timer.resume(bombTimerId)
-		timer.resume(bonusTimerId)
-		timer.resume(presentTimerId)
-
+	
 		paddle:resumePaddle()
 
 		createMenuBtn()
@@ -424,9 +426,6 @@ local function dropBonus()
 		-- force a different bonus
 		dropBonus()
 	else
-
-
-
 		lastBonusType = bonusType
 		table.insert(items, bonus)
 		bonus:onEnterScene()
@@ -537,6 +536,8 @@ function gameCountdown()
 	if seconds > 0 then
 		gameTimer = timer.performWithDelay(TIME_COUNTDOWN, gameCountdown)
 	else
+		paddle:toAspiratorMode(false)
+		paddle:toBigMode(false)
 		game:gameOver()
 		moveToOverlay("arcade.scene_game_over", {isModal = true, params = { game = game }})
 	end
@@ -580,9 +581,10 @@ function scene:enterScene( event )
 	paddle:onEnterScene()
 	game:onEnterScene()
 
-	countdown(3)
+	if not gameSettings.tuto["arcade_game"] then
+		gameSettings.tuto["arcade_game"] = true
+		loadsave.saveTable(gameSettings, GAME_SETTINGS)
 
-	timer.performWithDelay(COUNTDOWN, function()
 		-- listeners
 		Runtime:addEventListener("enterFrame", onEveryFrame)
 		-- sounds
@@ -601,7 +603,35 @@ function scene:enterScene( event )
 		gameTimer = timer.performWithDelay(TIME_COUNTDOWN, gameCountdown)
 		bombTimerId = timer.performWithDelay(delayBetweenBombs, dropBomb)
 		bonusTimerId = timer.performWithDelay(DELAY_BETWEEN_BONUS, dropBonus)
-	end)
+
+		bonusTutoTimerId = timer.performWithDelay(50, function()
+			moveToOverlay("scene_bonus_tuto", { isModal = true, params = { bonusType = "arcade_game", bonusItem = nil } } )
+		end)
+
+	else
+		countdown(3)
+
+		timer.performWithDelay(COUNTDOWN, function()
+			-- listeners
+			Runtime:addEventListener("enterFrame", onEveryFrame)
+			-- sounds
+			audioLoop = audio.loadSound("sound/jingle_bells.mp3")
+			songChannel = audio.play(audioLoop, { channel=1, loops=-1 })
+			if gameSettings.soundEnable == false then
+				audio.pause(songChannel)
+			end
+			audioLoopSource = audio.getSourceFromChannel(1)
+			audioLoopPitch = AUDIO_PITCH
+			al.Source(audioLoopSource, al.PITCH, audioLoopPitch)
+
+			createMenuBtn()
+
+			dropPresent()
+			gameTimer = timer.performWithDelay(TIME_COUNTDOWN, gameCountdown)
+			bombTimerId = timer.performWithDelay(delayBetweenBombs, dropBomb)
+			bonusTimerId = timer.performWithDelay(DELAY_BETWEEN_BONUS, dropBonus)
+		end)
+	end
 end
 
 function scene:exitScene( event )

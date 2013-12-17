@@ -64,15 +64,19 @@ function scene:enterScene( event )
 		bonusTxtString = "help.big"
 	elseif bonusType == TYPE_HOURGLASS_BONUS then
 		bonusTxtString = "help.hourglass"
+	elseif bonusType == "arcade_game" then
+		bonusTxtString = "help.arcade.game"
 	end
 
-	bonusImg = display.newImageRect(bonusItem.img, bonusItem.element.width, bonusItem.element.height)
-	bonusImg.x = bonusItem.element.x
-	bonusImg.y = bonusItem.element.y
+	if bonusItem ~= nil then
+		bonusImg = display.newImageRect(bonusItem.img, bonusItem.element.width, bonusItem.element.height)
+		bonusImg.x = bonusItem.element.x
+		bonusImg.y = bonusItem.element.y
 
-	bonusArrow = display.newImageRect("img/arrow_up.png", 64, 64)
-	bonusArrow.x = bonusImg.x
-	bonusArrow.y = bonusImg.y + bonusImg.height + 30
+		bonusArrow = display.newImageRect("img/arrow_up.png", 64, 64)
+		bonusArrow.x = bonusImg.x
+		bonusArrow.y = bonusImg.y + bonusImg.height + 30
+	end
 
 	bonusTxt = display.newText(language:getString(bonusTxtString), 0, 0, FONT, 24)
 	bonusTxt.x = display.contentCenterX
