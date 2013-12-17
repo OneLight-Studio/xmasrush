@@ -17,6 +17,7 @@ TYPE_X2_PRESENT = 'x2_present'
 TYPE_BIG_BONUS = 'big'
 TYPE_SNOWFLAKE_BONUS = 'snowflake'
 TYPE_SNOWFLAKE_PRESENT = 'snowflake_present'
+TYPE_ARCADE_BONUS = 'arcade_bonus'
 
 PRESENT_IMG = "img/game_present_#index#.png"
 PRESENT_X2_IMG = "img/game_present_#index#_x2.png"
@@ -94,6 +95,13 @@ BIG_BONUS_HEIGHT = 70
 BIG_BONUS_MIN_SPEED = 7
 BIG_BONUS_MAX_SPEED = 7
 BIG_SOUND = audio.loadSound("sound/bonus_big.mp3")
+
+ARCADE_BONUS_IMG = "img/game_arcade_bonus.png"
+ARCADE_BONUS_WIDTH = 35
+ARCADE_BONUS_HEIGHT = 35
+ARCADE_BONUS_MIN_SPEED = 7
+ARCADE_BONUS_MAX_SPEED = 7
+ARCADE_SOUND = audio.loadSound("sound/bonus_arcade.mp3")
 
 -- variables
 
@@ -185,6 +193,12 @@ Item = class(function(this, type, hit, fall, speedMin, speedMax)
 		this.height = BIG_BONUS_HEIGHT
 		this.speed = math.random(BIG_BONUS_MIN_SPEED, BIG_BONUS_MAX_SPEED)
 		this.sound = BIG_SOUND
+	elseif type == TYPE_ARCADE_BONUS then
+		this.img = ARCADE_BONUS_IMG
+		this.width = ARCADE_BONUS_WIDTH
+		this.height = ARCADE_BONUS_HEIGHT
+		this.speed = math.random(ARCADE_BONUS_MIN_SPEED, ARCADE_BONUS_MAX_SPEED)
+		this.sound = ARCADE_SOUND
 	end
 
 	this.hit = hit

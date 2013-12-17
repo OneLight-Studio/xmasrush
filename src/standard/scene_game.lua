@@ -30,6 +30,7 @@ local bg
 local menuButton
 local delayBetweenPresents
 local delayBetweenBombs
+local delayArcadeBonus
 local itemsCountOnScreen
 local items = {}
 local game
@@ -40,6 +41,7 @@ local audioLoopPitch
 local presentTimerId
 local bombTimerId
 local bonusTimerId
+local arcadeTimerId
 local impBonusTimerId
 local x2BonusTimerId
 local snowflakeBonusTimerId
@@ -56,6 +58,7 @@ local imp
 local level
 local lastBonusType = -1
 local bonusTutoTimerId
+local lastLevel = -1
 
 -- local functions
 
@@ -116,6 +119,9 @@ function pauseGame()
 	end
 	if bonusTutoTimerId ~= nil then
 		timer.pause(bonusTutoTimerId)
+	end	
+	if arcadeTimerId ~= nil then
+		timer.pause(arcadeTimerId)
 	end
 
 	timer.pause(bombTimerId)
@@ -147,6 +153,9 @@ function resumeGame()
 		end
 		if bonusTutoTimerId ~= nil then
 			timer.resume(bonusTutoTimerId)
+		end
+		if arcadeTimerId ~= nil then
+			timer.resume(arcadeTimerId)
 		end
 		timer.resume(bombTimerId)
 		timer.resume(bonusTimerId)
@@ -342,6 +351,12 @@ local function dropPresent()
 	itemsCountOnScreen = MAX_ITEMS_ON_SCREEN[game.level]
 	delayBetweenPresents = DELAY_BETWEEN_PRESENTS[game.level]
 	presentTimerId = timer.performWithDelay(delayBetweenPresents, dropPresent)
+
+	if gameSettings.arcade == false and game.level >= 5 and game.level > lastLevel  then
+		delayArcadeBonus = math.random(5000, 15000)	
+		arcadeTimerId = timer.performWithDelay(delayArcadeBonus, dropArcade)
+		lastLevel = game.level
+	end
 end
 
 local function dropBomb()
@@ -364,6 +379,17 @@ local function dropBomb()
 
 	delayBetweenBombs = DELAY_BETWEEN_BOMBS[game.level]
 	bombTimerId = timer.performWithDelay(delayBetweenBombs, dropBomb)
+end
+
+function dropArcade()
+	print "dropArcade"
+	local arcade = Item(TYPE_ARCADE_BONUS, function()
+		gameSettings.arcade = true
+		loadsave.saveTable(gameSettings, GAME_SETTINGS)
+	end, nil)
+	table.insert(items, arcade)
+	arcade:onEnterScene()
+	arcadeTimerId = nil
 end
 
 local function dropBonus()
@@ -533,13 +559,18 @@ function scene:enterScene( event )
 	audio.stop()
 	audio.setVolume(1.0)
 
-	bg = display.newImage( "img/bg.jpg" )
+	bg = display.newImage( "img/bg.png" )
+	bg.width = display.contentWidth
+	bg.height = display.contentHeight
+	bg.x = display.contentCenterX
+	bg.y = display.contentCenterY
 
 	delayBetweenPresents = DELAY_BETWEEN_PRESENTS[game.level]
 	delayBetweenBombs = DELAY_BETWEEN_BOMBS[game.level]
 	itemsCountOnScreen = MAX_ITEMS_ON_SCREEN[game.level]
 
 	lastBonusType = -1
+	lastLevel = -1
 
 	paddle:onEnterScene()
 	game:onEnterScene()
@@ -601,6 +632,9 @@ function scene:exitScene( event )
 	end
 	if starWaterfallTimerId ~= nil then
 		timer.cancel(starWaterfallTimerId)
+	end
+	if arcadeTimerId ~= nil then
+		timer.cancel(arcadeTimerId)
 	end
 
 	audio.stop(songChannel)

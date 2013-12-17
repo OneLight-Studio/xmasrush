@@ -21,7 +21,12 @@ function scene:willEnterScene( event )
 end
 
 function scene:enterScene( event )
-    bg = display.newImage( "img/bg.jpg" )
+    
+    bg = display.newImage( "img/bg.png" )
+	bg.width = display.contentWidth
+	bg.height = display.contentHeight
+	bg.x = display.contentCenterX
+	bg.y = display.contentCenterY
 
 	closeBtn = display.newImageRect("img/close.png", 32, 32)
 	closeBtn.x = display.contentWidth - 20

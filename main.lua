@@ -112,7 +112,11 @@ if( gameSettings == nil ) then
 end
 -- v2
 if gameSettings.arcade == nil then
-	gameSettings.arcade = false
+	if gameSettings.finished then
+		gameSettings.arcade = true
+	else
+		gameSettings.arcade = false
+	end
     gameSettings.highscores = {}
     loadsave.saveTable(gameSettings, GAME_SETTINGS)
 end

@@ -17,7 +17,6 @@ local MAX_ITEMS_ON_SCREEN = 30
 local X2_DELAY = 10000
 local SNOWFLAKE_DELAY = 10000
 local GAME_DURATION = 60
-local PRESENTS_COMBO = 50
 local BOMB_PAUSE = 3000
 
 -- variables
@@ -53,7 +52,6 @@ local songChannel
 local imp
 local lastBonusType = -1
 local bonusTutoTimerId
-local consecutivePresents = 0
 local gameTimer
 local seconds
 local bombPauseTimer
@@ -222,8 +220,7 @@ function x2Hit()
 	for i,item in pairs(items) do
 		if item and item.type == TYPE_PRESENT then
 			local newItem = Item(TYPE_X2_PRESENT, function()
-				consecutivePresents = consecutivePresents + 1
-				game:increaseScore((1 + math.floor(consecutivePresents / PRESENTS_COMBO) * 2))
+				game:increaseScore(2)
 			end, item.fall, item.speed, item.speed)
 			newItem:onEnterScene(item.element.x, item.element.y)
 			items[i] = newItem
@@ -258,9 +255,8 @@ function endSnowflake()
 end
 
 function bombHit()
-	consecutivePresents = 0
 	blink(paddle:elem(), BLINK_SPEED_BOMB)
-	game:updateScore(0)
+	game:clearCombo()
 	for i, item in pairs(items) do
 		if item and item.type ~= TYPE_BOMB then
 			transition.to(item:elem(), {
@@ -289,7 +285,7 @@ function dropPresentLine()
 		
 		for i=0, prensentNumberPerRow, 1 do
 			local present = Item(TYPE_STAR_PRESENT, function()
-				game:increaseScore(1 + math.floor(consecutivePresents / PRESENTS_COMBO))
+				game:increaseScore(1)
 			end, nil)
 			table.insert(items, present)
 			present:onEnterScene()
@@ -319,8 +315,7 @@ local function dropPresent()
 		if isOnX2Bonus then
 			present = Item(TYPE_X2_PRESENT, 
 				function() 
-					consecutivePresents = consecutivePresents + 1
-					game:increaseScore((1 + math.floor(consecutivePresents / PRESENTS_COMBO) * 2)) 
+					game:increaseScore(2) 
 				end, 
 				nil,
 				PRESENT_SPEED[1], 
@@ -329,8 +324,7 @@ local function dropPresent()
 		elseif isOnSnowflakeBonus then
 			present = Item(TYPE_SNOWFLAKE_PRESENT,
 				function() 
-					consecutivePresents = consecutivePresents + 1
-					game:increaseScore(1 + math.floor(consecutivePresents / PRESENTS_COMBO)) 
+					game:increaseScore(1) 
 				end,
 				nil,
 				PRESENT_SPEED[1] / 3,
@@ -339,8 +333,7 @@ local function dropPresent()
 		else
 			present = Item(TYPE_PRESENT,
 				function() 
-					consecutivePresents = consecutivePresents + 1
-					game:increaseScore(1 + math.floor(consecutivePresents / PRESENTS_COMBO)) 
+					game:increaseScore(1) 
 				end, 
 				nil,
 				PRESENT_SPEED[1],
@@ -386,12 +379,16 @@ local function dropBonus()
 	elseif bonusType == 2 then
 		bonus = Item(TYPE_IMP_BONUS, function() impHit() end, nil, nil)
 	elseif bonusType == 3 then
+		paddle:toAspiratorMode(false)
+		paddle:toBigMode(false)
 		bonus = Item(TYPE_ASPIRATOR_BONUS, function() paddle:toAspiratorMode(true) end, nil, nil)
 	elseif bonusType == 4 then
 		bonus = Item(TYPE_STAR_BONUS, function() startHit() end, nil, nil)
 	elseif bonusType == 5 then
 		bonus = Item(TYPE_SNOWFLAKE_BONUS, function() snowflakeHit() end, nil, nil)
 	elseif bonusType == 6 then
+		paddle:toAspiratorMode(false)
+		paddle:toBigMode(false)
 		bonus = Item(TYPE_BIG_BONUS, function() paddle:toBigMode(true) end, nil, nil)
 	end
 
@@ -399,6 +396,9 @@ local function dropBonus()
 		-- force a different bonus
 		dropBonus()
 	else
+
+
+
 		lastBonusType = bonusType
 		table.insert(items, bonus)
 		bonus:onEnterScene()
@@ -527,7 +527,6 @@ end
 function scene:enterScene( event )
     paddle = PaddleArcade()
 	game = GameArcade()
-	consecutivePresents = 0
 
 	-- init
 	math.randomseed(os.time())
@@ -535,7 +534,12 @@ function scene:enterScene( event )
 	audio.stop()
 	audio.setVolume(1.0)
 
-	bg = display.newImage( "img/bg.jpg" )
+	bg = display.newImage( "img/bg.png" )
+	bg.width = display.contentWidth
+	bg.height = display.contentHeight
+	bg.x = display.contentCenterX
+	bg.y = display.contentCenterY
+
 
 	delayBetweenPresents = DELAY_BETWEEN_PRESENTS
 	delayBetweenBombs = DELAY_BETWEEN_BOMBS

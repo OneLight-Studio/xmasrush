@@ -9,6 +9,10 @@ local scene = storyboard.newScene()
 local bg
 local nbBtn = 0
 local btnSmall = {}
+local playBtn
+local scoreBtn
+local helpBtn
+local creditBtn
 local soundBtn
 local effectsBtn
 local this
@@ -50,6 +54,11 @@ local function updateBtnPosition()
 end
 
 local function addButton(title, onTap)
+
+	if gameSettings.arcade then
+		BTN_Y_MIN = 130
+	end
+
 	local btn = widget.newButton({
 		defaultFile = BTN_IMG,
 		overFile = BTN_IMG_PRESSED,
@@ -75,6 +84,38 @@ local function addButtonSmall(position, img, img_pressed, onTap)
 	btnSmall[position] = btn
 	updateBtnPosition()
 	return btn
+end
+
+
+local function setupPlayBtn()
+	playBtn = addButton(language:getString("menu.play"),
+		function(event) moveToScene("scene_levels") end)
+	this.view:insert(playBtn)
+end
+
+local function setupScoreBtn()
+	if gameSettings.arcade then
+		BTN_Y_MIN = 130
+		scoreBtn = addButton(language:getString("menu.scores"),function(event) moveToScene("scene_highscores") end)
+		this.view:insert(scoreBtn)
+	end
+end
+
+
+local function setupHelpBtn()
+	helpBtn = addButtonSmall(1,
+		"img/home_help.png", 
+		"img/home_help_pressed.png", 
+		function(event) moveToScene("scene_help") end)
+	this.view:insert(helpBtn)
+end
+
+local function setupCreditBtn()
+	creditBtn = addButtonSmall(2,
+		"img/home_credits.png", 
+		"img/home_credits_pressed.png", 
+		function(event) moveToScene("scene_credits") end)
+	this.view:insert(creditBtn)
 end
 
 local function setupSoundBtn()
@@ -129,12 +170,21 @@ end
 
 function scene:createScene( event )
 	this = self
-    display.newImage(self.view, "img/bg.jpg" )
+
+    bg = display.newImage( "img/bg.png" )
+	bg.width = display.contentWidth
+	bg.height = display.contentHeight
+	bg.x = display.contentCenterX
+	bg.y = display.contentCenterY
+
+	this.view:insert(bg)
+
 	display.newText({ parent=self.view, text=language:getString("game.name"), x=display.contentWidth / 2, y=50, font=FONT, fontSize=70 })
-	self.view:insert(addButton(language:getString("menu.play"), function(event) moveToScene("scene_levels") end))
-	self.view:insert(addButton(language:getString("menu.scores"), function(event) moveToScene("scene_highscores") end))
-	self.view:insert(addButtonSmall(1, "img/home_help.png", "img/home_help_pressed.png", function(event) moveToScene("scene_help") end))
-	self.view:insert(addButtonSmall(2, "img/home_credits.png", "img/home_credits_pressed.png", function(event) moveToScene("scene_credits") end))
+	
+	setupPlayBtn()
+	setupScoreBtn()
+	setupHelpBtn()
+	setupCreditBtn()
 	setupSoundBtn()
 	setupEffectsBtn()
 
@@ -166,8 +216,24 @@ function scene:willEnterScene( event )
 end
 
 function scene:enterScene( event )
+	display.remove(helpBtn)
+	display.remove(creditBtn)
 	display.remove(soundBtn)
 	display.remove(effectsBtn)
+	display.remove(playBtn)
+	if scoreBtn ~= nil then
+		display.remove(scoreBtn)
+	end
+
+	nbBtn = 0
+
+	setupPlayBtn()
+	setupScoreBtn()
+
+
+
+	setupHelpBtn()
+	setupCreditBtn()
 	setupSoundBtn()
 	setupEffectsBtn()
 
