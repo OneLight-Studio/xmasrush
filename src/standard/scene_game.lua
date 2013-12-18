@@ -169,7 +169,7 @@ function resumeGame()
 end
 
 function startHit()
-	for i, item in pairs(items) do
+	for i, item in ipairs(items) do
 		if item then
 			item:remove()
 		end
@@ -217,7 +217,7 @@ end
 function x2Hit()
 	isOnX2Bonus = true
 	x2BonusTimerId = timer.performWithDelay(X2_DELAY, endX2)
-	for i,item in pairs(items) do
+	for i,item in ipairs(items) do
 		if item and item.type == TYPE_PRESENT then
 			local newItem = Item(TYPE_X2_PRESENT, function() game:increaseScore(2) end, item.fall, item.speed, item.speed)
 			newItem:onEnterScene(item.element.x, item.element.y)
@@ -236,7 +236,7 @@ end
 function snowflakeHit()
 	isOnSnowflakeBonus = true
 	snowflakeBonusTimerId = timer.performWithDelay(SNOWFLAKE_DELAY, endSnowflake)
-	for i,item in pairs(items) do
+	for i,item in ipairs(items) do
 		if item and item.type == TYPE_PRESENT then
 			local newItem = Item(TYPE_SNOWFLAKE_PRESENT, item.hit, item.fall, PRESENT_SPEED[game.level][1] / 3, PRESENT_SPEED[game.level][2] / 3)
 			newItem:onEnterScene(item.element.x, item.element.y)
@@ -289,6 +289,7 @@ local function dropLife()
 end
 
 local function dropPresent()
+	--if table.getn(items) < itemsCountOnScreen then
 	if #items < itemsCountOnScreen then
 		local present
 		if isOnX2Bonus then
@@ -457,7 +458,7 @@ local function onEveryFrame(event)
 		end
 
 		-- move each item
-		for i, item in pairs(items) do
+		for i, item in ipairs(items) do
 			if item then
 				item:startTranslate()
 
@@ -474,7 +475,9 @@ local function onEveryFrame(event)
 						end
 					else
 						if isBoundsInBounds(itemBounds, paddleBounds) or item:aspiratedDone() then
-							items[i] = nil
+							--items[i] = nil
+							table.remove(items, i)
+
 							item:remove()
 
 							if paddle.mode == PADDLE_MODE_BIG and item.type == TYPE_BOMB then
@@ -488,7 +491,8 @@ local function onEveryFrame(event)
 					-- remove only present items if it is in the imp
 					if imp ~= nil and impBounds ~= nil then
 						if isBoundsInBounds(itemBounds, impBounds) then
-							items[i] = nil
+							--items[i] = nil
+							table.remove(items, i)
 							item:remove()
 							if item.type ~= TYPE_BOMB then
 								item:onHit(game)
@@ -498,7 +502,8 @@ local function onEveryFrame(event)
 					
 					-- remove the item if it is out of the screen
 					if itemBounds.yMin > display.contentHeight then
-						items[i] = nil
+						--items[i] = nil
+						table.remove(items, i)
 						item:remove()
 						item:onFall(game)
 					end
@@ -530,10 +535,11 @@ local function onEveryFrame(event)
 end
 
 function clearItems()
-	for i, item in pairs(items) do
+	for i, item in ipairs(items) do
 		if item then
 			item:onExitScene()
 			items[i] = nil
+			--table.remove(items, i)
 		end
 	end
 end
